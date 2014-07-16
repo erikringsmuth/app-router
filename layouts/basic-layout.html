@@ -1,18 +1,29 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
-<link rel="import" href="/bower_components/core-elements/core-elements.html">
+<link rel="import" href="/bower_components/core-scaffold/core-scaffold.html">
+<link rel="import" href="/bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="/bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="/bower_components/core-menu/core-menu.html">
+<link rel="import" href="/bower_components/core-item/core-item.html">
 
 <polymer-element name="basic-layout" noscript>
   <template>
+    <style>
+      .content {
+        padding: 20px;
+      }
+    </style>
     <core-scaffold>
       <core-header-panel navigation flex mode="seamed">
-        <core-toolbar style="background-color: #526E9C; color: #fff;">Application</core-toolbar>
-        <core-menu>
-          <core-item icon="settings" label="item1"></core-item>
-          <core-item icon="settings" label="item2"></core-item>
+        <core-toolbar>Application</core-toolbar>
+        <core-menu selectedItem="{{route}}">
+          <core-item icon="settings" label="Home"><a href="/#"></a></core-item>
+          <core-item icon="settings" label="About"><a href="/#/about"></a></core-item>
         </core-menu>
       </core-header-panel>
-      <div tool>Title</div>
-      <content></content>
+      <div tool>{{route.label || 'Polymer Routing Demo'}}</div>
+      <div class="content">
+        <content></content>
+      </div>
     </core-scaffold>
   </template>
 </polymer-element>

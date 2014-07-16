@@ -7,13 +7,13 @@
     <link rel="import" href="/bower_components/url-route/url-route.html">
   </head>
   <body unresolved>
-    <url-route pattern="/">
+    <url-route pattern="<any:.*>">
       <template>
         <link rel="import" href="/pages/home-page.html">
         <home-page></home-page>
       </template>
     </url-route>
-    <url-route pattern="/#about">
+    <url-route pattern="#/about">
       <template>
         <link rel="import" href="/pages/about-page.html">
         <about-page></about-page>
