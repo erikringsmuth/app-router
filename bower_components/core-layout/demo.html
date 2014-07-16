@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-layout demo</title>
+
+  <script src="../platform/platform.js"></script>
+  <link rel="import" href="core-layout.html">
+  
+  <style>
+    body {
+      font-size: 20px;
+    }
+
+    layout-demo {
+      height: 300px;
+    }
+
+  </style>
+
+</head>
+<body unresolved>
+  
+  <polymer-element name="layout-demo" noscript>
+    <template>
+      <style>
+        div, core-layout {
+          box-sizing: border-flow;
+          -moz-flow-sizing: border-flow;
+          border: 2px solid #ccc;
+        }
+
+        .abs {
+          position: absolute;
+          font-size: 14px;
+          padding: 4px;
+          right: 10%;
+          bottom: 10px;
+          height: 30px;
+          width: 70px;
+          border-radius: 10px;
+          background: seagreen;
+          border: none;
+        }
+      </style>
+      <core-layout></core-layout>
+      <core-layout core-flex>
+        <div>Hi I'm some content</div>
+        <core-layout core-flex vertical>
+          <core-layout align="center">
+            <h3>Title</h3>
+            <button>hello</button>
+          </core-layout>
+          <core-layout core-flex>
+            <div core-flex class="core-relative">
+              Main content
+              <div class="abs">abs pos :)</div>
+            </div>
+            <div>Sidebar content</div>
+          </core-layout>
+          <div>Some more stuffs...</div>
+          <core-layout justify="end">
+            <b>Footer</b>
+          </core-layout>
+        </core-layout>
+        <div>A last bit, like a panel</div>
+      </core-layout>
+    </template>
+  </polymer-element>
+
+  <h3>core-layout example</h3>
+  <layout-demo></layout-demo>
+  
+</body>
+</html>

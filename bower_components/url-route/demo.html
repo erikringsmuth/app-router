@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>url-route Demo</title>
+
+  <script src="../platform/platform.js"></script>
+  <link rel="stylesheet" href="http://getbootstrap.com/dist/css/bootstrap.min.css">
+  <link rel="import" href="url-route.html">
+
+</head>
+<body unresolved>
+
+  <div class="container">
+    <header class="page-heading">
+      <h1>An example of using <code>&lt;url-route></code></h1>
+    </header>
+    <div class="row">
+      <aside class="col-sm-3">
+        <a class="btn btn-info btn-block" href="#info">Open Info Panel</a>
+        <button class="btn btn-default btn-block" id="controllerOnly">Go to Controller</button>
+        <button class="btn btn-default btn-block" id="controllerAction">Go to Controller + Action</button>
+        <button class="btn btn-default btn-block" id="controllerActionId">Go to Controller + Action + ID</button>
+      </aside>
+      <section class="col-sm-9">
+        <url-route pattern="#info">
+          <template>
+            <div class="alert alert-info">
+              This is an info panel
+            </div>
+          </template>
+        </url-route>
+
+
+        <url-route pattern="/<any:.*>">
+          <template>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Matches any URL</h3>
+              </div>
+              <div class="panel-body">
+                <p>This route matches any URL, the current URL is: {{any}}</p>
+              </div>
+            </div>
+          </template>
+        </url-route>
+
+
+        <url-route pattern="#<any:.*>">
+          <template>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Matches any URL fragment</h3>
+              </div>
+              <div class="panel-body">
+                <p>This route matches any URL fragment, the current fragment is: {{any}}</p>
+              </div>
+            </div>
+          </template>
+        </url-route>
+
+
+
+        <url-route pattern="/<controller>">
+          <template>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Matches Controller Only</h3>
+              </div>
+              <div class="panel-body">
+                <p>The current controller name is: <strong>{{controller}}</strong></p>
+
+                <a href="#warning" class="btn btn-warning">Show a warning</a>
+                  <url-route pattern="#warning">
+                    <template>
+                      <div class="alert alert-warning">
+                        This is a warning panel, an example of a nested &lt;url-route>.
+                      </div>
+                    </template>
+                  </url-route>
+              </div>
+            </div>
+
+          </template>
+        </url-route>
+
+        <url-route pattern="/<controller>/<action>">
+          <template>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Matches a Controller Action</h3>
+              </div>
+              <div class="panel-body">
+                <p>Controller name: <strong>{{controller}}</strong></p>
+                <p>Action name: <strong>{{action}}</strong></p>
+              </div>
+            </div>
+          </template>
+        </url-route>
+
+        <url-route pattern="/<controller>/<action>/<id:\d+>">
+          <template>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Matches a Controller Action with an ID</h3>
+              </div>
+              <div class="panel-body">
+                <p>Controller name: <strong>{{controller}}</strong></p>
+                <p>Action name: <strong>{{action}}</strong></p>
+                <p>Item ID: <strong>{{id}}</strong></p>
+              </div>
+            </div>
+          </template>
+        </url-route>
+      </section>
+    </div>
+  </div>
+
+
+  <script>
+    (function () {
+      var $ = document.querySelector.bind(document);
+
+      $('#controllerOnly').onclick = function () {
+        history.pushState({}, '', '/my-controller');
+      };
+
+      $('#controllerAction').onclick = function () {
+        history.pushState({}, '', '/my-controller/my-action');
+      };
+
+      $('#controllerActionId').onclick = function () {
+        history.pushState({}, '', '/my-controller/my-action/123');
+      };
+    })();
+  </script>
+
+</body>
+</html>

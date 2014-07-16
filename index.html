@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Polymer Routing</title>
+    <script src="/bower_components/platform/platform.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
+    <link rel="import" href="/bower_components/url-route/url-route.html">
+  </head>
+  <body unresolved>
+    <url-route pattern="/">
+      <template>
+        <link rel="import" href="/pages/home-page.html">
+        <home-page></home-page>
+      </template>
+    </url-route>
+    <url-route pattern="/#about">
+      <template>
+        <link rel="import" href="/pages/about-page.html">
+        <about-page></about-page>
+      </template>
+    </url-route>
+  </body>
+</html>
