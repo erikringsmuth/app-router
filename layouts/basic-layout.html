@@ -20,7 +20,9 @@
           <core-item icon="settings" label="About"><a href="/#/about"></a></core-item>
         </core-menu>
       </core-header-panel>
-      <div tool>{{route.label || 'Polymer Routing Demo'}}</div>
+      <div tool>
+        <content select=".title"></content>
+      </div>
       <div class="content">
         <content></content>
       </div>
