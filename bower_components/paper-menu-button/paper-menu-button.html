@@ -1,0 +1,128 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+A `paper-menu-button` is a `paper-icon-button` that opens a drop down menu when tapped.
+
+Example:
+
+    <paper-menu-button icon="menu">
+      <div>Menu Item 1</div>
+      <div>Menu Item 2</div>
+      <div>Menu Item 3</div>
+    </paper-menu-button>
+
+ @group Paper Elements
+ @element paper-menu-button
+ @extends paper-focusable
+-->
+<link href="../polymer/polymer.html" rel="import">
+<link href="../core-icon/core-icon.html" rel="import">
+<link href="../core-menu/core-menu.html" rel="import">
+<link href="../paper-focusable/paper-focusable.html" rel="import">
+<link href="../paper-shadow/paper-shadow.html" rel="import">
+<link href="paper-menu-button-overlay.html" rel="import">
+<link href="paper-menu-button-transition.html" rel="import">
+
+<polymer-element name="paper-menu-button-overlay-container" noscript>
+<template>
+  <content></content>
+</template>
+</polymer-element>
+
+<polymer-element name="paper-menu-button" extends="paper-focusable" attributes="src icon opened halign valign slow" on-tap="{{tapAction}}">
+  <template>
+    <link rel="stylesheet" href="paper-menu-button.css">
+    <paper-menu-button-overlay target="{{$.overlay}}" relatedTarget="{{}}" halign="{{halign}}" valign="{{valign}}" opened="{{opened}}" transition="paper-menu-button-transition-top-{{halign}}{{slow ? '-slow' : ''}}"></paper-menu-button-overlay>
+    <paper-menu-button-overlay-container id="overlay">
+      <paper-shadow target="{{$.overlayBg}}" z="0" hasPosition></paper-shadow>
+      <div class="paper-menu-button-overlay-ink"></div>
+      <div id="overlayBg" class="paper-menu-button-overlay-bg"></div>
+      <core-menu id="menu">
+        <content></content>
+      </core-menu>
+    </paper-menu-button-overlay-container>
+    <core-icon src="{{src}}" icon="{{icon}}"></core-icon>
+  </template>
+  <script>
+    Polymer('paper-menu-button', {
+
+      publish: {
+
+        /**
+         * If true, this menu is currently visible.
+         *
+         * @attribute opened
+         * @type boolean
+         * @default false
+         */
+        opened: { value: false, reflect: true },
+
+        /**
+         * The horizontal alignment of the pulldown menu relative to the button.
+         *
+         * @attribute halign
+         * @type 'left' | 'right'
+         * @default 'left'
+         */
+        halign: { value: 'left', reflect: true },
+
+        /**
+         * The vertical alignment of the pulldown menu relative to the button.
+         *
+         * @attribute halign
+         * @type 'bottom' | 'top'
+         * @default 'top'
+         */
+        valign: {value: 'top', reflect: true}
+      },
+
+      /**
+       * The URL of an image for the icon.  Should not use `icon` property
+       * if you are using this property.
+       *
+       * @attribute src
+       * @type string
+       * @default ''
+       */
+      src: '',
+
+      /**
+       * Specifies the icon name or index in the set of icons available in
+       * the icon set.  Should not use `src` property if you are using this
+       * property.
+       *
+       * @attribute icon
+       * @type string
+       * @default ''
+       */
+      icon: '',
+
+      slow: false,
+
+      tapAction: function() {
+        if (this.disabled) {
+          return;
+        }
+
+        this.super();
+        this.toggle();
+      },
+
+      /**
+       * Toggle the opened state of the menu.
+       *
+       * @method toggle
+       */
+      toggle: function() {
+        this.opened = !this.opened;
+      }
+
+    });
+  </script>
+</polymer-element>

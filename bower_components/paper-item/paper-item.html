@@ -1,0 +1,83 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+@group Paper Elements
+
+`paper-item` is a list-item object for use in menus. It may contain and icon and/or
+a text label.
+
+Example:
+
+    <core-menu>
+        <paper-item icon="refresh">Refresh</paper-item>
+        <paper-item>Help</paper-item>
+        <paper-item>Sign Out</paper-item>
+    </core-menu>
+
+@class paper-item
+-->
+
+<link href="../polymer/polymer.html" rel="import">
+<link href="../core-icon/core-icon.html" rel="import">
+<link href="../paper-ripple/paper-ripple.html" rel="import">
+
+<polymer-element name="paper-item" attributes="label iconSrc icon" center horizontal layout>
+
+  <template>
+
+    <link href="paper-item.css" rel="stylesheet">
+
+    <paper-ripple id="ripple"></paper-ripple>
+
+    <core-icon id="icon" hidden?="{{!iconSrc && !icon}}" src="{{iconSrc}}" icon="{{icon}}"></core-icon>
+    {{label}}
+    <content></content>
+  </template>
+
+  <script>
+    Polymer('paper-item', {
+
+      publish: {
+
+        /**
+         * The label for the item.
+         *
+         * @attribute label
+         * @type string
+         * @default ''
+         */
+        label: '',
+
+       /**
+         * (optional) The URL of an image for an icon to use in the button.
+         * Should not use `icon` property if you are using this property.
+         *
+         * @attribute iconSrc
+         * @type string
+         * @default ''
+         */
+         iconSrc: {value: ''},
+
+         /**
+          * (optional) Specifies the icon name or index in the set of icons
+          * available in the icon set. If using this property, load the icon
+          * set separately where the icon is used. Should not use `src`
+          * if you are using this property.
+          *
+          * @attribute icon
+          * @type string
+          * @default ''
+          */
+         icon: {value: ''}
+
+      }
+    });
+  </script>
+</polymer-element>

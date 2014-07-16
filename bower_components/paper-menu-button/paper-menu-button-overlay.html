@@ -1,0 +1,87 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-overlay/core-overlay.html">
+
+<!--
+
+`paper-menu-button-overlay` is a helper class to position an overlay relative to another
+element, e.g. the button with a pulldown menu.
+
+@group Paper Elements
+@element paper-menu-button-overlay
+@extends core-overlay
+@homepage github.io
+-->
+
+<polymer-element name="paper-menu-button-overlay" extends="core-overlay" attributes="relatedTarget halign valign">
+  <script>
+    Polymer('paper-menu-button-overlay', {
+
+      publish: {
+
+        /**
+         * The `relatedTarget` is an element used to position the overlay, for example a
+         * button the user taps to show a menu.
+         *
+         * @attribute relatedTarget
+         * @type Element
+         */
+        relatedTarget: null,
+
+        /**
+         * The horizontal alignment of the overlay relative to the `relatedTarget`.
+         *
+         * @attribute halign
+         * @type 'left'|'right'|'center'
+         * @default 'left'
+         */
+        halign: 'left'
+
+      },
+
+      updateTargetDimensions: function() {
+        this.super();
+
+        var t = this.target;
+        this.target.cachedSize = t.getBoundingClientRect();
+      },
+
+      positionTarget: function() {
+        if (this.relatedTarget) {
+
+          var rect = this.relatedTarget.getBoundingClientRect();
+
+          if (this.halign === 'left') {
+            this.target.style.left = rect.left + 'px';
+          } else if (this.halign === 'right') {
+            this.target.style.right = (window.innerWidth - rect.right) + 'px';
+          } else {
+            this.target.style.left = (rect.left - (rect.width - this.target.cachedSize.width) / 2) + 'px';
+          }
+
+          if (this.valign === 'top') {
+            this.target.style.top = rect.top + 'px';
+          } else if (this.valign === 'bottom') {
+            this.target.style.top = rect.bottom + 'px';
+          } else {
+            this.target.style.top = rect.top + 'px';
+          }
+
+          // this.target.style.top = rect.top + 'px';
+
+        } else {
+          this.super();
+        }
+      }
+
+    });
+  </script>
+</polymer-element>

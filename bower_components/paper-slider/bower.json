@@ -1,0 +1,9 @@
+{
+  "name": "paper-slider",
+  "private": true,
+  "dependencies": {
+    "font-roboto": "Polymer/font-roboto#>=0.3.0 <1.0.0",
+    "paper-input": "Polymer/paper-input#>=0.3.0 <1.0.0",
+    "paper-progress": "Polymer/paper-progress#>=0.3.0 <1.0.0"
+  }
+}

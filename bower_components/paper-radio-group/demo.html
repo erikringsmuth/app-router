@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+  <title>paper-radio-group</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <script src="../platform/platform.js"></script>
+  
+  <link rel="import" href="paper-radio-group.html">
+  <link rel="import" href="../font-roboto/roboto.html">
+  
+  <style shim-shadowdom>
+  
+    body {
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      margin: 0;
+      padding: 24px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+    }
+    
+    section {
+      xpadding: 20px;
+      xbackground-color: #f0f0f0;
+    }
+    
+    paper-radio-group.blue paper-radio-button::shadow #ink[checked] {
+      color: #4285f4;
+    }
+    
+    paper-radio-group.blue paper-radio-button::shadow #onRadio {
+      background-color: #4285f4;
+    }
+    
+  </style>
+  
+</head>
+<body unresolved>
+  
+  <section>
+  
+    <h4>Keep Wi-Fi on during sleep</h4>
+    
+    <paper-radio-group selected="2">
+      <paper-radio-button label="Always"></paper-radio-button><br>
+      <paper-radio-button label="Only when plugged in"></paper-radio-button><br>
+      <paper-radio-button label="Never"></paper-radio-button>
+    </paper-radio-group>
+    
+  </section>
+  
+  <br>
+  
+  <section>
+  
+    <h4>Wi-Fi frequency band</h4>
+    
+    <paper-radio-group class="blue" selected="0">
+      <paper-radio-button label="Auto"></paper-radio-button><br>
+      <paper-radio-button label="5 GHz only"></paper-radio-button><br>
+      <paper-radio-button label="2.4 GHz only"></paper-radio-button>
+    </paper-radio-group>
+    
+  </section>
+      
+</body>
+</html>

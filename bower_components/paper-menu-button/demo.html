@@ -1,0 +1,93 @@
+
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+<head>
+  <title>paper-menu-button</title>
+  <script src="../platform/platform.js"></script>
+  <link href="../core-icons/core-icons.html" rel="import">
+  <link href="../paper-icon-button/paper-icon-button.html" rel="import">
+  <link href="../paper-item/paper-item.html" rel="import">
+  <link href="../paper-shadow/paper-shadow.html" rel="import">
+  <link href="paper-menu-button.html" rel="import">
+  <style>
+    body {
+			margin: 0;
+			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      background: #f7f7f7;
+    }
+
+    .card {
+      background: #fff;
+      width: 320px;
+      height: 480px;
+      margin: 128px 96px;
+      border-radius: 3px;
+    }
+
+    .toolbar {
+      background: #4555a5;
+      position: relative;
+      padding: 0.5em;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      z-index: -1;
+    }
+
+    body /deep/ core-icon {
+      fill: #fff;
+    }
+
+    body /deep/ paper-item::shadow core-icon {
+      fill: #000;
+    }
+
+    core-icon {
+      fill: #fff;
+    }
+
+    paper-item core-icon {
+      fill: #000;
+    }
+
+  </style>
+</head>
+<body unresolved>
+
+  <paper-shadow></paper-shadow>
+
+  <div class="card paper-shadow-top-z-1">
+    <div class="inner paper-shadow-bottom-z-1"></div>
+    <div layout horizontal class="toolbar paper-shadow-top-z-1">
+      <div class="inner paper-shadow-bottom-z-1"></div>
+      <paper-menu-button icon="menu" halign="left">
+        <paper-item label="Menu Item 1"></paper-item>
+        <paper-item label="Menu Item 2"></paper-item>
+        <paper-item label="Menu Item 3"></paper-item>
+      </paper-menu-button>
+      <div flex></div>
+      <paper-icon-button icon="search"></paper-icon-button>
+      <paper-menu-button icon="more-vert" halign="right" slow>
+        <paper-item label="Refresh"></paper-item>
+        <paper-item label="Send Feedback"></paper-item>
+        <paper-item label="Settings"></paper-item>
+        <paper-item label="Help"></paper-item>
+        <paper-item label="Sign Out"></paper-item>
+      </paper-menu-button>
+    </core-layout>
+  </div>
+
+</body>
+</html>

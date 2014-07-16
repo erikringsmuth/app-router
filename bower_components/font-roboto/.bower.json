@@ -1,0 +1,14 @@
+{
+  "name": "font-roboto",
+  "homepage": "https://github.com/Polymer/font-roboto",
+  "version": "0.3.4",
+  "_release": "0.3.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.4",
+    "commit": "3515cb3b0d19e5df52ae8c4ad9606ab9a67b8fa6"
+  },
+  "_source": "git://github.com/Polymer/font-roboto.git",
+  "_target": ">=0.3.0 <1.0.0",
+  "_originalSource": "Polymer/font-roboto"
+}
