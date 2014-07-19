@@ -1,26 +1,24 @@
 {
-  "name": "polymer-routing",
-  "version": "0.0.0",
+  "name": "app-router",
+  "version": "0.0.1",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
-  "description": "Example Polymer app layout with routing.",
+  "description": "Declarative, lazy-loading app router for web components.",
   "keywords": [
     "polymer",
     "web-components",
-    "routing"
+    "router"
   ],
   "main": "index.html",
   "license": "MIT",
-  "homepage": "https://github.com/erikringsmuth/polymer-routing",
+  "homepage": "https://github.com/erikringsmuth/app-router",
   "ignore": [
     "**/.*"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.4",
     "platform": "Polymer/platform#~0.3.4",
-    "core-elements": "Polymer/core-elements#~0.3.4",
-    "paper-elements": "Polymer/paper-elements#~0.3.4",
-    "url-route": "codemix/url-route#~0.0.3"
+    "core-elements": "Polymer/core-elements#~0.3.4"
   }
 }

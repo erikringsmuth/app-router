@@ -1,8 +1,0 @@
-{
-  "name": "paper-progress",
-  "private": true,
-  "dependencies": {
-    "core-range": "Polymer/core-range#>=0.3.0 <1.0.0",
-    "paper-button": "Polymer/paper-button#>=0.3.0 <1.0.0"
-  }
-}

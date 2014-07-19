@@ -1,4 +1,0 @@
-paper-focusable
-===============
-
-paper-focusable

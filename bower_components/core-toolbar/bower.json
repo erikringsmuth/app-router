@@ -1,7 +1,0 @@
-{
-  "name": "core-toolbar",
-  "private": true,
-  "dependencies": {
-    "core-icon-button": "Polymer/core-icon-button#>=0.3.0 <1.0.0"
-  }
-}
