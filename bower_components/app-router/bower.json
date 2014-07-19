@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.0.0",
+  "version": "0.0.4",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -17,9 +17,6 @@
     "**/.*"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~0.3.4",
-    "platform": "Polymer/platform#~0.3.4",
-    "core-elements": "Polymer/core-elements#~0.3.4",
-    "app-router": "~0.0.4"
+    "polymer": "Polymer/polymer"
   }
 }
