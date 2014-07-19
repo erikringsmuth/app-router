@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <title>core-input</title>
+
+  <script src="../platform/platform.js"></script>
+
+  <link href="core-input.html" rel="import">
+
+  <style>
+    body {
+      padding: 24px;
+      margin: 0;
+      -webkit-transform: translateZ(0);
+      font-family: sans-serif;
+      font-size: 16px;
+    }
+
+    section {
+      margin: 2em 0;
+    }
+
+    aside {
+      background: #ccc;
+      padding: 1em;
+      margin-right: 2em;
+      font-size: 12px;
+      width: 250px;
+      border-radius: 3px;
+    }
+
+    core-input {
+      margin: 1em;
+    }
+
+    core-input[multiline] {
+      border: 1px dotted #ccc;
+    }
+
+    core-input.sized {
+      width: 500px;
+      height: 200px;
+    }
+  </style>
+
+</head>
+<body>
+
+  <section horizontal start layout>
+    <aside>This is an example of a single-line text input. See console for committed values.</aside>
+    <core-input id="single" placeholder="Type something..."></core-input>
+    <script>
+      var single = document.getElementById('single');
+      single.addEventListener('change', function() {
+        console.log('single: value committed: ', single.value);
+      });
+    </script>
+  </section>
+
+  <section horizontal start layout>
+    <aside>This is an example of a single-line password input. See console for committed values.</aside>
+    <core-input id="single" type="password" placeholder="Enter password..."></core-input>
+    <script>
+      var single = document.getElementById('single');
+      single.addEventListener('change', function() {
+        console.log('single: value committed: ', single.value);
+      });
+    </script>
+  </section>
+  
+  <section horizontal start layout>
+    <aside>This is an example of a single-line text input with number validation. See console for validation errors.</aside>
+    <core-input id="singleValidation" placeholder="Only enter numbers..." validate="^[0-9]*$"></core-input>
+    <script>
+      document.getElementById('singleValidation').addEventListener('input-invalid', function(e, value, s) {
+        console.log('singleValidation: input invalid! value:', e.detail.value);
+      });
+    </script>
+  </section>
+
+  <section horizontal start layout>
+    <aside>This is an example of a multi-line text input with 3 rows. The input is normally unstyled but here is styled with a dotted border to show its size.</aside>
+    <core-input multiline rows="3" placeholder="Type many lines here..."></core-input>
+  </section>
+
+  <section horizontal start layout>
+    <aside>This is an example of a multi-line text input sized with CSS. The input is normally unstyled but here is styled with a dotted border to show its size.</aside>
+    <core-input class="sized" multiline rows="fit" placeholder="This input is 500px * 200px"></core-input>
+  </section>
+
+</body>

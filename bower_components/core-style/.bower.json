@@ -1,0 +1,18 @@
+{
+  "name": "core-style",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
+  },
+  "homepage": "https://github.com/Polymer/core-style",
+  "version": "0.3.4",
+  "_release": "0.3.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.4",
+    "commit": "c47137e4572cff3a72a68b2a9d83c80a86182cd6"
+  },
+  "_source": "git://github.com/Polymer/core-style.git",
+  "_target": ">=0.3.0 <1.0.0",
+  "_originalSource": "Polymer/core-style"
+}

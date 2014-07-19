@@ -1,0 +1,71 @@
+
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+<head>
+  <title>core-menu-button</title>
+  <script src="../platform/platform.js"></script>
+  <link rel="import" href="core-menu-button.html">
+	<link rel="import" href="../core-item/core-item.html">
+  <link rel="import" href="../core-toolbar/core-toolbar.html">
+  <style>
+    body {
+			margin: 0;
+			font-family: sans-serif;
+    }
+
+    core-toolbar {
+      background-color: #cfa0e9;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="core-body-text" unresolved>
+
+	
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<core-toolbar>
+
+		<core-menu-button icon="menu">
+
+			<core-item icon="settings" label="Settings"></core-item>
+			<core-item icon="add" label="Add"></core-item>
+			<core-item icon="search" label="Search"></core-item>
+
+		</core-menu-button>
+
+		<div core-flex>Toolbar</div>
+
+		<core-menu-button icon="add" halign="right">
+
+			<core-item icon="star-rate" label="Rate"></core-item>
+			<core-item icon="today" label="Today"></core-item>
+			<core-item icon="keep" label="Keep"></core-item>
+
+		</core-menu-button>
+
+		<core-menu-button icon="more-vert" halign="right" valign="top">
+
+			<core-item icon="visibility" label="Visibility"></core-item>
+			<core-item icon="extension" label="Extension"></core-item>
+			<core-item icon="info" label="Info"></core-item>
+
+		</core-menu-button>
+
+	</core-toolbar>
+
+</body>
+</html>

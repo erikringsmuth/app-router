@@ -1,0 +1,313 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+-->
+
+<!--
+/**
+ * core-input is an unstyled single- or multi-line text field where user can
+ * enter input.
+ *
+ * Example:
+ *
+ *     <core-input placeholder="Placeholder text here"></core-input>
+ *
+ *     <core-input multiline placeholder="Enter multiple lines here"></core-input>
+ *
+ * The text input's value is considered "committed" if the user hits the `enter`
+ * key or blurs the input after changing the value. The "change" event is fired
+ * when the value becomes committed, and the committed value is stored in the
+ * "value" property. The current value of the input is stored in the "inputValue"
+ * property.
+ *
+ * core-input also can optionally validate the value by providing it with a
+ * regular expression to match against, or a validation function. The
+ * "input-invalid" event is fired if the input value changes and is invalid.
+ * The "invalid" property is also available for observation.
+ *
+ * Example:
+ *
+ *     // valid only if the value is a number
+ *     <core-input validate="^[0-9]*$" on-input-invalid="{{inputInvalidAction}}"></core-input>
+ *
+ *     this.$.input.validate = /^[0-9]*$/;  // valid only if the value is a number
+ *
+ *     this.$.input2.validate = function(value) {
+ *       return value === 'foo';  // valid only if the value is 'foo'
+ *     }
+ *
+ * @group Polymer Core Elements
+ * @element core-input
+ * @homepage github.io
+ */
+-->
+
+<!--
+Fired when the inputValue of is changed. This is the same event as the DOM
+"input" event.
+
+@event input
+-->
+
+<!--
+Fired when the user commits the value of the input, either by the hitting the
+`enter` key or blurring the input after the changing the inputValue. Also see the
+DOM "change" event.
+
+@event change
+-->
+
+<!--
+Fired when the inputValue of this text input changes and fails validation.
+
+@event input-invalid
+@param {Object} detail
+@param {string} value The text input's inputValue.
+-->
+
+<!--
+Fired when the inputValue of this text input changes and passes validation.
+
+@event input-valid
+@param {Object} detail
+@param {string} value The text input's inputValue.
+-->
+<link href="../polymer/polymer.html" rel="import">
+
+<polymer-element name="core-input">
+
+  <template>
+
+    <link href="core-input.css" rel="stylesheet">
+
+    <template if="{{multiline}}">
+      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" fit?="{{rows === 'fit'}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" required?="{{required}}" readonly?="{{readonly}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{focusAction}}" on-blur="{{blurAction}}"></textarea>
+    </template>
+
+    <template if="{{!multiline}}">
+      <input id="input" value="{{inputValue}}" disabled?="{{disabled}}" type="{{type}}" placeholder="{{placeholder}}" required?="{{required}}" readonly?="{{readonly}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{focusAction}}" on-blur="{{blurAction}}">
+    </template>
+
+  </template>
+
+  <script>
+
+    Polymer('core-input', {
+      publish: {
+        /**
+         * Placeholder text that hints to the user what can be entered in
+         * the input.
+         *
+         * @attribute placeholder
+         * @type string
+         * @default ''
+         */
+        placeholder: '',
+  
+        /**
+         * If true, this input cannot be focused and the user cannot change
+         * its value.
+         *
+         * @attribute disabled
+         * @type boolean
+         * @default false
+         */
+        disabled: false,
+  
+        /**
+         * Set the input type. Not supported for `multiline`.
+         *
+         * @attribute type
+         * @type string
+         * @default text
+         */
+        type: 'text',
+
+        /**
+         * If true, the user cannot modify the value of the input.
+         *
+         * @attribute readonly
+         * @type boolean
+         * @default false
+         */
+        readonly: false,
+
+        /**
+         * If true, the input is invalid until the value becomes non-null.
+         *
+         * @attribute required
+         * @type boolean
+         * @default false
+         */
+        required: false,
+        
+        /**
+         * If true, this input accepts multi-line input like a `<textarea>`
+         *
+         * @attribute multiline
+         * @type boolean
+         * @default false
+         */
+        multiline: false,
+  
+        /**
+         * (multiline only) The height of this text input in rows. The input
+         * will scroll internally if more input is entered beyond the size
+         * of the component. This property is meaningless if multiline is
+         * false. You can also set this property to "fit" and size the
+         * component with CSS to make the input fit the CSS size.
+         *
+         * @attribute rows
+         * @type number|'fit'
+         * @default 'fit'
+         */
+        rows: 'fit',
+  
+        /**
+         * The current value of this input. Changing inputValue programmatically
+         * will cause value to be out of sync. Instead, change value directly
+         * or call commit() after changing inputValue.
+         *
+         * @attribute inputValue
+         * @type string
+         * @default ''
+         */
+        inputValue: '',
+  
+        /**
+         * The value of the input committed by the user, either by changing the
+         * inputValue and blurring the input, or by hitting the `enter` key.
+         *
+         * @attribute value
+         * @type string
+         * @default ''
+         */
+        value: '',
+  
+        /**
+         * If this property is not null, the text input's inputValue will be
+         * validated. You can validate the value with either a regular expression
+         * or a custom function.
+         *
+         * To use a regular expression, set this property to a RegExp object or
+         * a string containing the regular expression to match against. To use a
+         * custom validator, set this property to a function with the signature
+         * function(value) that returns a boolean. The input is valid if the
+         * function returns true.
+         *
+         * Example:
+         *
+         *     // valid only if the value is a number
+         *     <core-input validate="^[0-9]*$"></core-input> 
+         * 
+         *     // valid only if the value is a number
+         *     this.$.input.validate = /^[0-9]*$/;
+         *
+         *     this.$.input2.validate = function(value) {
+         *         // valid only if the value is 'foo'
+         *         return value === 'foo';  
+         *     }
+         *
+         * @attribute validate
+         * @type string|RegExp|Function(value)
+         * @default null
+         */
+        validate: null,
+  
+        /**
+         * If this property is true, the text input's inputValue failed validation.
+         *
+         * @attribute invalid
+         * @type boolean
+         * @default false
+         */
+        invalid: false,
+      },
+      
+      validateValue: function() {
+        var valid = true;
+
+        if (this.validate) {
+
+          if (!this.inputValue) {
+            valid = !this.required;
+          } else if (typeof this.validate === 'string') {
+            valid = new RegExp(this.validate).exec(this.inputValue);
+          } else if (this.validate.exec) {
+            valid = this.validate.exec(this.inputValue);
+          } else if (this.validate instanceof Function) {
+            valid = this.validate.call(this, this.inputValue);
+          }
+
+        } else if (this.required) {
+          valid = !!this.inputValue;
+        }
+
+        this.invalid = !valid;
+      },
+
+      invalidChanged: function() {
+        this.classList.toggle('invalid', this.invalid);
+        if (this.invalid) {
+          this.fire('input-invalid', {value: this.inputValue});
+        } else {
+          this.fire('input-valid', {value: this.inputValue});
+        }
+      },
+
+      inputValueChanged: function() {
+        if (this.validate || this.required) {
+          this.validateValue();
+        }
+      },
+
+      valueChanged: function() {
+        this.inputValue = this.value;
+      },
+
+      requiredChanged: function() {
+        this.validateValue();
+      },
+
+      /**
+       * Commits the inputValue to value.
+       *
+       * @method commit
+       */
+      commit: function() {
+         this.value = this.inputValue;
+      },
+
+      inputChangeAction: function() {
+        this.commit();
+        if (!window.ShadowDOMPolyfill) {
+          // re-fire non-bubbling event
+          this.fire('change', null, this, false);
+        }
+      },
+
+      focusAction: function() {
+        // re-fire non-bubbling event
+        this.fire('focus', null, this, false);
+      },
+
+      blurAction: function() {
+        // re-fire non-bubbling event
+        this.fire('blur', null, this, false);
+      }
+
+    });
+
+    CoreInput = function() {
+      return document.createElement('core-input');
+    };
+    CoreInput.validate = {
+      number: /^[0-9]*$/
+    };
+  </script>
+
+</polymer-element>

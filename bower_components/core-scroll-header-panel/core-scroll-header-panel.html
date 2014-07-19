@@ -1,0 +1,259 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+`core-scroll-header-panel` contains a header section and a content section.  The
+header is initially on the top part of the view but it scrolls away with the 
+rest of the scrollable content.  Upon scrolling slightly up at any point, the 
+header scrolls back into view.  This saves screen space and allows users to
+access important controls by easily moving them back to the view.
+
+`core-scroll-header-panel` works well with `core-toolbar` but can use any element 
+that represents a header by adding a `core-header` class to it.  Use the attribute 
+or class `content` to delineate the content section.
+
+    <core-scroll-header-panel>
+      <core-toolbar>Header</core-toolbar>
+      <div content>Content goes here...</div>
+    </core-scroll-header-panel>
+
+@group Polymer Core Elements
+@element core-scroll-header-panel
+@homepage github.io
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="core-scroll-header-panel">
+<template>
+
+  <link rel="stylesheet" href="core-scroll-header-panel.css">
+
+  <div id="mainContainer" on-scroll="{{scroll}}">
+  
+    <content id="mainContent" select="[content], .content"></content>
+    
+  </div>
+  
+  <div id="headerContainer">
+  
+    <div class="bg-container">
+      <div id="condensedHeaderBg"></div>
+      <div id="headerBg"></div>
+    </div>
+    
+    <content id="headerContent" select="core-toolbar, .core-header"></content>
+    
+  </div>
+  
+</template>
+<script>
+
+  Polymer('core-scroll-header-panel', {
+    
+    /**
+     * Fired when the content has been scrolled.
+     *
+     * @event scroll
+     */
+     
+    /**
+     * Fired when the header is transformed.
+     *
+     * @event core-header-transform
+     */
+     
+    publish: {
+      /**
+       * If true, the header's height will condense to `condensedHeaderHeight`
+       * as the user scrolls down from the top of the content area.
+       *
+       * @attribute condenses
+       * @type boolean
+       * @default false
+       */
+      condenses: false,
+
+      /**
+       * If true, no cross-fade transition from one background to another.
+       *
+       * @attribute noDissolve
+       * @type boolean
+       * @default false
+       */
+      noDissolve: false,
+
+      /**
+       * If true, the header doesn't slide back in when scrolling back up.
+       *
+       * @attribute noReveal
+       * @type boolean
+       * @default false
+       */
+      noReveal: false,
+
+      /**
+       * If true, the header is fixed to the top and never moves away.
+       *
+       * @attribute fixed
+       * @type boolean
+       * @default false
+       */
+      fixed: false,
+      
+      /**
+       * If true, the condensed header is always shown and does not move away.
+       *
+       * @attribute keepCondensedHeader
+       * @type boolean
+       * @default false
+       */
+      keepCondensedHeader: false,
+
+      /**
+       * The height of the header when it is at its full size.
+       *
+       * By default, the height will be measured when it is ready.  If the height
+       * changes later the user needs to either set this value to reflect the
+       * new height or invoke `measureHeaderHeight()`.
+       *
+       * @attribute headerHeight
+       * @type number
+       */
+      headerHeight: 0,
+
+      /**
+       * The height of the header when it is condensed.
+       *
+       * By default, this will be 1/3 of `headerHeight`.
+       *
+       * @attribute condensedHeaderHeight
+       * @type number
+       */
+      condensedHeaderHeight: 0,
+    },
+
+    prevScrollTop: 0,
+    
+    headerMargin: 0,
+    
+    y: 0,
+    
+    observe: {
+      'headerMargin fixed': 'setup'
+    },
+    
+    domReady: function() {
+      this.async('measureHeaderHeight');
+    },
+
+    get header() {
+      return this.$.headerContent.getDistributedNodes()[0];
+    },
+    
+    get scroller() {
+      return this.$.mainContainer;
+    },
+    
+    measureHeaderHeight: function() {
+      var header = this.header;
+      if (this.header) {
+        this.headerHeight = header.offsetHeight;
+      }
+    },
+    
+    headerHeightChanged: function() {
+      if (this.condensedHeaderHeight) {
+        this.condensedHeaderHeightChanged();
+      } else {
+        // assume condensedHeaderHeight is 1/3 of the headerHeight
+        this.condensedHeaderHeight = this.headerHeight * 1 / 3;
+      }
+    },
+    
+    condensedHeaderHeightChanged: function() {
+      if (this.headerHeight) {
+        this.headerMargin = this.headerHeight - this.condensedHeaderHeight;
+      }
+    },
+    
+    setup: function() {
+      var s = this.scroller.style;
+      s.paddingTop = this.fixed ? null : this.headerHeight + 'px';
+      s.top = this.fixed ? this.headerHeight + 'px' : null;
+      if (this.fixed) {
+        this.transformHeader(0);
+      } else {
+        this.scroll();
+      }
+    },
+    
+    transformHeader: function(y) {
+      var s = this.$.headerContainer.style;
+      this.translateY(s, -y);
+      
+      if (this.condenses) {
+        // adjust top bar in core-header so the top bar stays at the top
+        if (this.header.$ && this.header.$.topBar) {
+          s = this.header.$.topBar.style;
+          this.translateY(s, Math.min(y, this.headerMargin));
+        }
+        // transition header bg
+        s = this.$.headerBg.style;
+        if (!this.noDissolve) {
+          s.opacity = (this.headerMargin - y) / this.headerMargin;
+        }
+        // adjust header bg so it stays at the center
+        this.translateY(s, y / 2);
+        // transition condensed header bg
+        if (!this.noDissolve) {
+          s = this.$.condensedHeaderBg.style;
+          s.opacity = y / this.headerMargin;
+          // adjust condensed header bg so it stays at the center
+          this.translateY(s, y / 2);
+        }
+      }
+      
+      this.fire('core-header-transform',
+          {y: y, height: this.headerHeight, condensedHeight: this.condensedHeaderHeight});
+    },
+    
+    translateY: function(s, y) {
+      s.webkitTransform = s.transform = 'translate3d(0, ' + y + 'px, 0)';
+    },
+    
+    scroll: function() {
+      if (!this.header) {
+        return;
+      }
+      
+      var sTop = this.scroller.scrollTop;
+      
+      var y = Math.min(this.keepCondensedHeader ? 
+          this.headerMargin : this.headerHeight, Math.max(0, 
+          (this.noReveal ? sTop : this.y + sTop - this.prevScrollTop)));
+      
+      if (this.condenses && this.prevScrollTop > sTop && sTop > this.headerMargin) {
+        y = Math.max(y, this.headerMargin);
+      }
+      
+      if (!this.fixed && y !== this.y) {
+        requestAnimationFrame(this.transformHeader.bind(this, y));
+      }
+      
+      this.prevScrollTop = sTop;
+      this.y = y;
+      
+      this.fire('scroll', {target: this.scroller}, this, false);
+    }
+
+  });
+
+</script>
+</polymer-element>

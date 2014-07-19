@@ -1,0 +1,137 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+/**
+ * @module Polymer Core Elements
+ */
+/**
+ * core-menu-button is a core-icon-button with a drop down menu
+ * that allows the user to select an option. The drop down menu is styled with
+ * an arrow pointing to the button, and can be positioned to the top or the
+ * bottom of the button with the valign property. The valign property aligns
+ * the menu to the left or right edge of the button.
+ *
+ * Example:
+ *
+ *     <core-menu-button selected="0">
+ *       <core-item icon="settings" label="Settings"></core-item>
+ *       <core-item icon="dialog" label="Dialog"></core-item>
+ *       <core-item icon="search" label="Search"></core-item>
+ *     </core-menu-button>
+ *
+ * @class core-menu-button
+ */
+-->
+<link href="../polymer/polymer.html" rel="import">
+<link href="../core-icon-button/core-icon-button.html" rel="import">
+<link href="../core-menu/core-menu.html" rel="import">
+<link href="../core-overlay/core-overlay.html" rel="import">
+
+<polymer-element name="core-menu-button" attributes="icon label src selected opened halign valign valueattr multi inlineMenu">
+  <template>
+    <link rel="stylesheet" href="core-menu-button.css">
+    <core-overlay target="{{$.overlay}}" opened="{{opened}}" layered?="{{!inlineMenu}}"></core-overlay>
+    <core-icon-button id="button" on-tap="{{toggle}}" src="{{src}}" icon="{{icon}}" active="{{opened}}"><span>{{label}}</span></core-icon-button>
+    <div id="overlay" halign="{{halign}}" valign="{{valign}}">
+      <style>
+        #overlay {
+          position: absolute;
+          left: 0px;
+          top: 40px;
+          padding: 8px;
+          background: #fff;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          /* overlay styling must be complete */
+          font-size: 1rem;
+        }
+
+        core-menu {
+          margin: 0;
+        }
+
+        #overlay[halign=right] {
+          left: auto;
+          right: 0px;
+        }
+
+        #overlay[valign=top] {
+          top: auto;
+          bottom: 40px;
+        }
+      </style>
+      <core-menu id="menu" selected="{{selected}}" selectedItem="{{selectedItem}}" selectedClass="{{selectedClass}}" valueattr="{{valueattr}}" multi="{{multi}}" on-core-select="{{closeAction}}">
+        <content select="*"></content>
+      </core-menu>
+    </div>
+  </template>
+  <script>
+    Polymer('core-menu-button', {
+      /**
+       * The icon to display.
+       * @attribute icon
+       * @type string
+       */
+      icon: 'dots',
+      src: '',
+      /**
+       * The index of the selected menu item.
+       * @attribute selected
+       * @type number
+       */
+      selected: '',
+      /**
+       * Set to true to open the menu.
+       * @attribute opened
+       * @type boolean
+       */
+      opened: false,
+      /**
+       * Set to true to cause the menu popup to be displayed inline rather 
+       * than in its own layer.
+       * @attribute inlineMenu
+       * @type boolean
+       */
+      inlineMenu: false,
+      /**
+       * Horizontally align the overlay with the button. Accepted values are
+       * ["left", "center", "right"].
+       * @attribute halign
+       * @type string
+       */
+      halign: 'center',
+      /**
+       * Display the overlay on top or below the button. Accepted values are
+       * ["top", "bottom"].
+       * @attribute valign
+       * @type string
+       */
+      valign: 'bottom',
+      multi: false,
+      closeAction: function() {
+        this.opened = false;
+      },
+      /**
+       * Toggle the opened state of the dropdown.
+       * @method toggle
+       */
+      toggle: function() {
+        this.opened = !this.opened;
+      },
+      /**
+       * The selected menu item.
+       * @property selection
+       * @type Node
+       */
+      get selection() {
+        return this.$.menu.selection;
+      }
+    });
+  </script>
+</polymer-element>

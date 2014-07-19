@@ -1,0 +1,51 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+-->
+<html>
+  <head>
+    <title>core-icon-button</title>
+    
+    <script src="../platform/platform.js"></script>
+    
+    <link rel="import" href="core-icon-button.html">
+    
+  </head>
+  
+  <body unresolved>
+  
+
+    <polymer-element name="x-buttons">
+      <template>
+        <core-iconset id="meta"></core-iconset>
+        <template repeat="{{icon in iconNames}}">
+          <core-icon-button icon="{{icon}}"></core-icon-button>
+        </template>
+      </template>
+      <script>
+        Polymer('x-buttons', {
+          ready: function() {
+            this.iconNames = this.$.meta.byId('icons').iconNames;
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <div>
+      <x-buttons></x-buttons>
+    </div>
+    <br>
+    <div theme="core-light-theme">
+      <x-buttons></x-buttons>
+    </div>
+    <br>
+    <div theme="core-dark-theme" style="background: #333;">
+      <x-buttons></x-buttons>
+    </div>
+  </body>
+</html>

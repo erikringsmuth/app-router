@@ -1,0 +1,35 @@
+:host {
+  display: inline-block;
+  text-align: inherit;
+  color: #ccc;
+  position: relative;
+  width: 20em;
+}
+
+:host:hover {
+  cursor: text;
+}
+
+input,
+textarea {
+  font: inherit;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+textarea {
+  resize: none;
+}
+
+textarea[fit] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

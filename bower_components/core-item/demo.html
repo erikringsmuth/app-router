@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+
+  <title>core-item</title>
+
+  <script src="../platform/platform.js"></script>
+
+  <link rel="import" href="../core-icons/core-icons.html">
+  <link rel="import" href="core-item.html">
+
+  <style>
+  
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    
+    core-item {
+      width: 300px;
+    }
+    
+    core-item.contact-item {
+      height: 50px;
+      background-color: #efefef;
+      border: 1px solid #ddd;
+    }
+    
+  </style>
+
+</head>
+<body unresolved>
+
+    <h2>items with icon and label:</h2>
+
+    <core-item icon="settings" label="Settings"></core-item>
+    <core-item icon="account-box" label="Account"></core-item>
+    
+    <h2>items with label only:</h2>
+
+    <core-item label="Settings"></core-item>
+    <core-item label="Account"></core-item>
+    
+    <h2>links (via &lt;a&gt;):</h2>
+    
+    <core-item icon="settings" label="Settings"><a href="#settings" target="_self"></a></core-item>
+    <core-item icon="account-box" label="Account"><a href="#account" target="_self"></a></core-item>
+    
+    <h2>custom item:</h2>
+    
+    <core-item icon="account-circle" class="label-outline">
+      <div flex>
+        <div style="font-size: 18px;">John Doe</div>
+        <div style="font-size: 12px;">123 A Street, San Francisco, CA</div>
+      </div>
+      <core-icon icon="more-vert"></core-icon>
+    </core-item>
+
+</body>
+</html>

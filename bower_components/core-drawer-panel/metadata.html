@@ -1,0 +1,28 @@
+<x-meta id="section" label="Section" isContainer group="Core">
+
+  <template>
+
+    <section style="width: 200px; height: 300px;" layout vertical></section>
+
+  </template>
+
+</x-meta>
+
+<x-meta id="core-drawer-panel" label="Drawer Panel" isContainer group="Core">
+
+  <template>
+
+    <core-drawer-panel style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;">
+      <section drawer style="background-color: #fafafa; box-shadow: rgba(0, 0, 0, 0.098) 0px 2px 4px, rgba(0, 0, 0, 0.098) 0px 0px 3px;"></section>
+      <section main style="height: 100%; box-sizing: border-box; background-color: #ddd"></section>
+    </core-drawer-panel>
+
+  </template>
+
+  <template id="imports">
+
+    <link rel="import" href="core-drawer-panel.html">
+
+  </template>
+
+</x-meta>

@@ -1,0 +1,95 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<html>
+<head>
+
+  <title>core-iconset</title>
+
+  <script src="../platform/platform.js"></script>
+  <link rel="import" href="core-iconset.html">
+
+</head>
+<body unresolved>
+  
+  <!-- Register an icon set; you can do this anywhere, including an HTMLImport! -->
+  <core-iconset id="my-icons" src="my-icons.png" width="96" iconSize="24"
+      icons="location place starta stopb bus car train walk">
+  </core-iconset>
+
+  <!-- 
+    Create an element that uses an iconset to display an icon.
+    By using iconset, the element can allow the set of available icons to be
+    easily changed by the user.
+
+    Here we're using the converntion 'iconset:icon' to specify a particular
+    iconset and an icon name within that set.
+   -->
+  <polymer-element name="icon-demo" attributes="icon">
+
+    <template>
+      <style>
+        :host {
+          display: inline-block;
+          margin: 2px;
+        }
+      </style>
+      <core-iconset id="meta"></core-iconset>
+      <content></content>
+    </template>
+
+    <script>
+
+      Polymer('icon-demo', {
+        
+        iconChanged: function() {
+          if (!this.icon) {
+            return;
+          }
+          var parts = this.icon.split(':');
+          var icon = parts.pop();
+          // find the iconSet for the name given via the icon property
+          var iconset = this.$.meta.byId(parts.pop());
+          if (iconset) {
+            // size the element as needed
+            this.style.height = this.style.width = iconset.iconSize + 'px';
+            // use iconset's applyAsBackground method to set the given icon
+            // as the element's background image.
+            iconset.applyIcon(this, icon);
+          }
+        }
+
+      });
+
+    </script>
+
+  </polymer-element>
+
+  <!-- Now create a bunch of icons using our iconset -->
+  <icon-demo icon="my-icons:location"></icon-demo>
+  <icon-demo icon="my-icons:place"></icon-demo>
+  <icon-demo icon="my-icons:starta"></icon-demo>
+  <icon-demo icon="my-icons:stopb"></icon-demo>
+  <icon-demo icon="my-icons:bus"></icon-demo>
+  <icon-demo icon="my-icons:car"></icon-demo>
+  <icon-demo icon="my-icons:train"></icon-demo>
+  <icon-demo icon="my-icons:walk"></icon-demo>
+  <br>
+  <!-- icons may also be specified by index -->
+  <icon-demo icon="my-icons:0"></icon-demo>
+  <icon-demo icon="my-icons:1"></icon-demo>
+  <icon-demo icon="my-icons:2"></icon-demo>
+  <icon-demo icon="my-icons:3"></icon-demo>
+  <icon-demo icon="my-icons:4"></icon-demo>
+  <icon-demo icon="my-icons:5"></icon-demo>
+  <icon-demo icon="my-icons:6"></icon-demo>
+  <icon-demo icon="my-icons:7"></icon-demo>
+ </body>
+</html>
