@@ -11,8 +11,8 @@
 <pre><code>&lt;!doctype html&gt;
 &lt;html&gt;
   &lt;head&gt;
-    &lt;title&gt;Polymer Router&lt;/title&gt;
-    &lt;link rel="import" href="/elements/app-router.html"&gt;
+    &lt;title&gt;App Router&lt;/title&gt;
+    &lt;link rel="import" href="/bower_components/app-router/app-router.html"&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;app-router&gt;
@@ -39,11 +39,15 @@
         <h4>pushState</h4>
         <p>If you're using HTML5 <code>pushState</code> you need one extra step. The <code>pushState()</code> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code>pushState()</code> to navigate to another route you need to call it like this.</p>
 <pre>// push a new URL into the history stack
-history.pushState(stateObj, title, url);
+history.pushState(stateObj, title, '/#/new/page');
 // fire a popstate event
 history.go(0);</pre>
         <h4>Full page load</h4>
-        <p>You can also do a full page load. The router will load the first matching route.</p>
+        <p>Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> without a hash path will do a full page load. You need to make sure your server will return <code>index.html</code> when looking up the resource at <code>/new/page</code>. The simplest set up is to always return <code>index.html</code> and let the <code>app-router</code> handle the routing including a not found page.</p>
+      </div>
+
+        <h3>Install</h3>
+        <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code>bower install app-router</code></p>
       </div>
 
     </scaffold-layout>

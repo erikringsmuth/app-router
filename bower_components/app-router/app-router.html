@@ -1,71 +1,7 @@
+<!-- Copyright (C) 2014 Erik Ringsmuth - MIT license -->
 <link rel="import" href="../polymer/polymer.html">
 
-<!--
-An `app-router` `route`.
-
-##### Example
-  &lt;app-router&gt;
-    &lt;!-- matches an exact path --&gt;
-    &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
-
-    &lt;!-- matches using a wildcard --&gt;
-    &lt;app-route path="/customer/*" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;
-
-    &lt;!-- matches using a path variable --&gt;
-    &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
-
-    &lt;!-- matches everything else --&gt;
-    &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
-  &lt;/app-router&gt;
-
-@element app-route
-@status alpha
-@homepage http://erikringsmuth.github.io/app-router
--->
-<polymer-element name="app-route" attributes="path import" noscript>
-  <script>
-    Polymer('app-route', {
-      /**
-       * The route's path
-       * 
-       * @attribute path
-       * @type string
-       * @default ''
-       */
-
-      /**
-       * The relative path to the page's custom element
-       * 
-       * @attribute import
-       * @type string
-       * @default ''
-       */
-    });
-  </script>
-</polymer-element>
-
-<!--
-Declarative, lazy-loading app router for web components.
-
-##### Example
-  &lt;app-router&gt;
-    &lt;!-- matches an exact path --&gt;
-    &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
-
-    &lt;!-- matches using a wildcard --&gt;
-    &lt;app-route path="/customer/*" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;
-
-    &lt;!-- matches using a path variable --&gt;
-    &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
-
-    &lt;!-- matches everything else --&gt;
-    &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
-  &lt;/app-router&gt;
-
-@element app-router
-@status alpha
-@homepage http://erikringsmuth.github.io/app-router
--->
+<polymer-element name="app-route" attributes="path import" noscript></polymer-element>
 <polymer-element name="app-router">
   <template>
     <content></content>

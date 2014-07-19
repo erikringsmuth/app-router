@@ -4,18 +4,7 @@
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
-  "description": "Declarative, lazy-loading app router for web components.",
-  "keywords": [
-    "polymer",
-    "web-components",
-    "router"
-  ],
-  "main": "index.html",
   "license": "MIT",
-  "homepage": "https://github.com/erikringsmuth/app-router",
-  "ignore": [
-    "**/.*"
-  ],
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.4",
     "platform": "Polymer/platform#~0.3.4",

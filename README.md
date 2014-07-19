@@ -1,2 +1,2 @@
 ## Polymer app-router
-See the [component page](http://erikringsmuth.github.io/app-router) for more information.
+The code that powers the demo page [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
