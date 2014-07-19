@@ -4,26 +4,14 @@
     <title>Polymer Routing</title>
     <script src="/bower_components/platform/platform.js"></script>
     <link rel="stylesheet" href="/css/styles.css" shim-shadowdom>
-    <link rel="import" href="/bower_components/url-route/url-route.html">
+    <link rel="import" href="/elements/app-router.html">
   </head>
-  <body unresolved>
-    <url-route pattern="<any:.*>">
-      <template>
-        <link rel="import" href="/pages/home-page.html">
-        <home-page></home-page>
-      </template>
-    </url-route>
-    <url-route pattern="#/about">
-      <template>
-        <link rel="import" href="/pages/about-page.html">
-        <about-page></about-page>
-      </template>
-    </url-route>
-    <url-route pattern="#/demo">
-      <template>
-        <link rel="import" href="/pages/demo-page.html">
-        <demo-page></demo-page>
-      </template>
-    </url-route>
+  <body>
+    <app-router>
+      <app-route path="/about" import="/pages/about-page.html"></app-route>
+      <app-route path="/demo" import="/pages/demo-page.html"></app-route>
+      <app-route path="/demo/*" import="/pages/demo-page.html"></app-route>
+      <app-route path="*" import="/pages/home-page.html"></app-route>
+    </app-router>
   </body>
 </html>
