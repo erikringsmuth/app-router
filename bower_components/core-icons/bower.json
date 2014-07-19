@@ -1,9 +1,0 @@
-{
-  "name": "core-icons",
-  "private": true,
-  "dependencies": {
-    "core-icon": "Polymer/core-icon#>=0.3.0 <1.0.0",
-    "core-iconset-svg": "Polymer/core-iconset-svg#>=0.3.0 <1.0.0",
-    "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
-  }
-}
