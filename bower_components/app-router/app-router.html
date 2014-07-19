@@ -107,16 +107,16 @@ Declarative, lazy-loading app router for web components.
       // loadRoute(route) - Import the route's element and attach it to the DOM
       loadRoute: function(route) {
         // import the element
-        if (!this.loadedRoutes.hasOwnProperty(route.import)) {
-          this.loadedRoutes[route.import] = true;
+        if (!this.loadedRoutes.hasOwnProperty(route.getAttribute('import'))) {
+          this.loadedRoutes[route.getAttribute('import')] = true;
           var linkEl = document.createElement('link');
           linkEl.setAttribute('rel', 'import');
-          linkEl.setAttribute('href', route.import);
+          linkEl.setAttribute('href', route.getAttribute('import'));
           document.head.appendChild(linkEl);
         }
 
         // get the element tag name, clear the current view, and attach the element
-        var elementName = route.import.split('/').slice(-1)[0].replace('.html', '');
+        var elementName = route.getAttribute('import').split('/').slice(-1)[0].replace('.html', '');
 
         // create an instance of the element and set attributes from the path and query parameters
         var resourceEl = document.createElement(elementName);
@@ -189,12 +189,12 @@ Declarative, lazy-loading app router for web components.
         var path = this.urlPath(url || window.location.href);
 
         // If the path is an exact match or '*' then the route is a match
-        if (route.path === path || route.path === '*') {
+        if (route.getAttribute('path') === path || route.getAttribute('path') === '*') {
           return true;
         }
 
         // Look for wildcards
-        if (route.path.indexOf('*') === -1 && route.path.indexOf(':') === -1) {
+        if (route.getAttribute('path').indexOf('*') === -1 && route.getAttribute('path').indexOf(':') === -1) {
           // No wildcards and we already made sure it wasn't an exact match so the test fails
           return false;
         }
@@ -203,7 +203,7 @@ Declarative, lazy-loading app router for web components.
         var pathSegments = path.split('/');
 
         // Example routePathSegments = ['', 'example', '*']
-        var routePathSegments = route.path.split('/');
+        var routePathSegments = route.getAttribute('path').split('/');
 
         // There must be the same number of path segments or it isn't a match
         if (pathSegments.length !== routePathSegments.length) {
@@ -240,8 +240,8 @@ Declarative, lazy-loading app router for web components.
 
         // Example routePathSegments = ['', 'example', '*']
         var routePathSegments = [];
-        if (route && route.path && !(route.path instanceof RegExp)) {
-          routePathSegments = route.path.split('/');
+        if (route && route.getAttribute('path') && !(route.getAttribute('path') instanceof RegExp)) {
+          routePathSegments = route.getAttribute('path').split('/');
         }
 
         // Get path variables
