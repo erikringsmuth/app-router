@@ -53,4 +53,4 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 [Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router`.
 
 ## Demo Site
-Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
+Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
