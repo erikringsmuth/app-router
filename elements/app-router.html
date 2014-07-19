@@ -7,8 +7,8 @@
   </template>
   <script>
     Polymer('app-router', {
+      // Initialize the router
       created: function() {
-        // keep track of the imported elements
         this.loadedRoutes = {};
         this.cachedUrlPaths = {};
         this.previousState = '';
@@ -22,7 +22,10 @@
         this.loadActiveRoute();
       },
 
+      // loadActiveRoute() - Find the first <app-route> that matches the current URL and load it
       loadActiveRoute: function() {
+        // In some modern browsers a hashchange also fires a popstate. There isn't a check to see if the browser will fire
+        // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
         if (this.previousState != window.location.href) {
           this.previousState = window.location.href;
           // find the first site-resource that matches the window location
@@ -36,6 +39,7 @@
         }
       },
 
+      // loadRoute(route) - Import the route's element and attach it to the DOM
       loadRoute: function(route) {
         // import the element
         if (!this.loadedRoutes.hasOwnProperty(route.import)) {
@@ -48,14 +52,34 @@
 
         // get the element tag name, clear the current view, and attach the element
         var elementName = route.import.split('/').slice(-1)[0].replace('.html', '');
+
+        // create an instance of the element and set attributes from the path and query parameters
         var resourceEl = document.createElement(elementName);
+        var routeArgs = this.routeArguments(route, window.location.href);
+        for (var arg in routeArgs) {
+          if (routeArgs.hasOwnProperty(arg)) {
+            resourceEl[arg] = routeArgs[arg];
+          }
+        }
+
+        // remove the previous element
         if (this.previousElement) {
           this.removeChild(this.previousElement);
         }
         this.previousElement = resourceEl;
+
+        // attach the element
         this.appendChild(resourceEl);
       },
 
+      // urlPath(url) - Parses the url to get the path
+      //
+      // This will return the hash path if it exists or return the real path if no hash path exists.
+      //
+      // Example URL = 'http://domain.com/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
+      // path = '/example/path'
+      //
+      // Note: The URL must contain the protocol like 'http(s)://'
       urlPath: function(url) {
         // Check the cache to see if we've already parsed this URL
         if (typeof(this.cachedUrlPaths[url]) !== 'undefined') {
@@ -91,6 +115,9 @@
         return path;
       },
 
+      // router.testRoute(route, [url]) - Test if the route matches the current URL
+      //
+      // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
       testRoute: function(route, url) {
         // Example path = '/example/path'
         // Example route: `exampleRoute: {path: '/example/*', moduleId: 'example/exampleView'}`
@@ -99,11 +126,6 @@
         // If the path is an exact match or '*' then the route is a match
         if (route.path === path || route.path === '*') {
           return true;
-        }
-
-        // Test if it's a regular expression
-        if (route.path instanceof RegExp) {
-          return route.path.test(path);
         }
 
         // Look for wildcards
@@ -139,6 +161,9 @@
         return true;
       },
 
+      // router.routeArguments([route, [url]]) - Gets the path variables and query parameter values from the URL
+      //
+      // Both parameters are optional.
       routeArguments: function routeArguments(route, url) {
         if (!route) route = this.activeRoute;
         if (!url) url = window.location.href;

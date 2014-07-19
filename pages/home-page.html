@@ -5,12 +5,47 @@
   <template>
     <scaffold-layout>
       <div class="title">Home</div>
-      <p>Example Polymer app with lazy-loading routes and multiple layouts. The <code>home-page</code> and <code>about-page</code> use the <code>scaffold-layout</code>. The <code>demo-page</code> page uses the <code>paper-layout</code>.</p>
-      <p>Example code</p>
-      <p>Pages import layout</p>
-      <p>Data binding to attributes</p>
-      <p>Lazy loading, scalable, web components</p>
-      <p><a href="https://github.com/erikringsmuth/polymer-routing">GitHub Source</a></p>
+      <div>
+        <p>Declarative, lazy-loading app router for web components.</p>
+        <p>Supports multiple layouts. Binds path variables and query parameters to page element's attributes. Works with <code>hashchange</code> and HTML5 <code>pushState</code>. One set of routes will match regular paths <code>/</code>, hash paths <code>#/</code>, and hashbang paths <code>#!/</code>.</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Polymer Router&lt;/title&gt;
+    &lt;link rel="import" href="/elements/app-router.html"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;app-router&gt;
+      &lt;!-- matches an exact path --&gt;
+      &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
+
+      &lt;!-- matches using a wildcard --&gt;
+      &lt;app-route path="/customer/*" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;
+
+      &lt;!-- matches using a path variable --&gt;
+      &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
+
+      &lt;!-- matches everything else --&gt;
+      &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
+    &lt;/app-router&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+      <div>
+        <h3>Navigation</h3>
+        <p>There are three ways to trigger a route change. <code>hashchange</code>, <code>popstate</code>, and a full page load.</p>
+        <h4>hashchange</h4>
+        <p>If you're using <code>hashchange</code> you don't need to do anything. Clicking a link <code>&lt;a href="/#/new/page"&gt;New Page&lt;/a&gt;</code> will fire a <code>hashchange</code> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
+        <h4>pushState</h4>
+        <p>If you're using HTML5 <code>pushState</code> you need one extra step. The <code>pushState()</code> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code>pushState()</code> to navigate to another route you need to call it like this.</p>
+<pre>// push a new URL into the history stack
+history.pushState(stateObj, title, url);
+// fire a popstate event
+history.go(0);</pre>
+        <h4>Full page load</h4>
+        <p>You can also do a full page load. The router will load the first matching route.</p>
+      </div>
+
     </scaffold-layout>
   </template>
 </polymer-element>

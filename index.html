@@ -1,16 +1,16 @@
 <!doctype html>
 <html>
   <head>
-    <title>Polymer Routing</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Polymer Router</title>
     <script src="/bower_components/platform/platform.js"></script>
     <link rel="stylesheet" href="/css/styles.css" shim-shadowdom>
     <link rel="import" href="/elements/app-router.html">
   </head>
   <body>
     <app-router>
-      <app-route path="/about" import="/pages/about-page.html"></app-route>
-      <app-route path="/demo" import="/pages/demo-page.html"></app-route>
-      <app-route path="/demo/*" import="/pages/demo-page.html"></app-route>
+      <app-route path="/demo/:pathArg1" import="/pages/demo-page.html"></app-route>
+      <app-route path="/layouts" import="/pages/simple-layout-page.html"></app-route>
       <app-route path="*" import="/pages/home-page.html"></app-route>
     </app-router>
   </body>
