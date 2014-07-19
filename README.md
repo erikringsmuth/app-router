@@ -48,3 +48,9 @@ history.go(0); // go to the current state in the history stack, this fires a pop
 
 #### Full page load
 Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/new/page`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
+
+## Install
+[Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router`.
+
+## Demo Site
+Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
