@@ -35,14 +35,14 @@ Supports multiple layouts. Binds path variables and query parameters to page ele
 ## Data Binding
 Path variables and query parameters are automatically attached to the element's attributes.
 
-```
-// url
-'http://www.example.com/order/123'
+``` html
+<!-- url -->
+http://www.example.com/order/123
 
-// route
+<!-- route -->
 <app-route path="/order/:id" import="/pages/order-page.html"></app-route>
 
-// will bind 123 to the page's `id` attribute
+<!-- will bind 123 to the page's `id` attribute -->
 <order-page id="123"></order-page>
 ```
 
@@ -74,11 +74,13 @@ This is a simple example showing the page and it's layout.
   <template>
     <core-toolbar>
       <span flex>
+        <!-- page content with class 'title' -->
         <content select=".title"></content>
       </span>
       <core-item icon="home" label="Home"><a href="/#"></a></core-item>
       <core-item icon="polymer" label="Demo"><a href="/#/demo"></a></core-item>
     </core-toolbar>
+    <!-- all other content from the page element -->
     <content></content>
   </template>
 </polymer-element>
