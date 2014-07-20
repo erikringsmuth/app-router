@@ -29,10 +29,9 @@
         // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
         if (this.previousState != window.location.href) {
           this.previousState = window.location.href;
-          // find the first site-resource that matches the window location
           var routes = this.querySelectorAll('app-route');
           for (var i = 0; i < routes.length; i++) {
-            if (this.testRoute(routes[i])) {
+            if (this.testRoute(routes[i].getAttribute('path'))) {
               this.loadRoute(routes[i]);
               break;
             }
@@ -43,20 +42,21 @@
       // loadRoute(route) - Import the route's element and attach it to the DOM
       loadRoute: function(route) {
         // import the element
-        if (!this.loadedRoutes.hasOwnProperty(route.getAttribute('import'))) {
-          this.loadedRoutes[route.getAttribute('import')] = true;
+        var importUri = route.getAttribute('import');
+        if (!this.loadedRoutes.hasOwnProperty(importUri)) {
+          this.loadedRoutes[importUri] = true;
           var linkEl = document.createElement('link');
           linkEl.setAttribute('rel', 'import');
-          linkEl.setAttribute('href', route.getAttribute('import'));
+          linkEl.setAttribute('href', importUri);
           document.head.appendChild(linkEl);
         }
 
         // get the element tag name, clear the current view, and attach the element
-        var elementName = route.getAttribute('import').split('/').slice(-1)[0].replace('.html', '');
+        var elementName = importUri.split('/').slice(-1)[0].replace('.html', '');
 
         // create an instance of the element and set attributes from the path and query parameters
         var resourceEl = document.createElement(elementName);
-        var routeArgs = this.routeArguments(route, window.location.href);
+        var routeArgs = this.routeArguments(route.getAttribute('path'), window.location.href);
         for (var arg in routeArgs) {
           if (routeArgs.hasOwnProperty(arg)) {
             resourceEl[arg] = routeArgs[arg];
@@ -116,21 +116,21 @@
         return path;
       },
 
-      // router.testRoute(route, [url]) - Test if the route matches the current URL
+      // router.testRoute(routePath, [url]) - Test if the route's path matches the current URL
       //
       // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
-      testRoute: function(route, url) {
-        // Example path = '/example/path'
-        // Example route: `exampleRoute: {path: '/example/*', moduleId: 'example/exampleView'}`
+      testRoute: function(routePath, url) {
+        // Example routePath: '/example/*'
+        // Example url = 'http://localhost:8080/example/path'
         var path = this.urlPath(url || window.location.href);
 
         // If the path is an exact match or '*' then the route is a match
-        if (route.getAttribute('path') === path || route.getAttribute('path') === '*') {
+        if (routePath === path || routePath === '*') {
           return true;
         }
 
         // Look for wildcards
-        if (route.getAttribute('path').indexOf('*') === -1 && route.getAttribute('path').indexOf(':') === -1) {
+        if (routePath.indexOf('*') === -1 && routePath.indexOf(':') === -1) {
           // No wildcards and we already made sure it wasn't an exact match so the test fails
           return false;
         }
@@ -139,7 +139,7 @@
         var pathSegments = path.split('/');
 
         // Example routePathSegments = ['', 'example', '*']
-        var routePathSegments = route.getAttribute('path').split('/');
+        var routePathSegments = routePath.split('/');
 
         // There must be the same number of path segments or it isn't a match
         if (pathSegments.length !== routePathSegments.length) {
@@ -162,11 +162,8 @@
         return true;
       },
 
-      // router.routeArguments([route, [url]]) - Gets the path variables and query parameter values from the URL
-      //
-      // Both parameters are optional.
-      routeArguments: function routeArguments(route, url) {
-        if (!route) route = this.activeRoute;
+      // router.routeArguments(routePath, [url]) - Gets the path variables and query parameter values from the URL
+      routeArguments: function routeArguments(routePath, url) {
         if (!url) url = window.location.href;
         var args = {};
         var path = this.urlPath(url);
@@ -176,9 +173,7 @@
 
         // Example routePathSegments = ['', 'example', '*']
         var routePathSegments = [];
-        if (route && route.getAttribute('path') && !(route.getAttribute('path') instanceof RegExp)) {
-          routePathSegments = route.getAttribute('path').split('/');
-        }
+        routePathSegments = routePath.split('/');
 
         // Get path variables
         // URL '/customer/123'
