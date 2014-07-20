@@ -57,6 +57,7 @@ Check out the `app-router` in action at [erikringsmuth.github.io/app-router](htt
 
 ## Tests
 The tests need a specific folder structure to work with HTML imports and the bower dependencies. All paths are relative in HTML imports and the `app-router` imports Polymer like this `<link rel="import" href="../polymer/polymer.html">`. It's imported like this because normally both the `app-router` and `polymer` are sitting in the `bower_components` folder.
+
 1. When you clone `app-router` nest it in a directory like `app-router-dev`. The `.bowerrc` installs files one level up `"directory": "../"` for HTML imports and the bower dependencies.
 2. Start a static content server in `app-router-dev` (node `http-server` or `python -m SimpleHTTPServer`).
 3. Open http://localhost:8080/app-router/tests/SpecRunner.html and make sure all of the tests pass.
