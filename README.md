@@ -32,6 +32,45 @@ Supports multiple layouts. Binds path variables and query parameters to page ele
 </html>
 ```
 
+## Data Binding
+Path variables and query parameters are automatically attached to the element's attributes. See it in action [here](http://erikringsmuth.github.io/app-router/#/demo/1337?queryParam1=Routing%20Polymer%20style!).
+
+## Multiple Layouts
+Each page chooses which layout to use. This allows multiple layouts in the same app. Use the `<content>` tags as insertion points to insert the page into the layout.
+
+This is a simple example showing the page and it's layout.
+
+simple-layout-page
+
+```html
+<link rel="import" href="/layouts/simple-layout.html">
+<polymer-element name="simple-layout-page" noscript>
+  <template>
+    <simple-layout>
+      <div class="title">Multiple Layouts</div>
+      <p>Each page chooses which layout to use. This allows multiple layouts in the same app.</p>
+    </simple-layout>
+  </template>
+</polymer-element>
+```
+
+simple-layout
+
+```html
+<polymer-element name="simple-layout" noscript>
+  <template>
+    <core-toolbar>
+      <span flex>
+        <content select=".title"></content>
+      </span>
+      <core-item icon="home" label="Home"><a href="/#"></a></core-item>
+      <core-item icon="polymer" label="Demo"><a href="/#/demo"></a></core-item>
+    </core-toolbar>
+    <content></content>
+  </template>
+</polymer-element>
+```
+
 ## Navigation
 There are three ways to trigger a route change. `hashchange`, `popstate`, and a full page load.
 
@@ -56,8 +95,8 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
 ## Tests
-The tests need a specific folder structure to work with HTML imports and the bower dependencies. All paths are relative in HTML imports and the `app-router` imports Polymer like this `<link rel="import" href="../polymer/polymer.html">`. It's imported like this because normally both the `app-router` and `polymer` are sitting in the `bower_components` folder.
+The tests need a specific folder structure to work with HTML imports and the bower dependencies. All paths are relative in HTML imports and the `app-router` imports Polymer like this `<link rel="import" href="../polymer/polymer.html">`. When installed using bower, both the `app-router` and `polymer` sit under`/bower_components`.
 
 1. When you clone `app-router` nest it in a directory like `app-router-dev`. The `.bowerrc` installs files one level up `"directory": "../"` for HTML imports and the bower dependencies.
 2. Start a static content server in `app-router-dev` (node `http-server` or `python -m SimpleHTTPServer`).
-3. Open http://localhost:8080/app-router/tests/SpecRunner.html and make sure all of the tests pass.
+3. Open [http://localhost:8080/app-router/tests/SpecRunner.html](http://localhost:8080/app-router/tests/SpecRunner.html) and make sure all of the tests pass.
