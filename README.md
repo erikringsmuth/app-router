@@ -1,9 +1,9 @@
 ## Polymer app-router
-> Declarative, lazy-loading app router for web components.
+> Router for web components.
 
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
 
-Supports multiple layouts. Binds path variables and query parameters to page element's attributes. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/`, hash paths `#/`, and hashbang paths `#!/`.
+Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/`, hash paths `#/`, and hashbang paths `#!/`.
 
 ## Configuration
 
@@ -33,7 +33,7 @@ Supports multiple layouts. Binds path variables and query parameters to page ele
 ```
 
 ## Data Binding
-Path variables and query parameters are automatically attached to the element's attributes.
+Path variables and query parameters automatically attach to the element's attributes.
 
 ``` html
 <!-- url -->
@@ -46,22 +46,22 @@ http://www.example.com/order/123
 <order-page id="123"></order-page>
 ```
 
-See it in action [here](http://erikringsmuth.github.io/app-router/#/demo/1337?queryParam1=Routing%20Polymer%20style!).
+See it in action [here](http://erikringsmuth.github.io/app-router/#/demo/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use the `<content>` tags as insertion points to insert the page into the layout.
 
 This is a simple example showing the page and it's layout.
 
-#### simple-layout-page.html
+#### home-page.html
 
 ```html
 <link rel="import" href="/layouts/simple-layout.html">
-<polymer-element name="simple-layout-page" noscript>
+<polymer-element name="home-page" noscript>
   <template>
     <simple-layout>
-      <div class="title">Multiple Layouts</div>
-      <p>Each page chooses which layout to use. This allows multiple layouts in the same app.</p>
+      <div class="title">Home</div>
+      <p>The home page!</p>
     </simple-layout>
   </template>
 </polymer-element>
@@ -74,14 +74,12 @@ This is a simple example showing the page and it's layout.
   <template>
     <core-toolbar>
       <span flex>
-        <!-- page content with class 'title' -->
-        <content select=".title"></content>
+        <content select=".title"><!-- content with class 'title' --></content>
       </span>
       <core-item icon="home" label="Home"><a href="/#"></a></core-item>
       <core-item icon="polymer" label="Demo"><a href="/#/demo"></a></core-item>
     </core-toolbar>
-    <!-- all other content from the page element -->
-    <content></content>
+    <content><!-- all other content --></content>
   </template>
 </polymer-element>
 ```
