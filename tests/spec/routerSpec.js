@@ -68,169 +68,120 @@ describe('router.urlPath(url)', function() {
   });
 });
 
-describe('router.testRoute(route, [url])', function() {
+describe('router.testRoute(routePath, [url])', function() {
   var router = document.createElement('app-router');
   
   it('should return true on an exact match', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/path');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('/example/path');
     expect(result).toEqual(true);
   });
   
   it('should return true when matching with a wildcard', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/*');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('/example/*');
     expect(result).toEqual(true);
   });
   
   it('should return true when matching with a path argument', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/:patharg/path');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('/:patharg/path');
     expect(result).toEqual(true);
   });
   
   it('should return true when matching on a combination of wildcards and path arguments', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/*/:patharg');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('/*/:patharg');
     expect(result).toEqual(true);
   });
   
   it('should always return true when matching on "*"', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '*');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('*');
     expect(result).toEqual(true);
   });
   
   it('should not match when one path has a trailing \'/\' but the other doesn\'t', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/route/');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('/example/route/');
     expect(result).toEqual(false);
   });
   
   it('should return false if the route path does not have the same number of path segments as the URL path', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/route/longer');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('/example/route/longer');
     expect(result).toEqual(false);
   });
   
   it('should ignore the real path and use the hash path if it exists', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/other/route');
     spyOn(router, 'urlPath').and.returnValue('/example/path');
-    var result = router.testRoute(route);
+    var result = router.testRoute('/other/route');
     expect(result).toEqual(false);
   });
 });
 
-describe('router.routeArguments(route, url)', function() {
+describe('router.routeArguments(routePath, url)', function() {
   var router = document.createElement('app-router');
   
   it('should parse string query parameters', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/path');
     var url = 'http://domain.com/example/path?queryParam=example%20string';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/example/path', url);
     expect(result.queryParam).toEqual('example string');
   });
 
   it('should parse boolean query parameters', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/path');
     var url = 'http://domain.com/example/path?queryParam=true';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/example/path', url);
     expect(result.queryParam).toEqual(true);
   });
 
   it('should parse number query parameters', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/path');
     var url = 'http://domain.com/example/path?queryParam=12.34';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/example/path', url);
     expect(result.queryParam).toEqual(12.34);
   });
 
   it('should get the query parameter from the hash path if it exists', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/path');
     var url = 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=correct';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/example/path', url);
     expect(result.queryParam).toEqual('correct');
   });
 
   it('should correctly get a query param with an equals sign in the value', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/path');
     var url = 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=some=text';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/example/path', url);
     expect(result.queryParam).toEqual('some=text');
   });
 
   it('should get the query param if it\'s followed by a hash', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/example/path');
     var url = 'http://domain.com/other/path?queryParam=true#hash';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/example/path', url);
     expect(result.queryParam).toEqual(true);
   });
 
   it('should parse string path parameters', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/person/:name');
     var url = 'http://domain.com/person/jon?queryParam=true';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/person/:name', url);
     expect(result.name).toEqual('jon');
   });
 
   it('should parse number path parameters', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/customer/:id');
     var url = 'http://domain.com/customer/123?queryParam=true';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/customer/:id', url);
     expect(result.id).toEqual(123);
   });
 
   it('should parse complicated URLs', function() {
-    var route = document.createElement('app-route');
-    route.setAttribute('path', '/customer/:id');
     var url = 'http://domain.com/customer/123?queryParam=false#!/customer/456?queryParam=true&queryParam2=some%20string';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('/customer/:id', url);
     expect(result.id).toEqual(456);
     expect(result.queryParam).toEqual(true);
     expect(result.queryParam2).toEqual('some string');
   });
 
-  it('should parse the query parameters if no route is specified', function() {
-    var route = null;
-    var url = 'http://domain.com/?queryParam=true';
-    var result = router.routeArguments(route, url);
-    expect(result.queryParam).toEqual(true);
-  });
-
-  it('should parse the query parameters if no route path is specified', function() {
-    var route = document.createElement('app-route');
-    var url = 'http://domain.com/?queryParam=true';
-    var result = router.routeArguments(route, url);
-    expect(result.queryParam).toEqual(true);
-  });
-
   it('should not add an empty string value when the search is empty', function() {
-    var route = document.createElement('app-route');
     var url = 'http://domain.com/';
-    var result = router.routeArguments(route, url);
+    var result = router.routeArguments('', url);
     expect(result.hasOwnProperty('')).toBeFalsy();
   });
 });
