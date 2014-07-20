@@ -10,7 +10,7 @@
     Polymer('app-router', {
       // Initialize the router
       created: function() {
-        this.loadedRoutes = {};
+        this.loadedElements = {};
         this.cachedUrlPaths = {};
         this.previousState = '';
         this.previousElement = null;
@@ -43,8 +43,8 @@
       loadRoute: function(route) {
         // import the element
         var importUri = route.getAttribute('import');
-        if (!this.loadedRoutes.hasOwnProperty(importUri)) {
-          this.loadedRoutes[importUri] = true;
+        if (!this.loadedElements.hasOwnProperty(importUri)) {
+          this.loadedElements[importUri] = true;
           var linkEl = document.createElement('link');
           linkEl.setAttribute('rel', 'import');
           linkEl.setAttribute('href', importUri);
@@ -63,13 +63,11 @@
           }
         }
 
-        // remove the previous element
+        // attach the element
         if (this.previousElement) {
           this.removeChild(this.previousElement);
         }
         this.previousElement = resourceEl;
-
-        // attach the element
         this.appendChild(resourceEl);
       },
 
@@ -83,7 +81,7 @@
       // Note: The URL must contain the protocol like 'http(s)://'
       urlPath: function(url) {
         // Check the cache to see if we've already parsed this URL
-        if (typeof(this.cachedUrlPaths[url]) !== 'undefined') {
+        if (this.cachedUrlPaths.hasOwnProperty(url)) {
           return this.cachedUrlPaths[url];
         }
 
