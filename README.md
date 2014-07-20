@@ -40,7 +40,7 @@ Each page chooses which layout to use. This allows multiple layouts in the same 
 
 This is a simple example showing the page and it's layout.
 
-simple-layout-page
+#### simple-layout-page.html
 
 ```html
 <link rel="import" href="/layouts/simple-layout.html">
@@ -54,7 +54,7 @@ simple-layout-page
 </polymer-element>
 ```
 
-simple-layout
+#### simple-layout.html
 
 ```html
 <polymer-element name="simple-layout" noscript>
