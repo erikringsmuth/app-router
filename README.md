@@ -33,7 +33,20 @@ Supports multiple layouts. Binds path variables and query parameters to page ele
 ```
 
 ## Data Binding
-Path variables and query parameters are automatically attached to the element's attributes. See it in action [here](http://erikringsmuth.github.io/app-router/#/demo/1337?queryParam1=Routing%20Polymer%20style!).
+Path variables and query parameters are automatically attached to the element's attributes.
+
+```
+// url
+'http://www.example.com/order/123'
+
+// route
+<app-route path="/order/:id" import="/pages/order-page.html"></app-route>
+
+// will bind 123 to the page's `id` attribute
+<order-page id="123"></order-page>
+```
+
+See it in action [here](http://erikringsmuth.github.io/app-router/#/demo/1337?queryParam1=Routing%20Polymer%20style!).
 
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use the `<content>` tags as insertion points to insert the page into the layout.
