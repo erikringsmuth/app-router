@@ -7,243 +7,242 @@
     <content></content>
   </template>
   <script>
-    Polymer('app-router', {
-      // Initialize the router
-      created: function() {
-        this.loadedElements = {};
-        this.cachedUrlPaths = {};
-        this.previousState = '';
-        this.previousElement = null;
+    (function(window) {
+      var loadedElements = {};
+      var cachedUrlPaths = {};
 
-        // listen for URL change events
-        window.addEventListener('popstate', this.loadActiveRoute.bind(this), false);
-        window.addEventListener('hashchange', this.loadActiveRoute.bind(this), false);
+      Polymer('app-router', {
+        // Initialize the router
+        created: function() {
+          this.previousState = '';
+          this.activeElement = null;
 
-        // load the web component for the active site-resource
-        this.loadActiveRoute();
-      },
+          // listen for URL change events
+          window.addEventListener('popstate', this.loadActiveRoute.bind(this), false);
+          window.addEventListener('hashchange', this.loadActiveRoute.bind(this), false);
 
-      // loadActiveRoute() - Find the first <app-route> that matches the current URL and load it
-      loadActiveRoute: function() {
-        // In some modern browsers a hashchange also fires a popstate. There isn't a check to see if the browser will fire
-        // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
-        if (this.previousState != window.location.href) {
-          this.previousState = window.location.href;
-          var routes = this.querySelectorAll('app-route');
-          for (var i = 0; i < routes.length; i++) {
-            if (this.testRoute(routes[i].getAttribute('path'))) {
-              this.loadRoute(routes[i]);
-              break;
+          // load the web component for the active route
+          this.loadActiveRoute();
+        },
+
+        // loadActiveRoute() - Find the first <app-route> that matches the current URL and load it
+        loadActiveRoute: function() {
+          // In some modern browsers a hashchange also fires a popstate. There isn't a check to see if the browser will fire
+          // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
+          if (this.previousState !== window.location.href) {
+            this.previousState = window.location.href;
+            var path = this.urlPath(window.location.href);
+            var routes = this.querySelectorAll('app-route');
+            for (var i = 0; i < routes.length; i++) {
+              if (this.testRoute(routes[i].getAttribute('path'), path)) {
+                this.loadRoute(routes[i].getAttribute('import'), routes[i].getAttribute('path'), path);
+                break;
+              }
             }
           }
-        }
-      },
+        },
 
-      // loadRoute(route) - Import the route's element and attach it to the DOM
-      loadRoute: function(route) {
-        // import the element
-        var importUri = route.getAttribute('import');
-        if (!this.loadedElements.hasOwnProperty(importUri)) {
-          this.loadedElements[importUri] = true;
-          var linkEl = document.createElement('link');
-          linkEl.setAttribute('rel', 'import');
-          linkEl.setAttribute('href', importUri);
-          document.head.appendChild(linkEl);
-        }
-
-        // get the element tag name, clear the current view, and attach the element
-        var elementName = importUri.split('/').slice(-1)[0].replace('.html', '');
-
-        // create an instance of the element and set attributes from the path and query parameters
-        var resourceEl = document.createElement(elementName);
-        var routeArgs = this.routeArguments(route.getAttribute('path'), window.location.href);
-        for (var arg in routeArgs) {
-          if (routeArgs.hasOwnProperty(arg)) {
-            resourceEl[arg] = routeArgs[arg];
+        // loadRoute(importUri, routePath, path) - Import the route's element and attach it to the DOM
+        loadRoute: function(importUri, routePath, path) {
+          // import the element
+          if (!loadedElements.hasOwnProperty(importUri)) {
+            loadedElements[importUri] = true;
+            var linkEl = document.createElement('link');
+            linkEl.setAttribute('rel', 'import');
+            linkEl.setAttribute('href', importUri);
+            document.head.appendChild(linkEl);
           }
-        }
 
-        // attach the element
-        if (this.previousElement) {
-          this.removeChild(this.previousElement);
-        }
-        this.previousElement = resourceEl;
-        this.appendChild(resourceEl);
-      },
+          // get the element tag name, clear the current view, and attach the element
+          var elementName = importUri.split('/').slice(-1)[0].replace('.html', '');
 
-      // urlPath(url) - Parses the url to get the path
-      //
-      // This will return the hash path if it exists or return the real path if no hash path exists.
-      //
-      // Example URL = 'http://domain.com/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
-      // path = '/example/path'
-      //
-      // Note: The URL must contain the protocol like 'http(s)://'
-      urlPath: function(url) {
-        // Check the cache to see if we've already parsed this URL
-        if (this.cachedUrlPaths.hasOwnProperty(url)) {
-          return this.cachedUrlPaths[url];
-        }
-
-        // The relative URI is everything after the third slash including the third slash
-        // Example relativeUri = '/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
-        var splitUrl = url.split('/');
-        var relativeUri = '/' + splitUrl.splice(3, splitUrl.length - 3).join('/');
-
-        // The path is everything in the relative URI up to the first ? or #
-        // Example path = '/other/path'
-        var path = relativeUri.split(/[\?#]/)[0];
-
-        // The hash is everything from the first # up to the the search starting with ? if it exists
-        // Example hash = '#/example/path'
-        var hashIndex = relativeUri.indexOf('#');
-        if (hashIndex !== -1) {
-          var hash = relativeUri.substring(hashIndex).split('?')[0];
-          if (hash.substring(0, 2) === '#/') {
-            // Hash path
-            path = hash.substring(1);
-          } else if (hash.substring(0, 3) === '#!/') {
-            // Hashbang path
-            path = hash.substring(2);
+          // create an instance of the element and set attributes from the path and query parameters
+          var resourceEl = document.createElement(elementName);
+          for (var arg in this.routeArguments(routePath, path, window.location.href)) {
+            if (routeArgs.hasOwnProperty(arg)) {
+              resourceEl[arg] = routeArgs[arg];
+            }
           }
-        }
 
-        // Cache the path for this URL
-        this.cachedUrlPaths[url] = path;
+          // attach the element
+          if (this.activeElement) {
+            this.removeChild(this.activeElement);
+          }
+          this.activeElement = resourceEl;
+          this.appendChild(resourceEl);
+        },
 
-        return path;
-      },
+        // urlPath(url) - Parses the url to get the path
+        //
+        // This will return the hash path if it exists or return the real path if no hash path exists.
+        //
+        // Example URL = 'http://domain.com/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
+        // path = '/example/path'
+        //
+        // Note: The URL must contain the protocol like 'http(s)://'
+        urlPath: function(url) {
+          // Check the cache to see if we've already parsed this URL
+          if (cachedUrlPaths.hasOwnProperty(url)) {
+            return cachedUrlPaths[url];
+          }
 
-      // router.testRoute(routePath, [url]) - Test if the route's path matches the current URL
-      //
-      // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
-      testRoute: function(routePath, url) {
+          // The relative URI is everything after the third slash including the third slash
+          // Example relativeUri = '/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
+          var splitUrl = url.split('/');
+          var relativeUri = '/' + splitUrl.splice(3, splitUrl.length - 3).join('/');
+
+          // The path is everything in the relative URI up to the first ? or #
+          // Example path = '/other/path'
+          var path = relativeUri.split(/[\?#]/)[0];
+
+          // The hash is everything from the first # up to the the search starting with ? if it exists
+          // Example hash = '#/example/path'
+          var hashIndex = relativeUri.indexOf('#');
+          if (hashIndex !== -1) {
+            var hash = relativeUri.substring(hashIndex).split('?')[0];
+            if (hash.substring(0, 2) === '#/') {
+              // Hash path
+              path = hash.substring(1);
+            } else if (hash.substring(0, 3) === '#!/') {
+              // Hashbang path
+              path = hash.substring(2);
+            }
+          }
+
+          // Cache the path for this URL
+          cachedUrlPaths[url] = path;
+
+          return path;
+        },
+
+        // router.testRoute(routePath, path) - Test if the route's path matches the URL's path
+        //
         // Example routePath: '/example/*'
         // Example url = 'http://localhost:8080/example/path'
-        var path = this.urlPath(url || window.location.href);
+        //
+        // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
+        testRoute: function(routePath, path) {
+          // If the path is an exact match or '*' then the route is a match
+          if (routePath === path || routePath === '*') {
+            return true;
+          }
 
-        // If the path is an exact match or '*' then the route is a match
-        if (routePath === path || routePath === '*') {
+          // Look for wildcards
+          if (routePath.indexOf('*') === -1 && routePath.indexOf(':') === -1) {
+            // No wildcards and we already made sure it wasn't an exact match so the test fails
+            return false;
+          }
+
+          // Example pathSegments = ['', example', 'path']
+          var pathSegments = path.split('/');
+
+          // Example routePathSegments = ['', 'example', '*']
+          var routePathSegments = routePath.split('/');
+
+          // There must be the same number of path segments or it isn't a match
+          if (pathSegments.length !== routePathSegments.length) {
+            return false;
+          }
+
+          // Check equality of each path segment
+          for (var i in routePathSegments) {
+            if (routePathSegments.hasOwnProperty(i)) {
+              // The path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
+              var routeSegment = routePathSegments[i];
+              if (routeSegment !== pathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
+                // The path segment wasn't the same string and it wasn't a wildcard or parameter
+                return false;
+              }
+            }
+          }
+
+          // Nothing failed. The route matches the URL.
           return true;
-        }
+        },
 
-        // Look for wildcards
-        if (routePath.indexOf('*') === -1 && routePath.indexOf(':') === -1) {
-          // No wildcards and we already made sure it wasn't an exact match so the test fails
-          return false;
-        }
+        // router.routeArguments(routePath, path, url) - Gets the path variables and query parameter values from the URL
+        routeArguments: function routeArguments(routePath, path, url) {
+          var args = {};
 
-        // Example pathSegments = ['', example', 'path']
-        var pathSegments = path.split('/');
+          // Example pathSegments = ['', example', 'path']
+          var pathSegments = path.split('/');
 
-        // Example routePathSegments = ['', 'example', '*']
-        var routePathSegments = routePath.split('/');
+          // Example routePathSegments = ['', 'example', '*']
+          var routePathSegments = [];
+          routePathSegments = routePath.split('/');
 
-        // There must be the same number of path segments or it isn't a match
-        if (pathSegments.length !== routePathSegments.length) {
-          return false;
-        }
-
-        // Check equality of each path segment
-        for (var i in routePathSegments) {
-          if (routePathSegments.hasOwnProperty(i)) {
-            // The path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
-            var routeSegment = routePathSegments[i];
-            if (routeSegment !== pathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
-              // The path segment wasn't the same string and it wasn't a wildcard or parameter
-              return false;
+          // Get path variables
+          // URL '/customer/123'
+          // and route `{path: '/customer/:id'}`
+          // gets id = '123'
+          for (var segmentIndex in routePathSegments) {
+            if (routePathSegments.hasOwnProperty(segmentIndex)) {
+              var routeSegment = routePathSegments[segmentIndex];
+              if (routeSegment.charAt(0) === ':') {
+                args[routeSegment.substring(1)] = pathSegments[segmentIndex];
+              }
             }
           }
-        }
 
-        // Nothing failed. The route matches the URL.
-        return true;
-      },
-
-      // router.routeArguments(routePath, [url]) - Gets the path variables and query parameter values from the URL
-      routeArguments: function routeArguments(routePath, url) {
-        if (!url) url = window.location.href;
-        var args = {};
-        var path = this.urlPath(url);
-
-        // Example pathSegments = ['', example', 'path']
-        var pathSegments = path.split('/');
-
-        // Example routePathSegments = ['', 'example', '*']
-        var routePathSegments = [];
-        routePathSegments = routePath.split('/');
-
-        // Get path variables
-        // URL '/customer/123'
-        // and route `{path: '/customer/:id'}`
-        // gets id = '123'
-        for (var segmentIndex in routePathSegments) {
-          if (routePathSegments.hasOwnProperty(segmentIndex)) {
-            var routeSegment = routePathSegments[segmentIndex];
-            if (routeSegment.charAt(0) === ':') {
-              args[routeSegment.substring(1)] = pathSegments[segmentIndex];
-            }
-          }
-        }
-
-        // Get the query parameter values
-        // The search is the query parameters including the leading '?'
-        var searchIndex = url.indexOf('?');
-        var search = '';
-        if (searchIndex !== -1) {
-          search = url.substring(searchIndex);
-          var hashIndex = search.indexOf('#');
-          if (hashIndex !== -1) {
-            search = search.substring(0, hashIndex);
-          }
-        }
-        // If it's a hash URL we need to get the search from the hash
-        var hashPathIndex = url.indexOf('#/');
-        var hashBangPathIndex = url.indexOf('#!/');
-        if (hashPathIndex !== -1 || hashBangPathIndex !== -1) {
-          var hash = '';
-          if (hashPathIndex !== -1) {
-            hash = url.substring(hashPathIndex);
-          } else {
-            hash = url.substring(hashBangPathIndex);
-          }
-          searchIndex = hash.indexOf('?');
+          // Get the query parameter values
+          // The search is the query parameters including the leading '?'
+          var searchIndex = url.indexOf('?');
+          var search = '';
           if (searchIndex !== -1) {
-            search = hash.substring(searchIndex);
+            search = url.substring(searchIndex);
+            var hashIndex = search.indexOf('#');
+            if (hashIndex !== -1) {
+              search = search.substring(0, hashIndex);
+            }
           }
-        }
-
-        var queryParameters = search.substring(1).split('&');
-        // split() on an empty string has a strange behavior of returning [''] instead of []
-        if (queryParameters.length === 1 && queryParameters[0] === '') {
-          queryParameters = [];
-        }
-        for (var i in queryParameters) {
-          if (queryParameters.hasOwnProperty(i)) {
-            var queryParameter = queryParameters[i];
-            var queryParameterParts = queryParameter.split('=');
-            args[queryParameterParts[0]] = queryParameterParts.splice(1, queryParameterParts.length - 1).join('=');
+          // If it's a hash URL we need to get the search from the hash
+          var hashPathIndex = url.indexOf('#/');
+          var hashBangPathIndex = url.indexOf('#!/');
+          if (hashPathIndex !== -1 || hashBangPathIndex !== -1) {
+            var hash = '';
+            if (hashPathIndex !== -1) {
+              hash = url.substring(hashPathIndex);
+            } else {
+              hash = url.substring(hashBangPathIndex);
+            }
+            searchIndex = hash.indexOf('?');
+            if (searchIndex !== -1) {
+              search = hash.substring(searchIndex);
+            }
           }
-        }
 
-        // Parse the arguments into unescaped strings, numbers, or booleans
-        for (var arg in args) {
-          var value = args[arg];
-          if (value === 'true') {
-            args[arg] = true;
-          } else if (value === 'false') {
-            args[arg] = false;
-          } else if (!isNaN(value) && value !== '') {
-            // numeric
-            args[arg] = +value;
-          } else {
-            // string
-            args[arg] = decodeURIComponent(value);
+          var queryParameters = search.substring(1).split('&');
+          // split() on an empty string has a strange behavior of returning [''] instead of []
+          if (queryParameters.length === 1 && queryParameters[0] === '') {
+            queryParameters = [];
           }
-        }
+          for (var i in queryParameters) {
+            if (queryParameters.hasOwnProperty(i)) {
+              var queryParameter = queryParameters[i];
+              var queryParameterParts = queryParameter.split('=');
+              args[queryParameterParts[0]] = queryParameterParts.splice(1, queryParameterParts.length - 1).join('=');
+            }
+          }
 
-        return args;
-      }
-    });
+          // Parse the arguments into unescaped strings, numbers, or booleans
+          for (var arg in args) {
+            var value = args[arg];
+            if (value === 'true') {
+              args[arg] = true;
+            } else if (value === 'false') {
+              args[arg] = false;
+            } else if (!isNaN(value) && value !== '') {
+              // numeric
+              args[arg] = +value;
+            } else {
+              // string
+              args[arg] = decodeURIComponent(value);
+            }
+          }
+
+          return args;
+        }
+      });
+    })(window);
   </script>
 </polymer-element>
