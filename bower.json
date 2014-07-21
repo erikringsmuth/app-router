@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -14,7 +14,8 @@
   "license": "MIT",
   "homepage": "https://github.com/erikringsmuth/app-router",
   "ignore": [
-    "**/.*"
+    "**/.*",
+    "tests"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer"

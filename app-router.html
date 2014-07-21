@@ -58,7 +58,8 @@
 
           // create an instance of the element and set attributes from the path and query parameters
           var resourceEl = document.createElement(elementName);
-          for (var arg in this.routeArguments(routePath, path, window.location.href)) {
+          var routeArgs = this.routeArguments(routePath, path, window.location.href);
+          for (var arg in routeArgs) {
             if (routeArgs.hasOwnProperty(arg)) {
               resourceEl[arg] = routeArgs[arg];
             }
