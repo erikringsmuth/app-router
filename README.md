@@ -1,5 +1,5 @@
-## Polymer app-router
-> Router for web components.
+## Router for Web Components
+> Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively with the [platform](https://github.com/Polymer/platform) polyfill.
 
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
 
