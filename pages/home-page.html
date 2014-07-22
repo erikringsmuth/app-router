@@ -5,9 +5,9 @@
   <template>
     <scaffold-layout>
       <div class="title">Home</div>
-      <div>
-        <p>Declarative, lazy-loading app router for web components.</p>
-        <p>Supports multiple layouts. Binds path variables and query parameters to page element's attributes. Works with <code>hashchange</code> and HTML5 <code>pushState</code>. One set of routes will match regular paths <code>/</code>, hash paths <code>#/</code>, and hashbang paths <code>#!/</code>.</p>
+
+      <p>Router for web components.</p>
+      <p>Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with <code>hashchange</code> and HTML5 <code>pushState</code>. One set of routes will match regular paths <code>/</code>, hash paths <code>#/</code>, and hashbang paths <code>#!/</code>.</p>
 <pre><code>&lt;!doctype html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -30,28 +30,27 @@
     &lt;/app-router&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-      </div>
-      <div>
-        <h3>Navigation</h3>
-        <p>There are three ways to trigger a route change. <code>hashchange</code>, <code>popstate</code>, and a full page load.</p>
-        <h4>hashchange</h4>
-        <p>If you're using <code>hashchange</code> you don't need to do anything. Clicking a link <code>&lt;a href="/#/new/page"&gt;New Page&lt;/a&gt;</code> will fire a <code>hashchange</code> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
-        <h4>pushState</h4>
-        <p>If you're using HTML5 <code>pushState</code> you need one extra step. The <code>pushState()</code> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code>pushState()</code> to navigate to another route you need to call it like this.</p>
+      <p>Changing the URL will find the first <code>app-route</code> that matches, load the element, and replace the current view.</p>
+      
+      <h3>Navigation</h3>
+      <p>There are three ways to trigger a route change. <code>hashchange</code>, <code>pushState()</code>, and a full page load.</p>
+      <h4>hashchange</h4>
+      <p>If you're using <code>hashchange</code> you don't need to do anything. Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> will fire a <code>hashchange</code> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
+      <h4>pushState</h4>
+      <p>If you're using HTML5 <code>pushState</code> you need one extra step. The <code>pushState()</code> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code>pushState()</code> to navigate to another route you need to call it like this.</p>
 <pre>// push a new URL into the history stack
-history.pushState(stateObj, title, '/#/new/page');
+history.pushState(stateObj, title, '/new/page');
 // fire a popstate event
 history.go(0);</pre>
-        <h4>Full page load</h4>
-        <p>Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> without a hash path will do a full page load. You need to make sure your server will return <code>index.html</code> when looking up the resource at <code>/new/page</code>. The simplest set up is to always return <code>index.html</code> and let the <code>app-router</code> handle the routing including a not found page.</p>
-      </div>
+      <h4>Full page load</h4>
+      <p>Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> without a hash path will do a full page load. You need to make sure your server will return <code>index.html</code> when looking up the resource at <code>/new/page</code>. The simplest set up is to always return <code>index.html</code> and let the <code>app-router</code> handle the routing including a not found page.</p>
+    </div>
 
-        <h3>Install</h3>
-        <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code>bower install app-router</code></p>
+      <h3>Install</h3>
+      <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code>bower install app-router --save</code></p>
 
-        <h3>Example Setup</h3>
-        <p>The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> for this demo site is a great example of the app-router.</p>
-      </div>
+      <h3>Example Setup</h3>
+      <p>The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> for this demo site is a great example of the app-router.</p>
 
     </scaffold-layout>
   </template>
