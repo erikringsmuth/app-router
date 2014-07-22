@@ -39,13 +39,13 @@ Path variables and query parameters automatically attach to the element's attrib
 
 ``` html
 <!-- url -->
-http://www.example.com/order/123
+http://www.example.com/order/123?sort=ascending
 
 <!-- route -->
 <app-route path="/order/:id" import="/pages/order-page.html"></app-route>
 
-<!-- will bind 123 to the page's `id` attribute -->
-<order-page id="123"></order-page>
+<!-- will bind 123 to the page's `id` attribute and "ascending" to the `sort` attribute -->
+<order-page id="123" sort="ascending"></order-page>
 ```
 
 See it in action [here](http://erikringsmuth.github.io/app-router/#/demo/1337?queryParam1=Routing%20with%20Web%20Components!).
