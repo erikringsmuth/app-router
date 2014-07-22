@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -15,6 +15,7 @@
   "homepage": "https://github.com/erikringsmuth/app-router",
   "ignore": [
     "**/.*",
+    "bower_components",
     "tests"
   ],
   "dependencies": {},
