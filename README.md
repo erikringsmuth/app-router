@@ -110,8 +110,5 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
 ## Tests
-The tests need a specific folder structure to work with HTML imports and the bower dependencies. All paths are relative in HTML imports and the `app-router` imports Polymer like this `<link rel="import" href="../polymer/polymer.html">`. When installed using bower, both the `app-router` and `polymer` sit under`/bower_components`.
-
-1. When you clone `app-router` nest it in a directory like `app-router-dev`. The `.bowerrc` installs files one level up `"directory": "../"` for HTML imports and the bower dependencies.
-2. Start a static content server in `app-router-dev` (node `http-server` or `python -m SimpleHTTPServer`).
-3. Open [http://localhost:8080/app-router/tests/SpecRunner.html](http://localhost:8080/app-router/tests/SpecRunner.html) and make sure all of the tests pass.
+1. Start a static content server in `app-router` (node `http-server` or `python -m SimpleHTTPServer`)
+3. Open [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
