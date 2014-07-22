@@ -9,7 +9,6 @@
   <script>
     (function(window) {
       var loadedElements = {};
-      var cachedUrlPaths = {};
 
       Polymer('app-router', {
         // Initialize the router
@@ -31,19 +30,19 @@
           // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
           if (this.previousState !== window.location.href) {
             this.previousState = window.location.href;
-            var path = this.urlPath(window.location.href);
+            var urlPath = this.urlPath(window.location.href);
             var routes = this.querySelectorAll('app-route');
             for (var i = 0; i < routes.length; i++) {
-              if (this.testRoute(routes[i].getAttribute('path'), path)) {
-                this.loadRoute(routes[i].getAttribute('import'), routes[i].getAttribute('path'), path);
+              if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
+                this.loadRoute(routes[i].getAttribute('import'), routes[i].getAttribute('path'), urlPath);
                 break;
               }
             }
           }
         },
 
-        // loadRoute(importUri, routePath, path) - Import the route's element and attach it to the DOM
-        loadRoute: function(importUri, routePath, path) {
+        // loadRoute(importUri, routePath, urlPath) - Import the route's element and attach it to the DOM
+        loadRoute: function(importUri, routePath, urlPath) {
           // import the element
           if (!loadedElements.hasOwnProperty(importUri)) {
             loadedElements[importUri] = true;
@@ -58,7 +57,7 @@
 
           // create an instance of the element and set attributes from the path and query parameters
           var resourceEl = document.createElement(elementName);
-          var routeArgs = this.routeArguments(routePath, path, window.location.href);
+          var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
           for (var arg in routeArgs) {
             if (routeArgs.hasOwnProperty(arg)) {
               resourceEl[arg] = routeArgs[arg];
@@ -82,11 +81,6 @@
         //
         // Note: The URL must contain the protocol like 'http(s)://'
         urlPath: function(url) {
-          // Check the cache to see if we've already parsed this URL
-          if (cachedUrlPaths.hasOwnProperty(url)) {
-            return cachedUrlPaths[url];
-          }
-
           // The relative URI is everything after the third slash including the third slash
           // Example relativeUri = '/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
           var splitUrl = url.split('/');
@@ -110,21 +104,18 @@
             }
           }
 
-          // Cache the path for this URL
-          cachedUrlPaths[url] = path;
-
           return path;
         },
 
-        // router.testRoute(routePath, path) - Test if the route's path matches the URL's path
+        // router.testRoute(routePath, urlPath) - Test if the route's path matches the URL's path
         //
         // Example routePath: '/example/*'
-        // Example url = 'http://localhost:8080/example/path'
-        //
-        // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
-        testRoute: function(routePath, path) {
-          // If the path is an exact match or '*' then the route is a match
-          if (routePath === path || routePath === '*') {
+        // Example urlPath = '/example/path'
+        testRoute: function(routePath, urlPath) {
+          // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
+
+          // If the urlPath is an exact match or '*' then the route is a match
+          if (routePath === urlPath || routePath === '*') {
             return true;
           }
 
@@ -134,26 +125,24 @@
             return false;
           }
 
-          // Example pathSegments = ['', example', 'path']
-          var pathSegments = path.split('/');
+          // Example urlPathSegments = ['', example', 'path']
+          var urlPathSegments = urlPath.split('/');
 
           // Example routePathSegments = ['', 'example', '*']
           var routePathSegments = routePath.split('/');
 
           // There must be the same number of path segments or it isn't a match
-          if (pathSegments.length !== routePathSegments.length) {
+          if (urlPathSegments.length !== routePathSegments.length) {
             return false;
           }
 
           // Check equality of each path segment
-          for (var i in routePathSegments) {
-            if (routePathSegments.hasOwnProperty(i)) {
-              // The path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
-              var routeSegment = routePathSegments[i];
-              if (routeSegment !== pathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
-                // The path segment wasn't the same string and it wasn't a wildcard or parameter
-                return false;
-              }
+          for (var i = 0; i < routePathSegments.length; i++) {
+            // The path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
+            var routeSegment = routePathSegments[i];
+            if (routeSegment !== urlPathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
+              // The path segment wasn't the same string and it wasn't a wildcard or parameter
+              return false;
             }
           }
 
@@ -161,27 +150,24 @@
           return true;
         },
 
-        // router.routeArguments(routePath, path, url) - Gets the path variables and query parameter values from the URL
-        routeArguments: function routeArguments(routePath, path, url) {
+        // router.routeArguments(routePath, urlPath, url) - Gets the path variables and query parameter values from the URL
+        routeArguments: function routeArguments(routePath, urlPath, url) {
           var args = {};
 
-          // Example pathSegments = ['', example', 'path']
-          var pathSegments = path.split('/');
+          // Example urlPathSegments = ['', example', 'path']
+          var urlPathSegments = urlPath.split('/');
 
           // Example routePathSegments = ['', 'example', '*']
-          var routePathSegments = [];
-          routePathSegments = routePath.split('/');
+          var routePathSegments = routePath.split('/');
 
           // Get path variables
-          // URL '/customer/123'
-          // and route `{path: '/customer/:id'}`
-          // gets id = '123'
-          for (var segmentIndex in routePathSegments) {
-            if (routePathSegments.hasOwnProperty(segmentIndex)) {
-              var routeSegment = routePathSegments[segmentIndex];
-              if (routeSegment.charAt(0) === ':') {
-                args[routeSegment.substring(1)] = pathSegments[segmentIndex];
-              }
+          // urlPath '/customer/123'
+          // routePath '/customer/:id'
+          // parses id = '123'
+          for (var index = 0; index < routePathSegments.length; index++) {
+            var routeSegment = routePathSegments[index];
+            if (routeSegment.charAt(0) === ':') {
+              args[routeSegment.substring(1)] = urlPathSegments[index];
             }
           }
 
@@ -217,12 +203,10 @@
           if (queryParameters.length === 1 && queryParameters[0] === '') {
             queryParameters = [];
           }
-          for (var i in queryParameters) {
-            if (queryParameters.hasOwnProperty(i)) {
-              var queryParameter = queryParameters[i];
-              var queryParameterParts = queryParameter.split('=');
-              args[queryParameterParts[0]] = queryParameterParts.splice(1, queryParameterParts.length - 1).join('=');
-            }
+          for (var i = 0; i < queryParameters.length; i++) {
+            var queryParameter = queryParameters[i];
+            var queryParameterParts = queryParameter.split('=');
+            args[queryParameterParts[0]] = queryParameterParts.splice(1, queryParameterParts.length - 1).join('=');
           }
 
           // Parse the arguments into unescaped strings, numbers, or booleans
