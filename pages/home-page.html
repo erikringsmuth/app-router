@@ -30,8 +30,13 @@
     &lt;/app-router&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-      <p>Changing the URL will find the first <code>app-route</code> that matches, load the element, and replace the current view.</p>
+      <p>Changing the URL will find the first <code>app-route</code> that matches, load the element or template, and replace the current view.</p>
       
+    <h3>Imports</h3>
+    <p>The <code>import</code> attribute tells the route where to load the content from. By default it loads a Custom Element with a tag name that is the same as the file name. Alternatively, you can use the <code>template</code> attribute to load a template instead of a custom element. These are lighter-weight and often all you need. Templates will not have the path variable and query parameter data binding since templates don't have attributes.</p>
+    <p>To use a template, add the <code>template</code> attribute to your <code>app-route</code>.
+<pre><code>&lt;app-route path="/pages/template-page.html" template&gt;&lt;/app-route&gt;</code></pre>
+
       <h3>Navigation</h3>
       <p>There are three ways to trigger a route change. <code>hashchange</code>, <code>pushState()</code>, and a full page load.</p>
       <h4>hashchange</h4>
