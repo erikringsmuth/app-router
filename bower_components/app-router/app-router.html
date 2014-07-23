@@ -17,11 +17,19 @@
   // Initialize the router
   router.createdCallback = function() {
     this.previousState = '';
-    this.activeElement = null;
 
     // listen for URL change events
     window.addEventListener('popstate', this.loadActiveRoute.bind(this), false);
     window.addEventListener('hashchange', this.loadActiveRoute.bind(this), false);
+
+    // set up a shadow root or <active-route> element for the active route's content
+    if (this.getAttribute('shadow') !== null) {
+      this.activeRouteContent = this.createShadowRoot();
+    } else {
+      document.registerElement('active-route');
+      this.activeRouteContent = document.createElement('active-route');
+      this.appendChild(this.activeRouteContent);
+    }
 
     // load the web component for the active route
     this.loadActiveRoute();
@@ -68,11 +76,10 @@
     }
 
     // attach the element
-    if (this.activeElement) {
-      this.removeChild(this.activeElement);
+    while (this.activeRouteContent.firstChild) {
+      this.activeRouteContent.removeChild(this.activeRouteContent.firstChild);
     }
-    this.activeElement = resourceEl;
-    this.appendChild(resourceEl);
+    this.activeRouteContent.appendChild(resourceEl);
   };
 
   // urlPath(url) - Parses the url to get the path
