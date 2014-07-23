@@ -1,7 +1,7 @@
 <link rel="import" href="/app-router/bower_components/polymer/polymer.html">
 <link rel="import" href="/app-router/layouts/scaffold-layout.html">
 
-<polymer-element name="demo-page" attributes="pathArg1 queryParam1" noscript>
+<polymer-element name="data-binding-page" attributes="pathArg1 queryParam1" noscript>
   <template>
     <scaffold-layout>
       <div class="title">Demo</div>
@@ -14,10 +14,10 @@
       </ul>
 
       <h3>Path Variables</h3>
-      <p>The route <code>&lt;app-route path="/demo/:pathArg1" import="/pages/demo-page.html"&gt;&lt;/app-route&gt;</code> defines the <code>pathArg1</code> variable. This is automatically bound to the <code>demo-page</code> <code>pathArg1</code> attribute.</p>
+      <p>The route <code>&lt;app-route path="/databinding/:pathArg1" import="/pages/data-binding-page.html"&gt;&lt;/app-route&gt;</code> defines the <code>pathArg1</code> variable. This is automatically bound to the <code>data-binding-page</code> <code>pathArg1</code> attribute.</p>
 
       <h3>Query Parameters</h3>
-      <p>The query parameter <code>queryParam1</code> is pulled from the URL and attached to the <code>demo-page</code> <code>queryParam1</code> attribute. You don't specify the query parameters in your route.</p>
+      <p>The query parameter <code>queryParam1</code> is pulled from the URL and attached to the <code>data-binding-page</code> <code>queryParam1</code> attribute. You don't specify the query parameters in your route.</p>
 
     </scaffold-layout>
   </template>
