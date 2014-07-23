@@ -1,17 +1,15 @@
 <!-- Copyright (C) 2014 Erik Ringsmuth - MIT license -->
 <script>
 (function(window, document) {
-  // <app-route path="" import=""></app-route>
-  var route = Object.create(HTMLElement.prototype);
-  route.path = '';
-  route.import = '';
-
+  // <app-route path="" import="" [template]></app-route>
   document.registerElement('app-route', {
-    prototype: route
+    prototype: Object.create(HTMLElement.prototype)
   });
 
   // <active-route></active-route> holds the active route's content when `shadow` is not enabled
-  document.registerElement('active-route');
+  document.registerElement('active-route', {
+    prototype: Object.create(HTMLElement.prototype)
+  });
 
   // <app-router [shadow]></app-router>
   var router = Object.create(HTMLElement.prototype);
@@ -47,41 +45,58 @@
       var routes = this.querySelectorAll('app-route');
       for (var i = 0; i < routes.length; i++) {
         if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
-          this.loadRoute(routes[i].getAttribute('import'), routes[i].getAttribute('path'), urlPath);
+          this.loadRoute(routes[i].getAttribute('import'), routes[i].getAttribute('path'), urlPath, routes[i].getAttribute('template') !== null);
           break;
         }
       }
     }
   };
 
-  // loadRoute(importUri, routePath, urlPath) - Import the route's element and attach it to the DOM
-  router.loadRoute = function(importUri, routePath, urlPath) {
-    // import the element
-    if (!loadedElements.hasOwnProperty(importUri)) {
-      loadedElements[importUri] = true;
-      var linkEl = document.createElement('link');
-      linkEl.setAttribute('rel', 'import');
-      linkEl.setAttribute('href', importUri);
-      document.head.appendChild(linkEl);
-    }
-
-    // get the element tag name, clear the current view, and attach the element
-    var elementName = importUri.split('/').slice(-1)[0].replace('.html', '');
-
-    // create an instance of the element and set attributes from the path and query parameters
-    var resourceEl = document.createElement(elementName);
-    var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
-    for (var arg in routeArgs) {
-      if (routeArgs.hasOwnProperty(arg)) {
-        resourceEl[arg] = routeArgs[arg];
+  // loadRoute(importUri, routePath, urlPath, isTemplate) - Import the route's element or template and attach it to the DOM
+  //
+  // Loading a custom element will automatically bind path variables and query parameters to the element's attributes.
+  router.loadRoute = function(importUri, routePath, urlPath, isTemplate) {
+    if (isTemplate) {
+      // import template
+      var templateLink = document.createElement('link');
+      templateLink.setAttribute('rel', 'import');
+      templateLink.setAttribute('href', importUri);
+      templateLink.onload = function() {
+        if (templateLink.import) {
+          var clone = document.importNode(templateLink.import.querySelector('template').content, true);
+          this.replaceActiveElement(clone);
+        }
+      }.bind(this);
+      document.head.appendChild(templateLink);
+    } else {
+      // import custom element
+      if (!loadedElements.hasOwnProperty(importUri)) {
+        loadedElements[importUri] = true;
+        var elementLink = document.createElement('link');
+        elementLink.setAttribute('rel', 'import');
+        elementLink.setAttribute('href', importUri);
+        document.head.appendChild(elementLink);
       }
-    }
 
-    // attach the element
+      // create an instance of the element and set attributes from the path and query parameters
+      var elementName = importUri.split('/').slice(-1)[0].replace('.html', '');
+      var resourceEl = document.createElement(elementName);
+      var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
+      for (var arg in routeArgs) {
+        if (routeArgs.hasOwnProperty(arg)) {
+          resourceEl[arg] = routeArgs[arg];
+        }
+      }
+      this.replaceActiveElement(resourceEl);
+    }
+  };
+
+  // replaceActiveElement(newElement) - Replace the active route's content with the new element
+  router.replaceActiveElement = function(newElement) {
     while (this.activeRouteContent.firstChild) {
       this.activeRouteContent.removeChild(this.activeRouteContent.firstChild);
     }
-    this.activeRouteContent.appendChild(resourceEl);
+    this.activeRouteContent.appendChild(newElement);
   };
 
   // urlPath(url) - Parses the url to get the path
