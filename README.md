@@ -92,7 +92,7 @@ The `import` attribute tells the route where to load the content from. By defaul
 To use a template, add the `template` attribute to your `app-route`.
 
 ```html
-<app-route path="/pages/template-page.html" template></app-route>
+<app-route path="/templateexample" import="/pages/template-page.html" template></app-route>
 ```
 
 ## Navigation
