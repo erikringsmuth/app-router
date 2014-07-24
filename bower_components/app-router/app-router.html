@@ -13,7 +13,7 @@
 
   // <app-router [shadow]></app-router>
   var router = Object.create(HTMLElement.prototype);
-  var loadedElements = {};
+  var importedURIs = {};
 
   // Initialize the router
   router.createdCallback = function() {
@@ -64,8 +64,8 @@
 
     // import custom element
     if (isElement && importUri) {
-      if (!loadedElements.hasOwnProperty(importUri)) {
-        loadedElements[importUri] = true;
+      if (!importedURIs.hasOwnProperty(importUri)) {
+        importedURIs[importUri] = true;
         var elementLink = document.createElement('link');
         elementLink.setAttribute('rel', 'import');
         elementLink.setAttribute('href', importUri);
@@ -95,19 +95,32 @@
 
     // import template
     else if (isTemplate && importUri) {
-      var templateLink = document.createElement('link');
-      templateLink.setAttribute('rel', 'import');
-      templateLink.setAttribute('href', importUri);
-      templateLink.onload = function() {
-        if (templateLink.import) {
-          var clone = document.importNode(templateLink.import.querySelector('template').content, true);
-          this.replaceActiveElement(clone);
+      if (importedURIs.hasOwnProperty(importUri)) {
+        // previously imported. this is an async operation and may not be complete yet.
+        var previousLink = document.querySelector('link[href="' + importUri + '"]');
+        if (previousLink.import) {
+          // the import is complete
+          this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
+        } else {
+          // wait for `onload`
+          previousLink.onload = function() {
+            this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
+          }.bind(this);
         }
-      }.bind(this);
-      document.head.appendChild(templateLink);
+      } else {
+        // template hasn't been loaded yet
+        importedURIs[importUri] = true;
+        var templateLink = document.createElement('link');
+        templateLink.setAttribute('rel', 'import');
+        templateLink.setAttribute('href', importUri);
+        templateLink.onload = function() {
+          this.replaceActiveElement(document.importNode(templateLink.import.querySelector('template').content, true));
+        }.bind(this);
+        document.head.appendChild(templateLink);
+      }
     }
 
-    // in-line template
+    // pre-loaded template
     else if (isTemplate && !importUri) {
       var clone = document.importNode(route.querySelector('template').content, true);
       this.replaceActiveElement(clone);
