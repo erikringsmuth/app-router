@@ -98,9 +98,9 @@ The default is to lazy-load a custom element.
 <app-route path="/customer/:customerId" import="/pages/customer-page.html"></app-route>
 ```
 
-When you navigate to `/customer/:customerId` the router will load `/pages/element-page.html`, replace the active view with a new `customer-page` custom element, and bind the `customerId` to the custom element.
+When you navigate to `/customer/123` the router will load `/pages/customer-page.html`, replace the active view with a new `customer-page` element, and bind attributes `element.setAttribute('customerId', 123)`.
 
-You can optionally set the `element` attribute if the element's name is different from the file name.
+You can manually set the element's name with the `element` attribute if it's different from the file name. This is useful if you are bundling (vulcanizing) custom elements.
 
 ```html
 <app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"></app-route>
