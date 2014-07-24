@@ -18,13 +18,14 @@
   // Initialize the router
   router.createdCallback = function() {
     this.previousState = '';
+    this.activeRoute = document.createElement('app-route');
 
     // listen for URL change events
     window.addEventListener('popstate', this.loadActiveRoute.bind(this), false);
     window.addEventListener('hashchange', this.loadActiveRoute.bind(this), false);
 
     // set up a shadow root or <active-route> element for the active route's content
-    if (this.getAttribute('shadow') !== null) {
+    if (this.hasAttribute('shadow')) {
       this.activeRouteContent = this.createShadowRoot();
     } else {
       this.activeRouteContent = document.createElement('active-route');
@@ -45,7 +46,11 @@
       var routes = this.querySelectorAll('app-route');
       for (var i = 0; i < routes.length; i++) {
         if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
-          this.loadRoute(routes[i], urlPath);
+          var route = routes[i];
+          this.activeRoute.removeAttribute('active');
+          route.setAttribute('active', 'active');
+          this.activeRoute = route;
+          this.loadRoute(route, urlPath);
           break;
         }
       }
@@ -59,7 +64,7 @@
     var importUri = route.getAttribute('import');
     var routePath = route.getAttribute('path');
     var elementName = route.getAttribute('element');
-    var isTemplate = route.getAttribute('template') !== null;
+    var isTemplate = route.hasAttribute('template');
     var isElement = !isTemplate;
 
     // import custom element
@@ -104,7 +109,9 @@
         } else {
           // wait for `onload`
           previousLink.onload = function() {
-            this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
+            if (route.hasAttribute('active')) {
+              this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
+            }
           }.bind(this);
         }
       } else {
@@ -114,7 +121,9 @@
         templateLink.setAttribute('rel', 'import');
         templateLink.setAttribute('href', importUri);
         templateLink.onload = function() {
-          this.replaceActiveElement(document.importNode(templateLink.import.querySelector('template').content, true));
+          if (route.hasAttribute('active')) {
+            this.replaceActiveElement(document.importNode(templateLink.import.querySelector('template').content, true));
+          }
         }.bind(this);
         document.head.appendChild(templateLink);
       }
