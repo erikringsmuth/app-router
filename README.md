@@ -89,25 +89,24 @@ This is a simple example showing the page and it's layout.
 ```
 
 ## `<app-route>` options
-There are 4 ways to define routes.
 
 #### import custom element
-The default is to lazy-load a custom element.
+Lazy-load a custom element.
 
 ```html
 <app-route path="/customer/:customerId" import="/pages/customer-page.html"></app-route>
 ```
 
-When you navigate to `/customer/123` the router will load `/pages/customer-page.html`, replace the active view with a new `customer-page` element, and bind attributes `element.setAttribute('customerId', 123)`.
+When you navigate to `/customer/123` the router will load `/pages/customer-page.html`, replace the active view with a new `customer-page` element, and bind any attributes `element.setAttribute('customerId', 123)`.
 
-You can manually set the element's name with the `element` attribute if it's different from the file name. This is useful if you are bundling (vulcanizing) custom elements.
+You can manually set the element's name with the `element` attribute if it's different from the file name. This is useful if you're bundling (vulcanizing) custom elements.
 
 ```html
 <app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"></app-route>
 ```
 
 #### pre-loaded custom element
-You can route to a pre-loaded custom element. This is useful if you want to vulcanize (concatinate) your custom elements.
+You can route to a pre-loaded custom element. This is useful for bundled custom elements.
 
 ```html
 <link rel="import" href="/pages/customer-page.html">
@@ -115,7 +114,7 @@ You can route to a pre-loaded custom element. This is useful if you want to vulc
 ```
 
 #### import template
-You can lazy-load `<template>`s instead of custom elements if you don't need data binding and want a lighter-weight page. When you route to a template you need to include the `template` attribute.
+You can lazy-load a `<template>` instead of a custom element. This doesn't have data binding but is lighter-weight than a custom element. When you route to a template you need to include the `template` attribute.
 
 ```html
 <app-route path="/example" import="/pages/template-page.html" template></app-route>
