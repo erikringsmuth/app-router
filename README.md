@@ -95,7 +95,7 @@ There are 4 ways to define routes.
 The default is to lazy-load a custom element.
 
 ```html
-<app-route path="/customer" import="/pages/customer-page.html"></app-route>
+<app-route path="/customer/:customerId" import="/pages/customer-page.html"></app-route>
 ```
 
 When you navigate to `/customer/:customerId` the router will load `/pages/element-page.html`, replace the active view with a new `customer-page` custom element, and bind the `customerId` to the custom element.
