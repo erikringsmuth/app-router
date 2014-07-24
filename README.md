@@ -53,7 +53,7 @@ http://www.example.com/order/123?sort=ascending
 See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Multiple Layouts
-Each page chooses which layout to use. This allows multiple layouts in the same app. Use the `<content>` tags as insertion points to insert the page into the layout.
+Each page chooses which layout to use. This allows multiple layouts in the same app. Use the `<content>` tags as insertion points to insert the page into the layout. This is similar to a nested router but decouples the layout from the router.
 
 This is a simple example showing the page and it's layout.
 
