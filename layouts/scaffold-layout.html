@@ -7,6 +7,14 @@
 <polymer-element name="scaffold-layout" noscript>
   <template>
     <style>
+      :host /deep/ core-toolbar {
+        background-color: #2f83d0;
+        color: #fff;
+        text-shadow: 0px 1px 0px #215b90;
+      }
+      :host /deep/ core-header-panel[main] {
+        background-color: #fff;
+      }
       .menu {
         margin: 12px;
       }
@@ -16,7 +24,7 @@
     </style>
     <core-scaffold>
       <core-header-panel navigation flex mode="seamed">
-        <core-toolbar>app-router</core-toolbar>
+        <core-toolbar>&lt;app-router&gt;</core-toolbar>
         <div class="menu">
           <core-item icon="home" label="Home"><a href="/app-router/#"></a></core-item>
           <core-item icon="polymer" label="Data Binding"><a href="/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"></a></core-item>

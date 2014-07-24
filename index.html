@@ -8,6 +8,7 @@
     <script src="bower_components/platform/platform.js"></script>
     <link rel="stylesheet" href="css/styles.css" shim-shadowdom>
     <link rel="import" href="bower_components/app-router/app-router.html">
+    <link rel="import" href="pages/inline-element-page.html">
   </head>
   <body>
     <app-router>
@@ -16,6 +17,12 @@
       <app-route path="/databinding/:pathArg1" import="pages/data-binding-page.html"></app-route>
       <app-route path="/layouts" import="pages/simple-layout-page.html"></app-route>
       <app-route path="/templates" import="pages/template-page.html" template></app-route>
+      <app-route path="/inline-element" element="inline-element-page"></app-route>
+      <app-route path="/inline-template" template>
+        <template>
+          <p>Inline madness!</p>
+        </template>
+      </app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
   </body>
