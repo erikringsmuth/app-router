@@ -45,19 +45,56 @@
       var routes = this.querySelectorAll('app-route');
       for (var i = 0; i < routes.length; i++) {
         if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
-          this.loadRoute(routes[i].getAttribute('import'), routes[i].getAttribute('path'), urlPath, routes[i].getAttribute('template') !== null);
+          this.loadRoute(routes[i], urlPath);
           break;
         }
       }
     }
   };
 
-  // loadRoute(importUri, routePath, urlPath, isTemplate) - Import the route's element or template and attach it to the DOM
+  // loadRoute(route, urlPath) - Import the route's element or template and attach it to the DOM
   //
   // Loading a custom element will automatically bind path variables and query parameters to the element's attributes.
-  router.loadRoute = function(importUri, routePath, urlPath, isTemplate) {
-    if (isTemplate) {
-      // import template
+  router.loadRoute = function(route, urlPath) {
+    var importUri = route.getAttribute('import');
+    var routePath = route.getAttribute('path');
+    var elementName = route.getAttribute('element');
+    var isTemplate = route.getAttribute('template') !== null;
+    var isElement = !isTemplate;
+
+    // import custom element
+    if (isElement && importUri) {
+      if (!loadedElements.hasOwnProperty(importUri)) {
+        loadedElements[importUri] = true;
+        var elementLink = document.createElement('link');
+        elementLink.setAttribute('rel', 'import');
+        elementLink.setAttribute('href', importUri);
+        document.head.appendChild(elementLink);
+      }
+      var resourceEl = document.createElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''));
+      var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
+      for (var arg in routeArgs) {
+        if (routeArgs.hasOwnProperty(arg)) {
+          resourceEl[arg] = routeArgs[arg];
+        }
+      }
+      this.replaceActiveElement(resourceEl);
+    }
+
+    // pre-loaded custom element
+    else if (isElement && !importUri && elementName) {
+      var resourceEl = document.createElement(elementName);
+      var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
+      for (var arg in routeArgs) {
+        if (routeArgs.hasOwnProperty(arg)) {
+          resourceEl[arg] = routeArgs[arg];
+        }
+      }
+      this.replaceActiveElement(resourceEl);
+    }
+
+    // import template
+    else if (isTemplate && importUri) {
       var templateLink = document.createElement('link');
       templateLink.setAttribute('rel', 'import');
       templateLink.setAttribute('href', importUri);
@@ -68,26 +105,17 @@
         }
       }.bind(this);
       document.head.appendChild(templateLink);
-    } else {
-      // import custom element
-      if (!loadedElements.hasOwnProperty(importUri)) {
-        loadedElements[importUri] = true;
-        var elementLink = document.createElement('link');
-        elementLink.setAttribute('rel', 'import');
-        elementLink.setAttribute('href', importUri);
-        document.head.appendChild(elementLink);
-      }
+    }
 
-      // create an instance of the element and set attributes from the path and query parameters
-      var elementName = importUri.split('/').slice(-1)[0].replace('.html', '');
-      var resourceEl = document.createElement(elementName);
-      var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
-      for (var arg in routeArgs) {
-        if (routeArgs.hasOwnProperty(arg)) {
-          resourceEl[arg] = routeArgs[arg];
-        }
-      }
-      this.replaceActiveElement(resourceEl);
+    // in-line template
+    else if (isTemplate && !importUri) {
+      var clone = document.importNode(route.querySelector('template').content, true);
+      this.replaceActiveElement(clone);
+    }
+
+    // bad app-route
+    else {
+      throw new Error('Improperly formatted <app-route>');
     }
   };
 
