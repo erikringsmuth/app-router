@@ -53,9 +53,9 @@ http://www.example.com/order/123?sort=ascending
 See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Multiple Layouts
-Each page chooses which layout to use. This allows multiple layouts in the same app. Use the `<content>` tags as insertion points to insert the page into the layout. This is similar to a nested router but decouples the layout from the router.
+Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
 
-This is a simple example showing the page and it's layout.
+This is a simple example showing a page and it's layout.
 
 #### home-page.html
 
@@ -77,11 +77,7 @@ This is a simple example showing the page and it's layout.
 <polymer-element name="simple-layout" noscript>
   <template>
     <core-toolbar>
-      <span flex>
-        <content select=".title"><!-- content with class 'title' --></content>
-      </span>
-      <core-item icon="home" label="Home"><a href="/#"></a></core-item>
-      <core-item icon="polymer" label="Demo"><a href="/#/demo"></a></core-item>
+      <content select=".title"><!-- content with class 'title' --></content>
     </core-toolbar>
     <content><!-- all other content --></content>
   </template>
@@ -90,7 +86,7 @@ This is a simple example showing the page and it's layout.
 
 ## &lt;app-route&gt; options
 
-#### import custom element
+#### import a custom element
 Lazy-load a custom element.
 
 ```html
@@ -99,14 +95,14 @@ Lazy-load a custom element.
 
 When you navigate to `/customer/123` the router will load `/pages/customer-page.html`, replace the active view with a new `customer-page` element, and bind any attributes `element.setAttribute('customerId', 123)`.
 
-You can manually set the element's name with the `element` attribute if it's different from the file name. This is useful if you're bundling (vulcanizing) custom elements.
+You can manually set the element's name with the `element` attribute if it's different from the file name. This is useful when bundling (vulcanizing) custom elements.
 
 ```html
 <app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"></app-route>
 ```
 
 #### pre-loaded custom element
-You can route to a pre-loaded custom element. This is useful for bundled custom elements.
+You can route to a pre-loaded custom element. In this case, load the element normally in the `<head>` and include the `element="element-name"` attribute on the route. This is how you'd bundle and pre-load custom elements.
 
 ```html
 <link rel="import" href="/pages/customer-page.html">
@@ -114,7 +110,7 @@ You can route to a pre-loaded custom element. This is useful for bundled custom 
 ```
 
 #### import template
-You can lazy-load a `<template>` instead of a custom element. This doesn't have data binding but is lighter-weight than a custom element. When you route to a template you need to include the `template` attribute.
+You can use a `<template>` instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the `template` attribute.
 
 ```html
 <app-route path="/example" import="/pages/template-page.html" template></app-route>
@@ -126,7 +122,7 @@ Finally, you can in-line a `<template>` like this.
 ```html
 <app-route path="/example" template>
   <template>
-    <p>Inline template madness!</p>
+    <p>Inline template FTW!</p>
   </template>
 </app-route>
 ```
