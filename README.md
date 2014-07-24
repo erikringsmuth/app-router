@@ -88,7 +88,7 @@ This is a simple example showing the page and it's layout.
 </polymer-element>
 ```
 
-## `<app-route>` options
+## &lt;app-route&gt; options
 
 #### import custom element
 Lazy-load a custom element.
