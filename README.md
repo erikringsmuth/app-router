@@ -5,6 +5,8 @@
 
 Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/`, hash paths `#/`, and hashbang paths `#!/`.
 
+[Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
+
 ## Configuration
 
 ```html
@@ -86,13 +88,67 @@ This is a simple example showing the page and it's layout.
 </polymer-element>
 ```
 
-## Imports
-The `import` attribute tells the route where to load the content from. By default it loads a Custom Element with a tag name that is the same as the file name. Alternatively, you can use the `template` attribute to load a template instead of a custom element. These are lighter-weight and often all you need. Templates will not have the path variable and query parameter data binding since templates don't have attributes.
+## `<app-route>` options
+There are 4 ways to define routes.
 
-To use a template, add the `template` attribute to your `app-route`.
+#### import custom element
+The default is to lazy-load a custom element.
+
+```html
+<app-route path="/customer" import="/pages/customer-page.html"></app-route>
+```
+
+When you navigate to `/customer/:customerId` the router will load `/pages/element-page.html`, replace the active view with a new `customer-page` custom element, and bind the `customerId` to the custom element.
+
+You can optionally set the `element` attribute if the element's name is different from the file name.
+
+```html
+<app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"></app-route>
+```
+
+#### pre-loaded custom element
+You can route to a pre-loaded custom element. This is useful if you want to vulcanize (concatinate) your custom elements.
+
+```html
+<link rel="import" href="/pages/customer-page.html">
+<app-route path="/customer/:customerId" element="customer-page"></app-route>
+```
+
+#### import template
+You can lazy-load `<template>`s instead of custom elements if you don't need data binding and want a lighter-weight page. When you route to a template you need to include the `template` attribute.
 
 ```html
 <app-route path="/example" import="/pages/template-page.html" template></app-route>
+```
+
+#### inline template
+Finally, you can in-line a `<template>` like this.
+
+```html
+<app-route path="/example" template>
+  <template>
+    <p>Inline template madness!</p>
+  </template>
+</app-route>
+```
+
+## Shadow DOM
+By default the router puts the active route's content in an `<active-route></active-route>` element.
+
+```html
+<app-router>
+  <!-- app-routes -->
+  <active-route><!-- active route content --></active-route>
+</app-router>
+```
+
+If you want the active route's content isolated in a shadow tree you can add the `shadow` attribute like this.
+
+```html
+<app-router shadow>
+  # shadow-root <!-- the active route's content will be inside the shadow root -->
+  <!-- app-routes -->
+</app-router>
 ```
 
 ## Navigation
@@ -111,9 +167,6 @@ history.go(0); // go to the current state in the history stack, this fires a pop
 
 #### Full page load
 Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/new/page`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
-
-## Install
-[Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
 
 ## Demo Site
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
