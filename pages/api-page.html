@@ -33,8 +33,12 @@
 
       <h4>pre-loaded custom element</h4>
       <p>You can route to a pre-loaded custom element. In this case, load the element normally in the <code-snippet>&lt;head&gt;</code-snippet> and include the <code-snippet>element="element-name"</code-snippet> attribute on the route. This is how you'd bundle and pre-load custom elements.</p>
-<code-block>&lt;link rel="import" href="/pages/customer-page.html"&gt;
-&lt;app-route path="/customer/:customerId" element="customer-page"&gt;&lt;/app-route&gt;</code-block>
+<code-block>&lt;head&gt;
+  &lt;link rel="import" href="/pages/page-bundle.html"&gt;
+&lt;/head&gt;
+&lt;app-router&gt;
+  &lt;app-route path="/customer/:customerId" element="customer-page"&gt;&lt;/app-route&gt;
+&lt;/app-router&gt;</code-block>
 
       <h4>import template</h4>
       <p>You can use a <code-snippet>&lt;template&gt;</code-snippet> instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the <code-snippet>template</code-snippet> attribute.</p>
