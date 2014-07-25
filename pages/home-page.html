@@ -56,7 +56,7 @@ http://www.example.com/order/123?sort=ascending
       <h2>Navigation</h2>
       <p>There are three ways to trigger a route change. <code-snippet>hashchange</code-snippet>, <code-snippet>pushState()</code-snippet>, and a full page load.</p>
       <h4>hashchange</h4>
-      <p>If you're using <code-snippet>hashchange</code-snippet> you don't need to do anything. Clicking a link <code-snippet>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
+      <p>If you're using <code-snippet>hashchange</code-snippet> you don't need to do anything. Clicking a link <code-snippet>&lt;a href="/#/new/page"&gt;New Page&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
       <h4>pushState</h4>
       <p>If you're using HTML5 <code-snippet>pushState</code-snippet> you need one extra step. The <code-snippet>pushState()</code-snippet> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code-snippet>pushState()</code-snippet> to navigate to another route you need to call it like this.</p>
 <code-block>// push a new URL into the history stack
