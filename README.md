@@ -105,8 +105,12 @@ You can manually set the element's name with the `element` attribute if it's dif
 You can route to a pre-loaded custom element. In this case, load the element normally in the `<head>` and include the `element="element-name"` attribute on the route. This is how you'd bundle and pre-load custom elements.
 
 ```html
-<link rel="import" href="/pages/customer-page.html">
-<app-route path="/customer/:customerId" element="customer-page"></app-route>
+<head>
+  <link rel="import" href="/pages/page-bundle.html">
+</head>
+<app-router>
+  <app-route path="/customer/:customerId" element="customer-page"></app-route>
+</app-router>
 ```
 
 #### import template
