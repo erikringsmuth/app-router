@@ -32,7 +32,7 @@ Lazy-loads content. Binds path variables and query parameters to page element's 
 </html>
 ```
 
-Changing the URL will find the first `app-route` that matches, load the element, and replace the current view.
+Changing the URL will find the first `app-route` that matches, load the element or template, and replace the current view.
 
 ## Data Binding
 Path variables and query parameters automatically attach to the element's attributes.
@@ -84,6 +84,15 @@ This is a simple example showing the page and it's layout.
     <content><!-- all other content --></content>
   </template>
 </polymer-element>
+```
+
+## Imports
+The `import` attribute tells the route where to load the content from. By default it loads a Custom Element with a tag name that is the same as the file name. Alternatively, you can use the `template` attribute to load a template instead of a custom element. These are lighter-weight and often all you need. Templates will not have the path variable and query parameter data binding since templates don't have attributes.
+
+To use a template, add the `template` attribute to your `app-route`.
+
+```html
+<app-route path="/example" import="/pages/template-page.html" template></app-route>
 ```
 
 ## Navigation

@@ -56,10 +56,10 @@ http://www.example.com/order/123?sort=ascending
       <p>If you're using <code>hashchange</code> you don't need to do anything. Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> will fire a <code>hashchange</code> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
       <h4>pushState</h4>
       <p>If you're using HTML5 <code>pushState</code> you need one extra step. The <code>pushState()</code> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code>pushState()</code> to navigate to another route you need to call it like this.</p>
-  <pre>// push a new URL into the history stack
-  history.pushState(stateObj, title, '/new/page');
-  // fire a popstate event
-  history.go(0);</pre>
+<pre>// push a new URL into the history stack
+history.pushState(stateObj, title, '/new/page');
+// fire a popstate event
+history.go(0);</pre>
       <h4>Full page load</h4>
       <p>Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> without a hash path will do a full page load. You need to make sure your server will return <code>index.html</code> when looking up the resource at <code>/new/page</code>. The simplest set up is to always return <code>index.html</code> and let the <code>app-router</code> handle the routing including a not found page.</p>
 
