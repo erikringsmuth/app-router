@@ -1,0 +1,38 @@
+<link rel="import" href="/app-router/bower_components/polymer/polymer.html">
+<link rel="import" href="/app-router/layouts/simple-layout.html">
+<link rel="import" href="/app-router/elements/code-block.html">
+<link rel="import" href="/app-router/elements/code-snippet.html">
+
+<polymer-element name="layout-info-page" noscript>
+  <template>
+    <simple-layout>
+      <div class="title">Multiple Layouts</div>
+
+      <p>Each page chooses which layout to use. This allows multiple layouts in the same app. Use the <code-snippet>&lt;content&gt;</code-snippet> tags as insertion points to insert the page into the layout.</p>
+
+      <p>This is a simple example showing a page and it's layout.</p>
+
+      <h4>home-page.html</h4>
+<code-block>&lt;link rel="import" href="/layouts/simple-layout.html"&gt;
+&lt;polymer-element name="home-page" noscript&gt;
+  &lt;template&gt;
+    &lt;simple-layout&gt;
+      &lt;div class="title"&gt;Home&lt;/div&gt;
+      &lt;p&gt;The home page!&lt;/p&gt;
+    &lt;/simple-layout&gt;
+  &lt;/template&gt;
+&lt;/polymer-element&gt;</code-block>
+
+      <h4>simple-layout.html</h4>
+<code-block>&lt;polymer-element name="simple-layout" noscript&gt;
+  &lt;template&gt;
+    &lt;core-toolbar&gt;
+      &lt;content select=".title"&gt;&lt;!-- content with class 'title' --&gt;&lt;/content&gt;
+    &lt;/core-toolbar&gt;
+    &lt;content&gt;&lt;!-- all other content --&gt;&lt;/content&gt;
+  &lt;/template&gt;
+&lt;/polymer-element&gt;</code-block>
+
+    </simple-layout>
+  </template>
+</polymer-element>

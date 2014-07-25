@@ -1,0 +1,53 @@
+<link rel="import" href="/app-router/layouts/scaffold-layout.html">
+<link rel="import" href="/app-router/elements/code-block.html">
+<link rel="import" href="/app-router/elements/code-snippet.html">
+
+<polymer-element name="api-page" noscript>
+  <template>
+    <scaffold-layout>
+      <div class="title">API</div>
+
+      <h2>&lt;app-router&gt;</h2>
+
+      <h4>Shadow DOM</h4>
+      <p>By default the router puts the active route's content in an <code-snippet>&lt;active-route&gt;&lt;/active-route&gt;</code-snippet> element.</p>
+<code-block>&lt;app-router&gt;
+  &lt;!-- app-routes --&gt;
+  &lt;active-route&gt;&lt;!-- active route content --&gt;&lt;/active-route&gt;
+&lt;/app-router&gt;</code-block>
+
+      <p>If you want the active route's content isolated in a shadow tree you can add the <code-snippet>shadow</code-snippet> attribute like this.</p>
+<code-block>&lt;app-router shadow&gt;
+  # shadow-root &lt;!-- the active route's content will be inside the shadow root --&gt;
+  &lt;!-- app-routes --&gt;
+&lt;/app-router&gt;</code-block>
+
+      <h2>&lt;app-route&gt;</h2>
+
+      <h4>import a custom element</h4>
+      <p>Lazy-load a custom element.</p>
+<code-block>&lt;app-route path="/customer/:customerId" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;</code-block>
+      <p>When you navigate to <code-snippet>/customer/123</code-snippet> the router will load <code-snippet>/pages/customer-page.html</code-snippet>, replace the active view with a new <code-snippet>customer-page</code-snippet> element, and bind any attributes <code-snippet>element.setAttribute('customerId', 123)</code-snippet>.</p>
+      <p>You can manually set the element's name with the <code-snippet>element</code-snippet> attribute if it's different from the file name. This is useful when bundling (vulcanizing) custom elements.</p>
+<code-block>&lt;app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"&gt;&lt;/app-route&gt;</code-block>
+
+      <h4>pre-loaded custom element</h4>
+      <p>You can route to a pre-loaded custom element. In this case, load the element normally in the <code-snippet>&lt;head&gt;</code-snippet> and include the <code-snippet>element="element-name"</code-snippet> attribute on the route. This is how you'd bundle and pre-load custom elements.</p>
+<code-block>&lt;link rel="import" href="/pages/customer-page.html"&gt;
+&lt;app-route path="/customer/:customerId" element="customer-page"&gt;&lt;/app-route&gt;</code-block>
+
+      <h4>import template</h4>
+      <p>You can use a <code-snippet>&lt;template&gt;</code-snippet> instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the <code-snippet>template</code-snippet> attribute.</p>
+<code-block>&lt;app-route path="/example" import="/pages/template-page.html" template&gt;&lt;/app-route&gt;</code-block>
+
+      <h4>inline template</h4>
+      <p>Finally, you can in-line a <code-snippet>&lt;template&gt;</code-snippet> like this.</p>
+<code-block>&lt;app-route path="/example" template&gt;
+  &lt;template&gt;
+    &lt;p&gt;Inline template FTW!&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/app-route&gt;</code-block>
+
+    </scaffold-layout>
+  </template>
+</polymer-element>

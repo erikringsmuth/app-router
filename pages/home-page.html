@@ -11,6 +11,10 @@
       <h2>Router for Web Components</h2>
       <p>Works with <a href="http://www.polymer-project.org/">Polymer</a>, <a href="http://www.x-tags.org/">X-Tag</a>, and natively with the <a href="https://github.com/Polymer/platform">platform</a> polyfill.</p>
       <p>Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with <code-snippet>hashchange</code-snippet> and HTML5 <code-snippet>pushState</code-snippet>. One set of routes will match regular paths <code-snippet>/</code-snippet>, hash paths <code-snippet>#/</code-snippet>, and hashbang paths <code-snippet>#!/</code-snippet>.</p>
+
+      <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code-snippet>bower install app-router --save</code-snippet></p>
+
+      <h2>Configuration</h2>
 <code-block>&lt;!doctype html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -47,10 +51,7 @@ http://www.example.com/order/123?sort=ascending
 &lt;!-- will bind 123 to the page's `id` attribute and "ascending" to the `sort` attribute --&gt;
 &lt;order-page id="123" sort="ascending"&gt;&lt;/order-page&gt;</code-block>
 
-      <h2>Imports</h2>
-      <p>The <code-snippet>import</code-snippet> attribute tells the route where to load the content from. By default it loads a Custom Element with a tag name that is the same as the file name. Alternatively, you can use the <code-snippet>template</code-snippet> attribute to load a template instead of a custom element. These are lighter-weight and often all you need. Templates will not have the path variable and query parameter data binding since templates don't have attributes.</p>
-      <p>To use a template, add the <code-snippet>template</code-snippet> attribute to your <code-snippet>app-route</code-snippet>.
-<code-block>&lt;app-route path="/example" import="/pages/template-page.html" template&gt;&lt;/app-route&gt;</code-block>
+      <p>See it in action <a href="/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!">here</a>.</p>
 
       <h2>Navigation</h2>
       <p>There are three ways to trigger a route change. <code-snippet>hashchange</code-snippet>, <code-snippet>pushState()</code-snippet>, and a full page load.</p>
@@ -64,12 +65,6 @@ history.pushState(stateObj, title, '/new/page');
 history.go(0);</code-block>
       <h4>Full page load</h4>
       <p>Clicking a link <code-snippet>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code-snippet> without a hash path will do a full page load. You need to make sure your server will return <code-snippet>index.html</code-snippet> when looking up the resource at <code-snippet>/new/page</code-snippet>. The simplest set up is to always return <code-snippet>index.html</code-snippet> and let the <code-snippet>app-router</code-snippet> handle the routing including a not found page.</p>
-
-      <h2>Install</h2>
-      <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code-snippet>bower install app-router --save</code-snippet></p>
-
-      <h2>Example Setup</h2>
-      <p>The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> for this demo site is a great example of the app-router.</p>
 
     </scaffold-layout>
   </template>

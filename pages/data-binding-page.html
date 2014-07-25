@@ -1,11 +1,12 @@
 <link rel="import" href="/app-router/bower_components/polymer/polymer.html">
 <link rel="import" href="/app-router/layouts/scaffold-layout.html">
+<link rel="import" href="/app-router/elements/code-block.html">
 <link rel="import" href="/app-router/elements/code-snippet.html">
 
 <polymer-element name="data-binding-page" attributes="pathArg1 queryParam1" noscript>
   <template>
     <scaffold-layout>
-      <div class="title">Demo</div>
+      <div class="title">Data Binding Demo</div>
 
       <p>Path variables and query parameters are automatically attached to the <code-snippet>app-route</code-snippet> element's attributes. Change values in the address bar and see them change here.</p>
 
@@ -14,11 +15,20 @@
         <li><code-snippet>queryParam1 = {{queryParam1}}</code-snippet></li>
       </ul>
 
-      <h3>Path Variables</h3>
-      <p>The route <code-snippet>&lt;app-route path="/databinding/:pathArg1" import="/pages/data-binding-page.html"&gt;&lt;/app-route&gt;</code-snippet> defines the <code-snippet>pathArg1</code-snippet> variable. This is automatically bound to the <code-snippet>data-binding-page</code-snippet> <code-snippet>pathArg1</code-snippet> attribute.</p>
+      <h3>Example Route and Page</h3>
 
-      <h3>Query Parameters</h3>
-      <p>The query parameter <code-snippet>queryParam1</code-snippet> is pulled from the URL and attached to the <code-snippet>data-binding-page</code-snippet> <code-snippet>queryParam1</code-snippet> attribute. You don't specify the query parameters in your route.</p>
+<code-block>&lt;app-router&gt;
+  &lt;app-route path="/demo/:pathArg1" import="pages/demo-page.html"&gt;&lt;/app-route&gt;
+&lt;/app-router&gt;</code-block>
+
+<code-block>&lt;polymer-element name="demo-page" attributes="pathArg1 queryParam1" noscript&gt;
+  &lt;template&gt;
+    &lt;div class="title"&gt;Demo&lt;/div&gt;
+    &lt;p&gt;Demo page using a path variable {{'{{'}}pathArg1{{'}}}} and query parameter {{'{{'}}queryParam1{{ '}}}}!&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/polymer-element&gt;</code-block>
+
+      <p>Path variables are defined in the <code-snippet>app-route</code-snippet> and on the page's attributes. Query parameters are only defined on the page's attributes.</p>
 
     </scaffold-layout>
   </template>
