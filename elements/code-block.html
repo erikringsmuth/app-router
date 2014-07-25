@@ -1,0 +1,31 @@
+<link rel="import" href="/app-router/bower_components/polymer/polymer.html">
+<script src="/app-router/bower_components/google-code-prettify/bin/prettify.min.js"></script>
+
+<polymer-element name="code-block">
+  <template>
+    <link rel="stylesheet" href="/app-router/css/prettify-bootstrap-light.css">
+    <style>
+      pre {
+        display: block;
+        padding: 9.5px;
+        margin: 0 0 10px;
+        font-size: 13px;
+        line-height: 1.42857143;
+        color: #333;
+        word-break: break-all;
+        word-wrap: break-word;
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    </style>
+    <pre id="code" class="prettify"><content></content></pre>
+  </template>
+  <script>
+    Polymer('code-block', {
+      attached: function() {
+        this.$.code.innerHTML = prettyPrintOne(this.innerHTML);
+      }
+    });
+  </script>
+</polymer-element>

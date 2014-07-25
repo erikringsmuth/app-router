@@ -9,6 +9,7 @@
     "app-router": "~0.2.0",
     "polymer": "Polymer/polymer#~0.3.4",
     "platform": "Polymer/platform#~0.3.4",
-    "core-elements": "Polymer/core-elements#~0.3.4"
+    "core-elements": "Polymer/core-elements#~0.3.4",
+    "google-code-prettify": "~1.0.2"
   }
 }

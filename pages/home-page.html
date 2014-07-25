@@ -1,5 +1,7 @@
 <link rel="import" href="/app-router/bower_components/polymer/polymer.html">
 <link rel="import" href="/app-router/layouts/scaffold-layout.html">
+<link rel="import" href="/app-router/elements/code-block.html">
+<link rel="import" href="/app-router/elements/code-snippet.html">
 
 <polymer-element name="home-page" noscript>
   <template>
@@ -8,63 +10,63 @@
 
       <h2>Router for Web Components</h2>
       <p>Works with <a href="http://www.polymer-project.org/">Polymer</a>, <a href="http://www.x-tags.org/">X-Tag</a>, and natively with the <a href="https://github.com/Polymer/platform">platform</a> polyfill.</p>
-      <p>Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with <code>hashchange</code> and HTML5 <code>pushState</code>. One set of routes will match regular paths <code>/</code>, hash paths <code>#/</code>, and hashbang paths <code>#!/</code>.</p>
-<pre><code>&lt;!doctype html&gt;
-  &lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;App Router&lt;/title&gt;
-    &lt;link rel="import" href="/bower_components/app-router/app-router.html"&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;app-router&gt;
-      &lt;!-- matches an exact path --&gt;
-      &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
+      <p>Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with <code-snippet>hashchange</code-snippet> and HTML5 <code-snippet>pushState</code-snippet>. One set of routes will match regular paths <code-snippet>/</code-snippet>, hash paths <code-snippet>#/</code-snippet>, and hashbang paths <code-snippet>#!/</code-snippet>.</p>
+<code-block>&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;App Router&lt;/title&gt;
+  &lt;link rel="import" href="/bower_components/app-router/app-router.html"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;app-router&gt;
+    &lt;!-- matches an exact path --&gt;
+    &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
 
-      &lt;!-- matches using a wildcard --&gt;
-      &lt;app-route path="/customer/*" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;
+    &lt;!-- matches using a wildcard --&gt;
+    &lt;app-route path="/customer/*" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;
 
-      &lt;!-- matches using a path variable --&gt;
-      &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
+    &lt;!-- matches using a path variable --&gt;
+    &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
 
-      &lt;!-- matches everything else --&gt;
-      &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
-    &lt;/app-router&gt;
-  &lt;/body&gt;
-  &lt;/html&gt;</code></pre>
-      <p>Changing the URL will find the first <code>app-route</code> that matches, load the element or template, and replace the current view.</p>
+    &lt;!-- matches everything else --&gt;
+    &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
+  &lt;/app-router&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code-block>
+      <p>Changing the URL will find the first <code-snippet>app-route</code-snippet> that matches, load the element or template, and replace the current view.</p>
       
       <h2>Data Binding</h2>
       <p>Path variables and query parameters automatically attach to the element's attributes.</p>
 
-<pre><code>&lt;!-- url --&gt;
+<code-block>&lt;!-- url --&gt;
 http://www.example.com/order/123?sort=ascending
 
 &lt;!-- route --&gt;
 &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
 
 &lt;!-- will bind 123 to the page's `id` attribute and "ascending" to the `sort` attribute --&gt;
-&lt;order-page id="123" sort="ascending"&gt;&lt;/order-page&gt;</code></pre>
+&lt;order-page id="123" sort="ascending"&gt;&lt;/order-page&gt;</code-block>
 
       <h2>Imports</h2>
-      <p>The <code>import</code> attribute tells the route where to load the content from. By default it loads a Custom Element with a tag name that is the same as the file name. Alternatively, you can use the <code>template</code> attribute to load a template instead of a custom element. These are lighter-weight and often all you need. Templates will not have the path variable and query parameter data binding since templates don't have attributes.</p>
-      <p>To use a template, add the <code>template</code> attribute to your <code>app-route</code>.
-<pre><code>&lt;app-route path="/example" import="/pages/template-page.html" template&gt;&lt;/app-route&gt;</code></pre>
+      <p>The <code-snippet>import</code-snippet> attribute tells the route where to load the content from. By default it loads a Custom Element with a tag name that is the same as the file name. Alternatively, you can use the <code-snippet>template</code-snippet> attribute to load a template instead of a custom element. These are lighter-weight and often all you need. Templates will not have the path variable and query parameter data binding since templates don't have attributes.</p>
+      <p>To use a template, add the <code-snippet>template</code-snippet> attribute to your <code-snippet>app-route</code-snippet>.
+<code-block>&lt;app-route path="/example" import="/pages/template-page.html" template&gt;&lt;/app-route&gt;</code-block>
 
       <h2>Navigation</h2>
-      <p>There are three ways to trigger a route change. <code>hashchange</code>, <code>pushState()</code>, and a full page load.</p>
+      <p>There are three ways to trigger a route change. <code-snippet>hashchange</code-snippet>, <code-snippet>pushState()</code-snippet>, and a full page load.</p>
       <h4>hashchange</h4>
-      <p>If you're using <code>hashchange</code> you don't need to do anything. Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> will fire a <code>hashchange</code> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
+      <p>If you're using <code-snippet>hashchange</code-snippet> you don't need to do anything. Clicking a link <code-snippet>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
       <h4>pushState</h4>
-      <p>If you're using HTML5 <code>pushState</code> you need one extra step. The <code>pushState()</code> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code>pushState()</code> to navigate to another route you need to call it like this.</p>
-<pre>// push a new URL into the history stack
+      <p>If you're using HTML5 <code-snippet>pushState</code-snippet> you need one extra step. The <code-snippet>pushState()</code-snippet> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code-snippet>pushState()</code-snippet> to navigate to another route you need to call it like this.</p>
+<code-block>// push a new URL into the history stack
 history.pushState(stateObj, title, '/new/page');
 // fire a popstate event
-history.go(0);</pre>
+history.go(0);</code-block>
       <h4>Full page load</h4>
-      <p>Clicking a link <code>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code> without a hash path will do a full page load. You need to make sure your server will return <code>index.html</code> when looking up the resource at <code>/new/page</code>. The simplest set up is to always return <code>index.html</code> and let the <code>app-router</code> handle the routing including a not found page.</p>
+      <p>Clicking a link <code-snippet>&lt;a href="/new/page"&gt;New Page&lt;/a&gt;</code-snippet> without a hash path will do a full page load. You need to make sure your server will return <code-snippet>index.html</code-snippet> when looking up the resource at <code-snippet>/new/page</code-snippet>. The simplest set up is to always return <code-snippet>index.html</code-snippet> and let the <code-snippet>app-router</code-snippet> handle the routing including a not found page.</p>
 
       <h2>Install</h2>
-      <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code>bower install app-router --save</code></p>
+      <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code-snippet>bower install app-router --save</code-snippet></p>
 
       <h2>Example Setup</h2>
       <p>The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> for this demo site is a great example of the app-router.</p>

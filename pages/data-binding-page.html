@@ -1,23 +1,24 @@
 <link rel="import" href="/app-router/bower_components/polymer/polymer.html">
 <link rel="import" href="/app-router/layouts/scaffold-layout.html">
+<link rel="import" href="/app-router/elements/code-snippet.html">
 
 <polymer-element name="data-binding-page" attributes="pathArg1 queryParam1" noscript>
   <template>
     <scaffold-layout>
       <div class="title">Demo</div>
 
-      <p>Path variables and query parameters are automatically attached to the <code>app-route</code> element's attributes. Change values in the address bar and see them change here.</p>
+      <p>Path variables and query parameters are automatically attached to the <code-snippet>app-route</code-snippet> element's attributes. Change values in the address bar and see them change here.</p>
 
       <ul>
-        <li><code>pathArg1 = {{pathArg1}}</code></li>
-        <li><code>queryParam1 = {{queryParam1}}</code></li>
+        <li><code-snippet>pathArg1 = {{pathArg1}}</code-snippet></li>
+        <li><code-snippet>queryParam1 = {{queryParam1}}</code-snippet></li>
       </ul>
 
       <h3>Path Variables</h3>
-      <p>The route <code>&lt;app-route path="/databinding/:pathArg1" import="/pages/data-binding-page.html"&gt;&lt;/app-route&gt;</code> defines the <code>pathArg1</code> variable. This is automatically bound to the <code>data-binding-page</code> <code>pathArg1</code> attribute.</p>
+      <p>The route <code-snippet>&lt;app-route path="/databinding/:pathArg1" import="/pages/data-binding-page.html"&gt;&lt;/app-route&gt;</code-snippet> defines the <code-snippet>pathArg1</code-snippet> variable. This is automatically bound to the <code-snippet>data-binding-page</code-snippet> <code-snippet>pathArg1</code-snippet> attribute.</p>
 
       <h3>Query Parameters</h3>
-      <p>The query parameter <code>queryParam1</code> is pulled from the URL and attached to the <code>data-binding-page</code> <code>queryParam1</code> attribute. You don't specify the query parameters in your route.</p>
+      <p>The query parameter <code-snippet>queryParam1</code-snippet> is pulled from the URL and attached to the <code-snippet>data-binding-page</code-snippet> <code-snippet>queryParam1</code-snippet> attribute. You don't specify the query parameters in your route.</p>
 
     </scaffold-layout>
   </template>
