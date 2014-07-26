@@ -64,11 +64,11 @@
     var importUri = route.getAttribute('import');
     var routePath = route.getAttribute('path');
     var elementName = route.getAttribute('element');
-    var isTemplate = route.hasAttribute('template');
-    var isElement = !isTemplate;
+    var isTemplateRoute = route.hasAttribute('template');
+    var isElementRoute = !isTemplateRoute;
 
     // import custom element
-    if (isElement && importUri) {
+    if (isElementRoute && importUri) {
       if (!importedURIs.hasOwnProperty(importUri)) {
         importedURIs[importUri] = true;
         var elementLink = document.createElement('link');
@@ -87,7 +87,7 @@
     }
 
     // pre-loaded custom element
-    else if (isElement && !importUri && elementName) {
+    else if (isElementRoute && !importUri && elementName) {
       var resourceEl = document.createElement(elementName);
       var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
       for (var arg in routeArgs) {
@@ -99,7 +99,7 @@
     }
 
     // import template
-    else if (isTemplate && importUri) {
+    else if (isTemplateRoute && importUri) {
       if (importedURIs.hasOwnProperty(importUri)) {
         // previously imported. this is an async operation and may not be complete yet.
         var previousLink = document.querySelector('link[href="' + importUri + '"]');
@@ -130,7 +130,7 @@
     }
 
     // pre-loaded template
-    else if (isTemplate && !importUri) {
+    else if (isTemplateRoute && !importUri) {
       var clone = document.importNode(route.querySelector('template').content, true);
       this.replaceActiveElement(clone);
     }
