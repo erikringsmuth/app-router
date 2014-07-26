@@ -4,7 +4,7 @@
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
-  "description": "Declarative, lazy-loading app router for web components.",
+  "description": "Router for Web Components.",
   "keywords": [
     "polymer",
     "web-components",
