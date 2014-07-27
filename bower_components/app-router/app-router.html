@@ -1,7 +1,7 @@
 <!-- Copyright (C) 2014 Erik Ringsmuth - MIT license -->
 <script>
 (function(window, document) {
-  // <app-route path="" import="" [template]></app-route>
+  // <app-route path="/path" [import="/page/cust-el.html"] [element="cust-el"] [template]></app-route>
   document.registerElement('app-route', {
     prototype: Object.create(HTMLElement.prototype)
   });
@@ -16,13 +16,14 @@
   var importedURIs = {};
 
   // Initialize the router
-  router.createdCallback = function() {
+  router.attachedCallback = function() {
     this.previousState = '';
     this.activeRoute = document.createElement('app-route');
 
     // listen for URL change events
-    window.addEventListener('popstate', this.loadActiveRoute.bind(this), false);
-    window.addEventListener('hashchange', this.loadActiveRoute.bind(this), false);
+    this.stateChangeHandler = this.changeActiveRoute.bind(this);
+    window.addEventListener('popstate', this.stateChangeHandler, false);
+    window.addEventListener('hashchange', this.stateChangeHandler, false);
 
     // set up a shadow root or <active-route> element for the active route's content
     if (this.hasAttribute('shadow')) {
@@ -33,11 +34,17 @@
     }
 
     // load the web component for the active route
-    this.loadActiveRoute();
+    this.changeActiveRoute();
   };
 
-  // loadActiveRoute() - Find the first <app-route> that matches the current URL and load it
-  router.loadActiveRoute = function() {
+  // clean up global event listeners
+  router.detachedCallback = function() {
+    window.removeEventListener('popstate', this.stateChangeHandler, false);
+    window.removeEventListener('hashchange', this.stateChangeHandler, false);
+  };
+
+  // changeActiveRoute() - Find the first <app-route> that matches the current URL and change the active route
+  router.changeActiveRoute = function() {
     // In some modern browsers a hashchange also fires a popstate. There isn't a check to see if the browser will fire
     // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
     if (this.previousState !== window.location.href) {
@@ -46,99 +53,103 @@
       var routes = this.querySelectorAll('app-route');
       for (var i = 0; i < routes.length; i++) {
         if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
-          var route = routes[i];
-          this.activeRoute.removeAttribute('active');
-          route.setAttribute('active', 'active');
-          this.activeRoute = route;
-          this.loadRoute(route, urlPath);
+          this.activateRoute(routes[i], urlPath);
           break;
         }
       }
     }
   };
 
-  // loadRoute(route, urlPath) - Import the route's element or template and attach it to the DOM
-  //
-  // Loading a custom element will automatically bind path variables and query parameters to the element's attributes.
-  router.loadRoute = function(route, urlPath) {
+  // activateRoute(route, urlPath) - Activate the route
+  router.activateRoute = function(route, urlPath) {
+    this.activeRoute.removeAttribute('active');
+    route.setAttribute('active', 'active');
+    this.activeRoute = route;
+
     var importUri = route.getAttribute('import');
     var routePath = route.getAttribute('path');
     var elementName = route.getAttribute('element');
-    var isTemplateRoute = route.hasAttribute('template');
-    var isElementRoute = !isTemplateRoute;
+    var isTemplate = route.hasAttribute('template');
+    var isElement = !isTemplate;
 
     // import custom element
-    if (isElementRoute && importUri) {
-      if (!importedURIs.hasOwnProperty(importUri)) {
-        importedURIs[importUri] = true;
-        var elementLink = document.createElement('link');
-        elementLink.setAttribute('rel', 'import');
-        elementLink.setAttribute('href', importUri);
-        document.head.appendChild(elementLink);
-      }
-      var resourceEl = document.createElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''));
-      var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
-      for (var arg in routeArgs) {
-        if (routeArgs.hasOwnProperty(arg)) {
-          resourceEl[arg] = routeArgs[arg];
-        }
-      }
-      this.replaceActiveElement(resourceEl);
+    if (isElement && importUri) {
+      this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath);
     }
-
     // pre-loaded custom element
-    else if (isElementRoute && !importUri && elementName) {
-      var resourceEl = document.createElement(elementName);
-      var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
-      for (var arg in routeArgs) {
-        if (routeArgs.hasOwnProperty(arg)) {
-          resourceEl[arg] = routeArgs[arg];
-        }
-      }
-      this.replaceActiveElement(resourceEl);
+    else if (isElement && !importUri && elementName) {
+      this.activateCustomElement(elementName, routePath, urlPath);
     }
-
     // import template
-    else if (isTemplateRoute && importUri) {
-      if (importedURIs.hasOwnProperty(importUri)) {
-        // previously imported. this is an async operation and may not be complete yet.
-        var previousLink = document.querySelector('link[href="' + importUri + '"]');
-        if (previousLink.import) {
-          // the import is complete
-          this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
-        } else {
-          // wait for `onload`
-          previousLink.onload = function() {
-            if (route.hasAttribute('active')) {
-              this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
-            }
-          }.bind(this);
-        }
+    else if (isTemplate && importUri) {
+      this.importAndActivateTemplate(importUri, route);
+    }
+    // pre-loaded template
+    else if (isTemplate && !importUri) {
+      this.activateTemplate(route);
+    }
+  };
+
+  // importAndActivateCustomElement(importUri, elementName, routePath, urlPath) - Import the custom element then replace the active route
+  // with a new instance of the custom element
+  router.importAndActivateCustomElement = function(importUri, elementName, routePath, urlPath) {
+    if (!importedURIs.hasOwnProperty(importUri)) {
+      importedURIs[importUri] = true;
+      var elementLink = document.createElement('link');
+      elementLink.setAttribute('rel', 'import');
+      elementLink.setAttribute('href', importUri);
+      document.head.appendChild(elementLink);
+    }
+    this.activateCustomElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''), routePath, urlPath);
+  };
+
+  // activateCustomElement(elementName, routePath, urlPath) - Replace the active route with a new instance of the custom element
+  router.activateCustomElement = function(elementName, routePath, urlPath) {
+    var resourceEl = document.createElement(elementName);
+    var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
+    for (var arg in routeArgs) {
+      if (routeArgs.hasOwnProperty(arg)) {
+        resourceEl[arg] = routeArgs[arg];
+      }
+    }
+    this.replaceActiveElement(resourceEl);
+  };
+
+  // importAndActivateTemplate(importUri, route) - Import the template then replace the active route with a clone of the template's content
+  router.importAndActivateTemplate = function(importUri, route) {
+    if (importedURIs.hasOwnProperty(importUri)) {
+      // previously imported. this is an async operation and may not be complete yet.
+      var previousLink = document.querySelector('link[href="' + importUri + '"]');
+      if (previousLink.import) {
+        // the import is complete
+        this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
       } else {
-        // template hasn't been loaded yet
-        importedURIs[importUri] = true;
-        var templateLink = document.createElement('link');
-        templateLink.setAttribute('rel', 'import');
-        templateLink.setAttribute('href', importUri);
-        templateLink.onload = function() {
+        // wait for `onload`
+        previousLink.onload = function() {
           if (route.hasAttribute('active')) {
-            this.replaceActiveElement(document.importNode(templateLink.import.querySelector('template').content, true));
+            this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
           }
         }.bind(this);
-        document.head.appendChild(templateLink);
       }
+    } else {
+      // template hasn't been loaded yet
+      importedURIs[importUri] = true;
+      var templateLink = document.createElement('link');
+      templateLink.setAttribute('rel', 'import');
+      templateLink.setAttribute('href', importUri);
+      templateLink.onload = function() {
+        if (route.hasAttribute('active')) {
+          this.replaceActiveElement(document.importNode(templateLink.import.querySelector('template').content, true));
+        }
+      }.bind(this);
+      document.head.appendChild(templateLink);
     }
+  };
 
-    // pre-loaded template
-    else if (isTemplateRoute && !importUri) {
-      var clone = document.importNode(route.querySelector('template').content, true);
-      this.replaceActiveElement(clone);
-    }
-
-    // bad app-route
-    else {
-      throw new Error('Improperly formatted <app-route>');
-    }
+  // activateTemplate(route) - Replace the active route with a clone of the template's content
+  router.activateTemplate = function(route) {
+    var clone = document.importNode(route.querySelector('template').content, true);
+    this.replaceActiveElement(clone);
   };
 
   // replaceActiveElement(newElement) - Replace the active route's content with the new element

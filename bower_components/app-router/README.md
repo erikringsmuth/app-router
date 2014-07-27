@@ -5,6 +5,8 @@
 
 Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/`, hash paths `#/`, and hashbang paths `#!/`.
 
+[Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
+
 ## Configuration
 
 ```html
@@ -48,12 +50,12 @@ http://www.example.com/order/123?sort=ascending
 <order-page id="123" sort="ascending"></order-page>
 ```
 
-See it in action [here](http://erikringsmuth.github.io/app-router/#/demo/1337?queryParam1=Routing%20with%20Web%20Components!).
+See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Multiple Layouts
-Each page chooses which layout to use. This allows multiple layouts in the same app. Use the `<content>` tags as insertion points to insert the page into the layout.
+Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
 
-This is a simple example showing the page and it's layout.
+This is a simple example showing a page and it's layout.
 
 #### home-page.html
 
@@ -75,24 +77,77 @@ This is a simple example showing the page and it's layout.
 <polymer-element name="simple-layout" noscript>
   <template>
     <core-toolbar>
-      <span flex>
-        <content select=".title"><!-- content with class 'title' --></content>
-      </span>
-      <core-item icon="home" label="Home"><a href="/#"></a></core-item>
-      <core-item icon="polymer" label="Demo"><a href="/#/demo"></a></core-item>
+      <content select=".title"><!-- content with class 'title' --></content>
     </core-toolbar>
     <content><!-- all other content --></content>
   </template>
 </polymer-element>
 ```
 
-## Imports
-The `import` attribute tells the route where to load the content from. By default it loads a Custom Element with a tag name that is the same as the file name. Alternatively, you can use the `template` attribute to load a template instead of a custom element. These are lighter-weight and often all you need. Templates will not have the path variable and query parameter data binding since templates don't have attributes.
+## &lt;app-route&gt; options
 
-To use a template, add the `template` attribute to your `app-route`.
+#### import a custom element
+Lazy-load a custom element.
+
+```html
+<app-route path="/customer/:customerId" import="/pages/customer-page.html"></app-route>
+```
+
+When you navigate to `/customer/123` the router will load `/pages/customer-page.html`, replace the active view with a new `customer-page` element, and bind any attributes `element.setAttribute('customerId', 123)`.
+
+You can manually set the element's name with the `element` attribute if it's different from the file name. This is useful when bundling (vulcanizing) custom elements.
+
+```html
+<app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"></app-route>
+```
+
+#### pre-loaded custom element
+You can route to a pre-loaded custom element. In this case, load the element normally in the `<head>` and include the `element="element-name"` attribute on the route. This is how you'd bundle and pre-load custom elements.
+
+```html
+<head>
+  <link rel="import" href="/pages/page-bundle.html">
+</head>
+<app-router>
+  <app-route path="/customer/:customerId" element="customer-page"></app-route>
+</app-router>
+```
+
+#### import template
+You can use a `<template>` instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the `template` attribute.
 
 ```html
 <app-route path="/example" import="/pages/template-page.html" template></app-route>
+```
+
+#### inline template
+Finally, you can in-line a `<template>` like this.
+
+```html
+<app-route path="/example" template>
+  <template>
+    <p>Inline template FTW!</p>
+  </template>
+</app-route>
+```
+
+## Shadow DOM
+By default the router puts the active route's content in an `<active-route></active-route>` element.
+
+```html
+<app-router>
+  <!-- app-routes -->
+  <active-route><!-- active route content --></active-route>
+</app-router>
+```
+
+If you want the active route's content isolated in a shadow tree you can add the `shadow` attribute like this.
+
+```html
+<app-router shadow>
+  # shadow-root <!-- the active route's content will be inside the shadow root -->
+  <!-- app-routes -->
+</app-router>
 ```
 
 ## Navigation
@@ -112,12 +167,10 @@ history.go(0); // go to the current state in the history stack, this fires a pop
 #### Full page load
 Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/new/page`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
-## Install
-[Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
-
 ## Demo Site
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
 ## Tests
 1. Start a static content server in `app-router` (node `http-server` or `python -m SimpleHTTPServer`)
-3. Open [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
+2. Run unit tests [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
+3. Run functional tests [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)

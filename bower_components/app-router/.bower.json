@@ -1,10 +1,10 @@
 {
   "name": "app-router",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
-  "description": "Declarative, lazy-loading app router for web components.",
+  "description": "Router for Web Components.",
   "keywords": [
     "polymer",
     "web-components",
@@ -20,15 +20,16 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "platform": "Polymer/platform"
+    "platform": "Polymer/platform",
+    "polymer": "Polymer/polymer"
   },
-  "_release": "0.2.0",
+  "_release": "0.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.2.0",
-    "commit": "08aca5e68d7c2f91bf0de9a66ecd0d0019162958"
+    "tag": "v0.2.1",
+    "commit": "aa47afba94d8d1ea7d1c86e2440cc2f8a3ae137c"
   },
   "_source": "git://github.com/erikringsmuth/app-router.git",
-  "_target": "~0.2.0",
+  "_target": "~0.2.1",
   "_originalSource": "app-router"
 }

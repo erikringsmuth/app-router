@@ -1,10 +1,10 @@
 {
   "name": "app-router",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
-  "description": "Declarative, lazy-loading app router for web components.",
+  "description": "Router for Web Components.",
   "keywords": [
     "polymer",
     "web-components",
@@ -20,6 +20,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "platform": "Polymer/platform"
+    "platform": "Polymer/platform",
+    "polymer": "Polymer/polymer"
   }
 }
