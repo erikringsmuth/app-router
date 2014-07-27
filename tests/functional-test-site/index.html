@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/platform/platform.js"></script>
+    <link rel="import" href="/app-router.html">
+    <link rel="import" href="pages/bundled-elements.html">
+  </head>
+  <body>
+    <p>Test the different <code>app-route</code> types by navigating through these links.</p>
+    <ul>
+      <li><a href="#/">/</a></li>
+      <li><a href="#/custom-element">/custom-element</a></li>
+      <li><a href="#/preloaded-custom-element">/preloaded-custom-element</a></li>
+      <li><a href="#/imported-custom-element">/imported-custom-element</a></li>
+      <li><a href="#/template">/template</a></li>
+      <li><a href="#/inline-template">/inline-template</a></li>
+    </ul>
+    <app-router>
+      <app-route path="/" import="pages/custom-element-page.html"></app-route>
+      <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
+      <app-route path="/preloaded-custom-element" element="preloaded-custom-element-page"></app-route>
+      <app-route path="/imported-custom-element" import="pages/imported-bundled-elements.html" element="imported-custom-element-page"></app-route>
+      <app-route path="/template" import="pages/template-page.html" template></app-route>
+      <app-route path="/inline-template" template>
+        <template>
+          <h2>Inline Template Page</h2>
+        </template>
+      </app-route>
+      <app-route path="*" import="pages/not-found-page.html"></app-route>
+    </app-router>
+  </body>
+</html>
