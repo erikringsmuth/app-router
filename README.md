@@ -170,7 +170,7 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 ## Demo Site
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
-## Development and Testing
+## Development and Testing [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
 - Run `bower install` and `npm install` to get dev dependencies
 - Watch, lint, and minify code changes with `gulp`
 - Start a static content server to run tests (node `http-server` or `python -m SimpleHTTPServer`)
