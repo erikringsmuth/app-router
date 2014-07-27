@@ -172,4 +172,5 @@ Check out the `app-router` in action at [erikringsmuth.github.io/app-router](htt
 
 ## Tests
 1. Start a static content server in `app-router` (node `http-server` or `python -m SimpleHTTPServer`)
-3. Open [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
+2. Run unit tests [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
+3. Run functional tests [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)

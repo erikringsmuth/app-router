@@ -46,37 +46,40 @@
       var routes = this.querySelectorAll('app-route');
       for (var i = 0; i < routes.length; i++) {
         if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
-          // found a matching route, activate it
-          var route = routes[i];
-          var importUri = route.getAttribute('import');
-          var routePath = route.getAttribute('path');
-          var elementName = route.getAttribute('element');
-          var isTemplate = route.hasAttribute('template');
-          var isElement = !isTemplate;
-
-          this.activeRoute.removeAttribute('active');
-          route.setAttribute('active', 'active');
-          this.activeRoute = route;
-
-          // import custom element
-          if (isElement && importUri) {
-            this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath);
-          }
-          // pre-loaded custom element
-          else if (isElement && !importUri && elementName) {
-            this.activateCustomElement(elementName, routePath, urlPath);
-          }
-          // import template
-          else if (isTemplate && importUri) {
-            this.importAndActivateTemplate(importUri, route);
-          }
-          // pre-loaded template
-          else if (isTemplate && !importUri) {
-            this.activateTemplate(route);
-          }
+          this.activateRoute(routes[i], urlPath);
           break;
         }
       }
+    }
+  };
+
+  // activateRoute(route, urlPath) - Activate the route
+  router.activateRoute = function(route, urlPath) {
+    this.activeRoute.removeAttribute('active');
+    route.setAttribute('active', 'active');
+    this.activeRoute = route;
+
+    var importUri = route.getAttribute('import');
+    var routePath = route.getAttribute('path');
+    var elementName = route.getAttribute('element');
+    var isTemplate = route.hasAttribute('template');
+    var isElement = !isTemplate;
+
+    // import custom element
+    if (isElement && importUri) {
+      this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath);
+    }
+    // pre-loaded custom element
+    else if (isElement && !importUri && elementName) {
+      this.activateCustomElement(elementName, routePath, urlPath);
+    }
+    // import template
+    else if (isTemplate && importUri) {
+      this.importAndActivateTemplate(importUri, route);
+    }
+    // pre-loaded template
+    else if (isTemplate && !importUri) {
+      this.activateTemplate(route);
     }
   };
 
