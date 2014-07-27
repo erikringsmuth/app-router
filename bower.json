@@ -20,7 +20,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "platform": "Polymer/platform",
-    "polymer": "Polymer/polymer"
+    "platform": "Polymer/platform-dev",
+    "polymer": "Polymer/polymer-dev"
   }
 }

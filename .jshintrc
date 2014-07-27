@@ -1,0 +1,14 @@
+{
+  // Enforcing options
+  "indent": 2,
+  "undef": true,
+  "unused": true,
+  "trailing": true,
+  "quotmark": true,
+
+  // Relaxing options
+  "smarttabs": true,
+
+  // Environments
+  "browser": true
+}
