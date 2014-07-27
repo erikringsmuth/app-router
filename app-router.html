@@ -195,8 +195,10 @@
   router.testRoute = function(routePath, urlPath) {
     // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
 
-    // Remove trailing /
-    urlPath = urlPath.replace(/(\/$|\/\?)/, '');
+    // Remove trailing / unless it's the root
+    if(!urlPath.length == 1) {
+      urlPath = urlPath.replace(/(\/$|\/\?)/, '');
+    }
 
     // If the urlPath is an exact match or '*' then the route is a match
     if (routePath === urlPath || routePath === '*') {
