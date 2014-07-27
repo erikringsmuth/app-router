@@ -1,6 +1,6 @@
 describe('router.urlPath(url)', function() {
   var router = document.createElement('app-router');
-  
+
   it('should return the path on a url without a hash or search', function() {
     expect(router.urlPath('http://domain.com/example/path')).toEqual('/example/path');
   });
@@ -48,31 +48,31 @@ describe('router.urlPath(url)', function() {
 
 describe('router.testRoute(routePath, path)', function() {
   var router = document.createElement('app-router');
-  
+
   it('should return true on an exact match', function() {
     expect(router.testRoute('/example/path', '/example/path')).toEqual(true);
   });
-  
+
   it('should return true when matching with a wildcard', function() {
     expect(router.testRoute('/example/*', '/example/path')).toEqual(true);
   });
-  
+
   it('should return true when matching with a path argument', function() {
     expect(router.testRoute('/:patharg/path', '/example/path')).toEqual(true);
   });
-  
+
   it('should return true when matching on a combination of wildcards and path arguments', function() {
     expect(router.testRoute('/*/:patharg', '/example/path')).toEqual(true);
   });
-  
+
   it('should always return true when matching on "*"', function() {
     expect(router.testRoute('*', '/example/path')).toEqual(true);
   });
-  
+
   it('should not match when one path has a trailing \'/\' but the other doesn\'t', function() {
     expect(router.testRoute('/example/route/', '/example/route')).toEqual(false);
   });
-  
+
   it('should return false if the route path does not have the same number of path segments as the URL path', function() {
     expect(router.testRoute('/example/route/longer', '/example/path')).toEqual(false);
   });
@@ -80,7 +80,7 @@ describe('router.testRoute(routePath, path)', function() {
 
 describe('router.routeArguments(routePath, path, url)', function() {
   var router = document.createElement('app-router');
-  
+
   it('should parse string query parameters', function() {
     var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=example%20string');
     expect(args.queryParam).toEqual('example string');
