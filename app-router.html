@@ -16,13 +16,14 @@
   var importedURIs = {};
 
   // Initialize the router
-  router.createdCallback = function() {
+  router.attachedCallback = function() {
     this.previousState = '';
     this.activeRoute = document.createElement('app-route');
 
     // listen for URL change events
-    window.addEventListener('popstate', this.changeActiveRoute.bind(this), false);
-    window.addEventListener('hashchange', this.changeActiveRoute.bind(this), false);
+    this.stateChangeHandler = this.changeActiveRoute.bind(this);
+    window.addEventListener('popstate', this.stateChangeHandler, false);
+    window.addEventListener('hashchange', this.stateChangeHandler, false);
 
     // set up a shadow root or <active-route> element for the active route's content
     if (this.hasAttribute('shadow')) {
@@ -34,6 +35,12 @@
 
     // load the web component for the active route
     this.changeActiveRoute();
+  };
+
+  // clean up global event listeners
+  router.detachedCallback = function() {
+    window.removeEventListener('popstate', this.stateChangeHandler, false);
+    window.removeEventListener('hashchange', this.stateChangeHandler, false);
   };
 
   // changeActiveRoute() - Find the first <app-route> that matches the current URL and change the active route
