@@ -19,7 +19,8 @@
     "node_modules",
     "tests",
     "tmp",
-    "gulpfile.js"
+    "gulpfile.js",
+    "package.json"
   ],
   "dependencies": {},
   "devDependencies": {
