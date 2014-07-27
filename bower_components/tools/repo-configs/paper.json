@@ -1,0 +1,31 @@
+[
+  {
+    "dir": "components",
+    "org": "Polymer",
+    "repos": [
+      "font-roboto",
+      "paper-button",
+      "paper-calculator",
+      "paper-checkbox",
+      "paper-dialog",
+      "paper-docs",
+      "paper-elements",
+      "paper-fab",
+      "paper-focusable",
+      "paper-icon-button",
+      "paper-input",
+      "paper-item",
+      "paper-menu-button",
+      "paper-progress",
+      "paper-radio-button",
+      "paper-radio-group",
+      "paper-ripple",
+      "paper-scaffold",
+      "paper-shadow",
+      "paper-slider",
+      "paper-tabs",
+      "paper-toast",
+      "paper-toggle-button"
+      ]
+  }
+]

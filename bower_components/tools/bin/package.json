@@ -1,0 +1,8 @@
+{
+  "name": "tools",
+  "version": "0.0.0",
+  "dependencies": {
+    "adj-noun": "^0.1.0",
+    "bigstraw": "^1.0.2"
+  }
+}

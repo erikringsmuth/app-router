@@ -1,0 +1,22 @@
+{
+  "name": "test",
+  "version": "0.0.20131010",
+  "homepage": "https://github.com/Polymer/tools",
+  "authors": [
+    "Daniel Freedman <dfreedm@google.com>"
+  ],
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    ".",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chai": ">=1.8.1",
+    "mocha": ">=1.13.0"
+  }
+}

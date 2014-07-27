@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+adjNoun = require('adj-noun');
+versionString = process.argv[2];
+
+if (!versionString) {
+  console.error('Need version string!');
+  process.exit(1);
+}
+
+version = versionString.replace(/\./g, '');
+console.log('== Candidates for version', versionString, '==');
+
+// use version number as random seed
+adjNoun.seed(Number(version));
+
+for (var i = 0; i < 10; i++) {
+  console.log(adjNoun().join(' '));
+}

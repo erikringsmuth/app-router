@@ -1,0 +1,26 @@
+{
+  "name": "Node-bind",
+  "version": "0.0.0",
+  "description": "README.md",
+  "main": "grunt.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Polymer/Node-bind.git"
+  },
+  "author": "",
+  "license": "Apache License 2.0",
+  "devDependencies": {
+    "chai": "*",
+    "mocha": ">=1.9",
+    "grunt": "*",
+    "grunt-karma": "*",
+    "karma-mocha": "*",
+    "karma-ie-launcher": "*",
+    "karma-safari-launcher": "*",
+    "karma-script-launcher": "*",
+    "karma-crbot-reporter": "*"
+  }
+}

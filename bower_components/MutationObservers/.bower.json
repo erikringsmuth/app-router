@@ -1,0 +1,34 @@
+{
+  "name": "MutationObservers",
+  "homepage": "https://github.com/Polymer/MutationObservers",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "description": "Mutation Observers Polyfill",
+  "main": "MutationObserver.js",
+  "keywords": [
+    "mutationobservers"
+  ],
+  "dependencies": {
+    "WeakMap": "Polymer/WeakMap#>=0.3.0 <1.0.0"
+  },
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.3.4",
+  "_release": "0.3.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.4",
+    "commit": "bb4505b7856f3e26cccf029c91da3e2575333118"
+  },
+  "_source": "git://github.com/Polymer/MutationObservers.git",
+  "_target": ">=0.3.0 <1.0.0",
+  "_originalSource": "Polymer/MutationObservers"
+}

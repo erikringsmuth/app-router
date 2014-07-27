@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -16,11 +16,14 @@
   "ignore": [
     "**/.*",
     "bower_components",
-    "tests"
+    "node_modules",
+    "tests",
+    "tmp",
+    "gulpfile.js"
   ],
   "dependencies": {},
   "devDependencies": {
-    "platform": "Polymer/platform",
-    "polymer": "Polymer/polymer"
+    "platform": "Polymer/platform-dev",
+    "polymer": "Polymer/polymer-dev"
   }
 }

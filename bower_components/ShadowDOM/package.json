@@ -1,0 +1,17 @@
+{
+  "name": "ShadowDOM",
+  "version": "0.0.1",
+  "devDependencies": {
+    "mocha": ">=1.9",
+    "chai": "*",
+    "grunt": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-yuidoc": "~0.4.0",
+    "grunt-karma": "*",
+    "karma-mocha": "*",
+    "karma-ie-launcher": "*",
+    "karma-safari-launcher": "*",
+    "karma-script-launcher": "*",
+    "karma-crbot-reporter": "*"
+  }
+}

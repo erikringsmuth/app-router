@@ -1,0 +1,26 @@
+{
+  "name": "NodeBind",
+  "homepage": "https://github.com/Polymer/NodeBind",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.3.4",
+  "_release": "0.3.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.4",
+    "commit": "9f0089946c312d9ac9ca45d06913fce507a8b185"
+  },
+  "_source": "git://github.com/Polymer/NodeBind.git",
+  "_target": ">=0.3.0 <1.0.0",
+  "_originalSource": "Polymer/NodeBind"
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "dir": "components",
+    "org": "PolymerLabs",
+    "repos": [
+      "ace-element",
+      "chart-js",
+      "code-mirror",
+      "cool-clock",
+      "fire-base",
+      "flatiron-director",
+      "g-kratu",
+      "github-elements",
+      "google-apis",
+      "google-map",
+      "humane-js",
+      "js-beautify",
+      "marked-js",
+      "more-elements",
+      "notification-elements",
+      "paper-form",
+      "pdf-js",
+      "pixi-js",
+      "smoothie-chart",
+      "speech-mic",
+      "speech-transcript",
+      "three-js",
+      "tk-buildbot",
+      "typeahead-input",
+      "wu-weather",
+      "x-meta",
+      "x-tags",
+      "yt-video"
+    ]
+  },
+  {
+    "dir": "projects",
+    "org": "PolymerLabs",
+    "repos": [
+      "test-dashboard",
+      "youtube"
+    ]
+  }
+]

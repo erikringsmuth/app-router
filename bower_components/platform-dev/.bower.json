@@ -1,0 +1,41 @@
+{
+  "name": "platform-dev",
+  "main": "platform.js",
+  "homepage": "https://github.com/Polymer/platform",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "description": "Integrate platform polyfills: load, build, test",
+  "keywords": [
+    "polymer",
+    "web",
+    "components"
+  ],
+  "dependencies": {
+    "CustomElements": "Polymer/CustomElements#>=0.3.0 <1.0.0",
+    "HTMLImports": "Polymer/HTMLImports#>=0.3.0 <1.0.0",
+    "ShadowDOM": "Polymer/ShadowDOM#>=0.3.0 <1.0.0",
+    "TemplateBinding": "Polymer/TemplateBinding#>=0.3.0 <1.0.0",
+    "tools": "Polymer/tools#>=0.3.0 <1.0.0",
+    "URL": "Polymer/URL#>=0.3.0 <1.0.0"
+  },
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.3.4",
+  "_release": "0.3.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.4",
+    "commit": "02a0f66b65c34585b4b986e6a3a73cc0d743683a"
+  },
+  "_source": "git://github.com/Polymer/platform-dev.git",
+  "_target": ">=0.3.0 <1.0.0",
+  "_originalSource": "Polymer/platform-dev"
+}
