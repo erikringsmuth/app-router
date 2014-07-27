@@ -1,0 +1,17 @@
+{
+  "name": "app-router",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erikringsmuth/app-router.git"
+  },
+  "scripts": {
+    "test": "node node_modules/gulp/bin/gulp.js ci"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.6",
+    "gulp-jshint": "^1.8.0",
+    "jshint-stylish": "^0.4.0",
+    "gulp-vulcanize": "^0.2.1",
+    "gulp-rename": "^1.2.0"
+  }
+}

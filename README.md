@@ -170,8 +170,9 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 ## Demo Site
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
-## Tests
-1. Run `bower install` to get dev dependencies
-2. Start a static content server (node `http-server` or `python -m SimpleHTTPServer`)
-3. Run unit tests [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
-4. Run functional tests [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)
+## Development and Testing
+- Run `bower install` and `npm install` to get dev dependencies
+- Watch, lint, and minify code changes with `gulp`
+- Start a static content server to run tests (node `http-server` or `python -m SimpleHTTPServer`)
+- Run unit tests in the browser (because PhantomJS doesn't support Web Components yet) [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
+- Manually run functional tests in the browser [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)
