@@ -171,6 +171,7 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
 ## Tests
-1. Start a static content server in `app-router` (node `http-server` or `python -m SimpleHTTPServer`)
-2. Run unit tests [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
-3. Run functional tests [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)
+1. Run `bower install` to get dev dependencies
+2. Start a static content server (node `http-server` or `python -m SimpleHTTPServer`)
+3. Run unit tests [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
+4. Run functional tests [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)
