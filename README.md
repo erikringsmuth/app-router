@@ -143,7 +143,7 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 ```
 
 #### Shadow DOM
-By default the router puts the active route's content in an `<active-route></active-route>` element.
+The router puts the active route's content in an `<active-route></active-route>` element.
 
 ```html
 <app-router>
