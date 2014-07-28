@@ -131,7 +131,18 @@ Finally, you can in-line a `<template>` like this.
 </app-route>
 ```
 
-## Shadow DOM
+## &lt;app-router&gt; options
+
+#### Trailing Slashes
+By default `/home` and `/home/` are treated as separate routes. You can configure the router to ignore trailing slashes.
+```html
+<app-router trailingSlash="ignore">
+  <!-- matches '/home' and '/home/' -->
+  <app-route path="/home" import="/pages/home-page.html"></app-route>
+</app-router>
+```
+
+#### Shadow DOM
 By default the router puts the active route's content in an `<active-route></active-route>` element.
 
 ```html
