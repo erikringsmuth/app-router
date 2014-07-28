@@ -46,7 +46,7 @@ describe('router.urlPath(url)', function() {
   });
 });
 
-describe('router.testRoute(routePath, path)', function() {
+describe('router.testRoute(routePath, urlPath)', function() {
   var router = document.createElement('app-router');
 
   it('should return true on an exact match', function() {
@@ -76,9 +76,23 @@ describe('router.testRoute(routePath, path)', function() {
   it('should return false if the route path does not have the same number of path segments as the URL path', function() {
     expect(router.testRoute('/example/route/longer', '/example/path')).toEqual(false);
   });
+
+  it('should ignore trailing slashes if app-router has attribute `trailingSlash="ignore"`', function() {
+    var router = document.createElement('app-router');
+    router.setAttribute('trailingSlash', 'ignore');
+    expect(router.testRoute('/example/path', '/example/path/')).toEqual(true);
+    expect(router.testRoute('/example/path/', '/example/path')).toEqual(true);
+  });
+
+  it('should enforce trailing slashes if app-router has attribute `trailingSlash="strict"` (the default)', function() {
+    var router = document.createElement('app-router');
+    router.setAttribute('trailingSlash', 'strict');
+    expect(router.testRoute('/example/path', '/example/path/')).toEqual(false);
+    expect(router.testRoute('/example/path/', '/example/path')).toEqual(false);
+  });
 });
 
-describe('router.routeArguments(routePath, path, url)', function() {
+describe('router.routeArguments(routePath, urlPath, url)', function() {
   var router = document.createElement('app-router');
 
   it('should parse string query parameters', function() {
