@@ -204,7 +204,7 @@
 
     // handle trailing slashes (options: strict (default), ignore)
     if (this.getAttribute('trailingSlash') === 'ignore') {
-      // remove trailing / unless it's the root
+      // remove trailing / from the route path and URL path
       if(urlPath.slice(-1) === '/') {
         urlPath = urlPath.slice(0, -1);
       }
