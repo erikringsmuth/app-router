@@ -1,14 +1,15 @@
 {
   "name": "app-router",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
   "description": "Router for Web Components.",
   "keywords": [
-    "polymer",
     "web-components",
-    "router"
+    "router",
+    "polymer",
+    "x-tag"
   ],
   "main": "index.html",
   "license": "MIT",
@@ -22,7 +23,6 @@
     "gulpfile.js",
     "package.json"
   ],
-  "dependencies": {},
   "devDependencies": {
     "platform": "Polymer/platform-dev",
     "polymer": "Polymer/polymer-dev"

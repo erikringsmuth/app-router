@@ -1,40 +1,42 @@
 'use strict';
 var gulp = require('gulp');
 var jshint = require('gulp-jshint');
-var rename = require('gulp-rename');
-var vulcanize = require('gulp-vulcanize');
+var uglify = require('gulp-uglify');
+var inline = require('gulp-inline');
 
-var codeFiles = 'app-router.html';
-var testFiles = 'tests/spec/*.js';
+var files = ['src/*.*', 'tests/spec/*.js'];
 
 gulp.task('lint', function() {
-  gulp.src([codeFiles, testFiles])
+  gulp.src(files)
     .pipe(jshint.extract('always'))
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
+gulp.task('build', function() {
+  return gulp.src('src/app-router.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('.'));
+});
+
 gulp.task('minify', function() {
-  return gulp.src(codeFiles)
-    .pipe(vulcanize({
-      dest: 'tmp',
-      strip: true
-    }))
-    .pipe(rename({
-      suffix: '.min'
+  return gulp.src('src/app-router.html')
+    .pipe(inline({
+      base: 'src',
+      js: uglify()
     }))
     .pipe(gulp.dest('.'));
 });
 
-// The default task (called when you run `gulp`)
-gulp.task('default', function(){
-  gulp.run('lint', 'minify');
-  gulp.watch(codeFiles, function() {
-    gulp.run('lint', 'minify');
+gulp.task('watch', function() {
+  gulp.run('lint', 'build', 'minify');
+  gulp.watch(files, function() {
+    gulp.run('lint', 'build', 'minify');
   });
-  gulp.watch(testFiles, function() {
-    gulp.run('lint');
-  });
+});
+
+gulp.task('default', function() {
+  gulp.run('lint', 'build', 'minify');
 });
 
 // CI build

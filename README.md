@@ -181,9 +181,10 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 ## Demo Site
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
-## Development and Testing [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
-- Run `bower install` and `npm install` to get dev dependencies
-- Watch, lint, and minify code changes with `gulp`
+## Build and Test [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
+Source files are under the `src` folder. The build process writes to the root directory.
+- Run `bower install` and `npm install` to install dev dependencies
+- Lint, build, and minify code changes with `gulp` (watch with `gulp watch`)
 - Start a static content server to run tests (node `http-server` or `python -m SimpleHTTPServer`)
-- Run unit tests in the browser (because PhantomJS doesn't support Web Components yet) [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
+- Run unit tests in the browser (PhantomJS doesn't support Web Components) [http://localhost:8080/tests/SpecRunner.html](http://localhost:8080/tests/SpecRunner.html)
 - Manually run functional tests in the browser [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)
