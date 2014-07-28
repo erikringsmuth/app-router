@@ -53,6 +53,10 @@ describe('router.testRoute(routePath, urlPath)', function() {
     expect(router.testRoute('/example/path', '/example/path')).toEqual(true);
   });
 
+  it('should return true on an exact match of the root path', function() {
+    expect(router.testRoute('/', '/')).toEqual(true);
+  });
+
   it('should return true when matching with a wildcard', function() {
     expect(router.testRoute('/example/*', '/example/path')).toEqual(true);
   });
