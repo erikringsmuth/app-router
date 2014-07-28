@@ -10,6 +10,13 @@
 
       <h2>&lt;app-router&gt;</h2>
 
+      <h4>Trailing Slashes</h4>
+      <p>By default <code-snippet>/home</code-snippet> and <code-snippet>/home/</code-snippet> are treated as separate routes. You can configure the router to ignore trailing slashes with <code-snippet>trailingSlash="ignore"</code-snippet>.</p>
+<code-block>&lt;app-router trailingSlash="ignore"&gt;
+  &lt;!-- matches '/home' and '/home/' --&gt;
+  &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
+&lt;/app-router&gt;</code-block>
+
       <h4>Shadow DOM</h4>
       <p>By default the router puts the active route's content in an <code-snippet>&lt;active-route&gt;&lt;/active-route&gt;</code-snippet> element.</p>
 <code-block>&lt;app-router&gt;

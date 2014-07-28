@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -19,7 +19,8 @@
     "node_modules",
     "tests",
     "tmp",
-    "gulpfile.js"
+    "gulpfile.js",
+    "package.json"
   ],
   "dependencies": {},
   "devDependencies": {

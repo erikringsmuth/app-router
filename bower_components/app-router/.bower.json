@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -19,20 +19,21 @@
     "node_modules",
     "tests",
     "tmp",
-    "gulpfile.js"
+    "gulpfile.js",
+    "package.json"
   ],
   "dependencies": {},
   "devDependencies": {
     "platform": "Polymer/platform-dev",
     "polymer": "Polymer/polymer-dev"
   },
-  "_release": "0.2.2",
+  "_release": "0.3.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.2.2",
-    "commit": "1eebe9c86411306144a191784f2182e79ed56042"
+    "tag": "v0.3.0",
+    "commit": "76c68741cbe7f2009825d77662373153a42fa065"
   },
   "_source": "git://github.com/erikringsmuth/app-router.git",
-  "_target": "~0.2.2",
+  "_target": "~0.3.0",
   "_originalSource": "app-router"
 }
