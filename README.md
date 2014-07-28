@@ -134,7 +134,7 @@ Finally, you can in-line a `<template>` like this.
 ## &lt;app-router&gt; options
 
 #### Trailing Slashes
-By default `/home` and `/home/` are treated as separate routes. You can configure the router to ignore trailing slashes.
+By default `/home` and `/home/` are treated as separate routes. You can configure the router to ignore trailing slashes with `trailingSlash="ignore"`.
 ```html
 <app-router trailingSlash="ignore">
   <!-- matches '/home' and '/home/' -->
