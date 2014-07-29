@@ -144,7 +144,6 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 
 #### Shadow DOM
 The router puts the active route's content in an `<active-route></active-route>` element.
-
 ```html
 <app-router>
   <!-- app-routes -->
@@ -153,12 +152,22 @@ The router puts the active route's content in an `<active-route></active-route>`
 ```
 
 If you want the active route's content isolated in a shadow tree you can add the `shadow` attribute like this.
-
 ```html
 <app-router shadow>
   # shadow-root <!-- the active route's content will be inside the shadow root -->
   <!-- app-routes -->
 </app-router>
+```
+
+#### Init
+The router initializes itself when attached to the DOM. You can defer initialization by setting `init="manual"` and calling `init()` later.
+```html
+<app-router init="manual">
+  <!-- app-routes -->
+</app-router>
+<script>
+  document.querySelector('app-router').init();
+</script>
 ```
 
 ## Navigation

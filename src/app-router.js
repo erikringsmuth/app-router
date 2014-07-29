@@ -9,17 +9,28 @@
     prototype: Object.create(HTMLElement.prototype)
   });
 
-  // <app-router [shadow] [trailingSlash="strict|ignore"]></app-router>
+  // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"]></app-router>
   var router = Object.create(HTMLElement.prototype);
   var importedURIs = {};
 
-  // Initialize the router
+  // Initial set up when attached
   router.attachedCallback = function() {
+    if(this.getAttribute('init') !== 'manual') {
+      this.init();
+    }
+  };
+
+  // Initialize the router
+  router.init = function() {
+    if (this.isInitialized) {
+      return;
+    }
+    this.isInitialized = true;
     this.previousState = '';
     this.activeRoute = document.createElement('app-route');
 
     // listen for URL change events
-    this.stateChangeHandler = this.changeActiveRoute.bind(this);
+    this.stateChangeHandler = this.go.bind(this);
     window.addEventListener('popstate', this.stateChangeHandler, false);
     window.addEventListener('hashchange', this.stateChangeHandler, false);
 
@@ -32,7 +43,7 @@
     }
 
     // load the web component for the active route
-    this.changeActiveRoute();
+    this.go();
   };
 
   // clean up global event listeners
@@ -41,8 +52,8 @@
     window.removeEventListener('hashchange', this.stateChangeHandler, false);
   };
 
-  // changeActiveRoute() - Find the first <app-route> that matches the current URL and change the active route
-  router.changeActiveRoute = function() {
+  // go() - Find the first <app-route> that matches the current URL and change the active route
+  router.go = function() {
     // In some modern browsers a hashchange also fires a popstate. There isn't a check to see if the browser will fire
     // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
     if (this.previousState !== window.location.href) {
