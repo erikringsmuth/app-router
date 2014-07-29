@@ -26,11 +26,18 @@
       return;
     }
     this.isInitialized = true;
-    this.previousState = '';
     this.activeRoute = document.createElement('app-route');
 
-    // listen for URL change events
-    this.stateChangeHandler = this.go.bind(this);
+    // Listen for URL change events. In some modern browsers a hashchange also fires a popstate. There isn't
+    // a check to see if the browser will fire one or both. We have to keep track of the previous state to
+    // prevent it from loading the active route twice.
+    this.previousState = '';
+    this.stateChangeHandler = function() {
+      if (this.previousState !== window.location.href) {
+        this.previousState = window.location.href;
+        this.go();
+      }
+    }.bind(this);
     window.addEventListener('popstate', this.stateChangeHandler, false);
     window.addEventListener('hashchange', this.stateChangeHandler, false);
 
@@ -54,17 +61,12 @@
 
   // go() - Find the first <app-route> that matches the current URL and change the active route
   router.go = function() {
-    // In some modern browsers a hashchange also fires a popstate. There isn't a check to see if the browser will fire
-    // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
-    if (this.previousState !== window.location.href) {
-      this.previousState = window.location.href;
-      var urlPath = this.urlPath(window.location.href);
-      var routes = this.querySelectorAll('app-route');
-      for (var i = 0; i < routes.length; i++) {
-        if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
-          this.activateRoute(routes[i], urlPath);
-          break;
-        }
+    var urlPath = this.urlPath(window.location.href);
+    var routes = this.querySelectorAll('app-route');
+    for (var i = 0; i < routes.length; i++) {
+      if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
+        this.activateRoute(routes[i], urlPath);
+        break;
       }
     }
   };
