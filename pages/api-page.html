@@ -30,6 +30,15 @@
   &lt;!-- app-routes --&gt;
 &lt;/app-router&gt;</code-block>
 
+      <h4>init</h4>
+      <p>The router initializes itself when attached to the DOM. You can defer initialization by setting <code-snippet>init="manual"</code-snippet> and calling <code-snippet>init()</code-snippet> later.</p>
+<code-block>&lt;app-router init="manual"&gt;
+  &lt;!-- app-routes --&gt;
+&lt;/app-router&gt;
+&lt;script&gt;
+  document.querySelector('app-router').init();
+&lt;/script&gt;</code-block>
+
       <h2>&lt;app-route&gt;</h2>
 
       <h4>import a custom element</h4>
