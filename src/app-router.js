@@ -15,6 +15,12 @@
 
   // Initialize the router
   router.attachedCallback = function() {
+    if(this.hasAttribute('auto')){
+      this.bootstrap();
+    }
+  };
+
+  router.bootstrap = function(){
     this.previousState = '';
     this.activeRoute = document.createElement('app-route');
 
