@@ -9,6 +9,12 @@
     <link rel="import" href="pages/bundled-elements.html">
   </head>
   <body>
+    <style>
+      p {
+        margin-top: 50px;
+      }
+    </style>
+
     <p>Test the different <code>app-route</code> types by navigating through these links.</p>
     <ul>
       <li><a href="#/custom-element">/custom-element</a></li>
@@ -17,7 +23,10 @@
       <li><a href="#/template">/template</a></li>
       <li><a href="#/inline-template">/inline-template</a></li>
     </ul>
-    <app-router>
+
+    <!-- defaults -->
+    <p>All of these links should match different variations of elements, templates, lazy-loading, and inline.</p>
+    <app-router id="default-router">
       <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
       <app-route path="/preloaded-bundled-custom-element" element="preloaded-custom-element-page"></app-route>
       <app-route path="/imported-bundled-custom-element" import="pages/imported-bundled-elements.html" element="imported-custom-element-page"></app-route>
@@ -29,5 +38,23 @@
       </app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
+
+    <!-- trailingSlash="ignore" -->
+    <p>Should ignore trailing slashes and match "/custom-element" and "/custom-element/" with the same route.</p>
+    <app-router trailingSlash="ignore" id="ignore-trailing-slash">
+      <app-route path="/custom-element/" import="pages/custom-element-page.html"></app-route>
+      <app-route path="*" import="pages/not-found-page.html"></app-route>
+    </app-router>
+
+    <!-- init="manual" -->
+    <p>Should manually be initialized. Only matches "/custom-element".</p>
+    <app-router init="manual" id="manual-init">
+      <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
+      <app-route path="*" import="pages/not-found-page.html"></app-route>
+    </app-router>
+    <script>
+      document.querySelector('#manual-init').init();
+    </script>
+
   </body>
 </html>
