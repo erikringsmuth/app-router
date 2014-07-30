@@ -7,7 +7,8 @@
   "globals": {
     "describe": true,
     "it": true,
-    "expect": true
+    "expect": true,
+    "spyOn": true
   },
   "smarttabs": true,
   "browser": true

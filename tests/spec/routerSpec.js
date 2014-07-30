@@ -1,3 +1,94 @@
+describe('router.activateRoute(route, urlPath)', function() {
+  var router = document.createElement('app-router');
+
+  it('should remove the `active` attribute from the old active route', function() {
+    // arrange
+    var oldRoute = document.createElement('app-route');
+    oldRoute.setAttribute('active', 'active');
+    router.activeRoute = oldRoute;
+    var newRoute = document.createElement('app-route');
+
+    // act
+    router.activateRoute(newRoute, '/');
+
+    // assert
+    expect(oldRoute.hasAttribute('active')).toEqual(false);
+  });
+
+  it('should mark the new route as active', function() {
+    // arrange
+    router.activeRoute = document.createElement('app-route');
+    var route = document.createElement('app-route');
+
+    // act
+    router.activateRoute(route, '/');
+
+    // assert
+    expect(route.getAttribute('active')).toEqual('active');
+  });
+
+  it('should import and activate a custom element when the app-route has an `import` attribute and no `template` attribute', function() {
+    // arrange
+    router.activeRoute = document.createElement('app-route');
+    var route = document.createElement('app-route');
+    route.setAttribute('path', '/order/:id');
+    route.setAttribute('import', 'page/order-page.html');
+    spyOn(router, 'importAndActivateCustomElement');
+
+    // act
+    router.activateRoute(route, '/order/123');
+
+    // assert
+    expect(router.importAndActivateCustomElement).toHaveBeenCalledWith('page/order-page.html', null, '/order/:id', '/order/123');
+  });
+
+  it('should active a pre-registered custom element when the app-route has an `element` attribute and no `import` or `template` attributes', function() {
+    // arrange
+    router.activeRoute = document.createElement('app-route');
+    var route = document.createElement('app-route');
+    route.setAttribute('path', '/order/:id');
+    route.setAttribute('element', 'order-page');
+    spyOn(router, 'activateCustomElement');
+
+    // act
+    router.activateRoute(route, '/order/123');
+
+    // assert
+    expect(router.activateCustomElement).toHaveBeenCalledWith('order-page', '/order/:id', '/order/123');
+  });
+
+  it('should import and activate a template when the app-route has a `template` and `import` attribute', function() {
+    // arrange
+    router.activeRoute = document.createElement('app-route');
+    var route = document.createElement('app-route');
+    route.setAttribute('path', '/order/*');
+    route.setAttribute('import', 'page/order-page.html');
+    route.setAttribute('template', 'template');
+    spyOn(router, 'importAndActivateTemplate');
+
+    // act
+    router.activateRoute(route, '/order/123');
+
+    // assert
+    expect(router.importAndActivateTemplate).toHaveBeenCalledWith('page/order-page.html', route);
+  });
+
+  it('should activate an in-line template when the app-route has a `template` attribute but no `import` attribute', function() {
+    // arrange
+    router.activeRoute = document.createElement('app-route');
+    var route = document.createElement('app-route');
+    route.setAttribute('path', '/order/*');
+    route.setAttribute('template', 'template');
+    spyOn(router, 'activateTemplate');
+
+    // act
+    router.activateRoute(route, '/order/123');
+
+    // assert
+    expect(router.activateTemplate).toHaveBeenCalledWith(route);
+  });
+});
+
 describe('router.parseUrlPath(url)', function() {
   var router = document.createElement('app-router');
 
