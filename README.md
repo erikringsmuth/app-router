@@ -134,6 +134,14 @@ Finally, you can in-line a `<template>` like this.
 </app-route>
 ```
 
+#### regular expressions
+Include the `regex` attribute to match on a regular expression. The format is the same as a JavaScript regular expression.
+```html
+<!-- matches a pattern like '/word/number' -->
+<app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"></app-route>
+```
+Note: The regular expression must start with a `/` and end with a `/` optionally followed by `i`. Options global `g`, multiline `m`, and sticky `y` aren't valid when matching paths.
+
 ## &lt;app-router&gt; options
 
 #### Trailing Slashes
