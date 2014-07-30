@@ -69,6 +69,12 @@
   &lt;/template&gt;
 &lt;/app-route&gt;</code-block>
 
+      <h4>regular expressions</h4>
+      <p>Include the <code-snippet>regex</code-snippet> attribute to match on a regular expression. The format is the same as a JavaScript regular expression.</p>
+<code-block>&lt;!-- matches a pattern like '/word/number' --&gt;
+&lt;app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"&gt;&lt;/app-route&gt;</code-block>
+      <p>Note: The regular expression must start with a <code-snippet>/</code-snippet> and end with a <code-snippet>/</code-snippet> optionally followed by <code-snippet>i</code-snippet>. Options global <code-snippet>g</code-snippet>, multiline <code-snippet>m</code-snippet>, and sticky <code-snippet>y</code-snippet> aren't valid when matching paths.</p>
+
     </scaffold-layout>
   </template>
 </polymer-element>

@@ -11,8 +11,7 @@
   </head>
   <body unresolved>
     <app-router>
-      <app-route path="/" import="pages/home-page.html"></app-route>
-      <app-route path="/app-router/" import="pages/home-page.html"></app-route>
+      <app-route path="/^\/(app-router\/)?$/i" regex import="pages/home-page.html"></app-route>
       <app-route path="/databinding/:pathArg1" import="pages/data-binding-page.html"></app-route>
       <app-route path="/layouts" import="pages/layout-info-page.html"></app-route>
       <app-route path="/api" import="pages/api-page.html"></app-route>

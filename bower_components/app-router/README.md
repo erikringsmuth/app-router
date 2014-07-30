@@ -27,6 +27,9 @@ Lazy-loads content. Binds path variables and query parameters to page element's 
       <!-- matches using a path variable -->
       <app-route path="/order/:id" import="/pages/order-page.html"></app-route>
 
+      <!-- matches a pattern like '/word/number' -->
+      <app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"></app-route>
+
       <!-- matches everything else -->
       <app-route path="*" import="/pages/not-found-page.html"></app-route>
     </app-router>
@@ -130,6 +133,14 @@ Finally, you can in-line a `<template>` like this.
   </template>
 </app-route>
 ```
+
+#### regular expressions
+Include the `regex` attribute to match on a regular expression. The format is the same as a JavaScript regular expression.
+```html
+<!-- matches a pattern like '/word/number' -->
+<app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"></app-route>
+```
+Note: The regular expression must start with a `/` and end with a `/` optionally followed by `i`. Options global `g`, multiline `m`, and sticky `y` aren't valid when matching paths.
 
 ## &lt;app-router&gt; options
 

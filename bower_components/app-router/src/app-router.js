@@ -13,7 +13,7 @@
   var router = Object.create(HTMLElement.prototype);
 
   var importedURIs = {};
-  var isIE = 'ActiveXObject' in window || navigator.userAgent.toLowerCase().indexOf('msie') !== -1;
+  var isIE = 'ActiveXObject' in window;
 
   // Initial set up when attached
   router.attachedCallback = function() {
@@ -61,10 +61,10 @@
 
   // go() - Find the first <app-route> that matches the current URL and change the active route
   router.go = function() {
-    var urlPath = this.urlPath(window.location.href);
+    var urlPath = this.parseUrlPath(window.location.href);
     var routes = this.querySelectorAll('app-route');
     for (var i = 0; i < routes.length; i++) {
-      if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
+      if (this.testRoute(routes[i].getAttribute('path'), urlPath, this.getAttribute('trailingSlash'), routes[i].hasAttribute('regex'))) {
         this.activateRoute(routes[i], urlPath);
         break;
       }
@@ -79,17 +79,18 @@
 
     var importUri = route.getAttribute('import');
     var routePath = route.getAttribute('path');
+    var isRegExp = route.hasAttribute('regex');
     var elementName = route.getAttribute('element');
     var isTemplate = route.hasAttribute('template');
     var isElement = !isTemplate;
 
     // import custom element
     if (isElement && importUri) {
-      this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath);
+      this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp);
     }
     // pre-loaded custom element
     else if (isElement && !importUri && elementName) {
-      this.activateCustomElement(elementName, routePath, urlPath);
+      this.activateCustomElement(elementName, routePath, urlPath, isRegExp);
     }
     // import template
     else if (isTemplate && importUri) {
@@ -101,9 +102,9 @@
     }
   };
 
-  // importAndActivateCustomElement(importUri, elementName, routePath, urlPath) - Import the custom element then replace the active route
+  // importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp) - Import the custom element then replace the active route
   // with a new instance of the custom element
-  router.importAndActivateCustomElement = function(importUri, elementName, routePath, urlPath) {
+  router.importAndActivateCustomElement = function(importUri, elementName, routePath, urlPath, isRegExp) {
     if (!importedURIs.hasOwnProperty(importUri)) {
       importedURIs[importUri] = true;
       var elementLink = document.createElement('link');
@@ -111,19 +112,19 @@
       elementLink.setAttribute('href', importUri);
       document.head.appendChild(elementLink);
     }
-    this.activateCustomElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''), routePath, urlPath);
+    this.activateCustomElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''), routePath, urlPath, isRegExp);
   };
 
-  // activateCustomElement(elementName, routePath, urlPath) - Replace the active route with a new instance of the custom element
-  router.activateCustomElement = function(elementName, routePath, urlPath) {
+  // activateCustomElement(elementName, routePath, urlPath, isRegExp) - Replace the active route with a new instance of the custom element
+  router.activateCustomElement = function(elementName, routePath, urlPath, isRegExp) {
     var resourceEl = document.createElement(elementName);
-    var routeArgs = this.routeArguments(routePath, urlPath, window.location.href);
+    var routeArgs = this.routeArguments(routePath, urlPath, window.location.href, isRegExp);
     for (var arg in routeArgs) {
       if (routeArgs.hasOwnProperty(arg)) {
         resourceEl[arg] = routeArgs[arg];
       }
     }
-    this.replaceActiveElement(resourceEl);
+    this.activeElement(resourceEl);
   };
 
   // importAndActivateTemplate(importUri, route) - Import the template then replace the active route with a clone of the template's content
@@ -133,12 +134,12 @@
       var previousLink = document.querySelector('link[href="' + importUri + '"]');
       if (previousLink.import) {
         // the import is complete
-        this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
+        this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true));
       } else {
         // wait for `onload`
         previousLink.onload = function() {
           if (route.hasAttribute('active')) {
-            this.replaceActiveElement(document.importNode(previousLink.import.querySelector('template').content, true));
+            this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true));
           }
         }.bind(this);
       }
@@ -150,7 +151,7 @@
       templateLink.setAttribute('href', importUri);
       templateLink.onload = function() {
         if (route.hasAttribute('active')) {
-          this.replaceActiveElement(document.importNode(templateLink.import.querySelector('template').content, true));
+          this.activeElement(document.importNode(templateLink.import.querySelector('template').content, true));
         }
       }.bind(this);
       document.head.appendChild(templateLink);
@@ -160,15 +161,15 @@
   // activateTemplate(route) - Replace the active route with a clone of the template's content
   router.activateTemplate = function(route) {
     var clone = document.importNode(route.querySelector('template').content, true);
-    this.replaceActiveElement(clone);
+    this.activeElement(clone);
   };
 
-  // replaceActiveElement(newElement) - Replace the active route's content with the new element
-  router.replaceActiveElement = function(newElement) {
+  // activeElement(element) - Replace the active route's content with the new element
+  router.activeElement = function(element) {
     while (this.activeRouteContent.firstChild) {
       this.activeRouteContent.removeChild(this.activeRouteContent.firstChild);
     }
-    this.activeRouteContent.appendChild(newElement);
+    this.activeRouteContent.appendChild(element);
   };
 
   // urlPath(url) - Parses the url to get the path
@@ -179,7 +180,7 @@
   // path = '/example/path'
   //
   // Note: The URL must contain the protocol like 'http(s)://'
-  router.urlPath = function(url) {
+  router.parseUrlPath = function(url) {
     // The relative URI is everything after the third slash including the third slash
     // Example relativeUri = '/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
     var splitUrl = url.split('/');
@@ -206,22 +207,45 @@
     return path;
   };
 
-  // router.testRoute(routePath, urlPath) - Test if the route's path matches the URL's path
+  // router.testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
   //
   // Example routePath: '/example/*'
   // Example urlPath = '/example/path'
-  router.testRoute = function(routePath, urlPath) {
+  router.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
     // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
 
     // handle trailing slashes (options: strict (default), ignore)
-    if (this.getAttribute('trailingSlash') === 'ignore') {
+    if (trailingSlashOption === 'ignore') {
       // remove trailing / from the route path and URL path
       if(urlPath.slice(-1) === '/') {
         urlPath = urlPath.slice(0, -1);
       }
-      if(routePath.slice(-1) === '/') {
+      if(routePath.slice(-1) === '/' && !isRegExp) {
         routePath = routePath.slice(0, -1);
       }
+    }
+
+    if (isRegExp) {
+      // parse HTML attribute path="/^\/\w+\/\d+$/i" to a regular expression `new RegExp('^\/\w+\/\d+$', 'i')`
+      // note that 'i' is the only valid option. global 'g', multiline 'm', and sticky 'y' won't be valid matchers for a path.
+      if (routePath.charAt(0) !== '/') {
+        // must start with a slash
+        return false;
+      }
+      routePath = routePath.slice(1);
+      var options = '';
+      if (routePath.slice(-1) === '/') {
+        routePath = routePath.slice(0, -1);
+      }
+      else if (routePath.slice(-2) === '/i') {
+        routePath = routePath.slice(0, -2);
+        options = 'i';
+      }
+      else {
+        // must end with a slash followed by zero or more options
+        return false;
+      }
+      return new RegExp(routePath, options).test(urlPath);
     }
 
     // If the urlPath is an exact match or '*' then the route is a match
@@ -260,24 +284,26 @@
     return true;
   };
 
-  // router.routeArguments(routePath, urlPath, url) - Gets the path variables and query parameter values from the URL
-  router.routeArguments = function routeArguments(routePath, urlPath, url) {
+  // router.routeArguments(routePath, urlPath, url, isRegExp) - Gets the path variables and query parameter values from the URL
+  router.routeArguments = function routeArguments(routePath, urlPath, url, isRegExp) {
     var args = {};
 
     // Example urlPathSegments = ['', example', 'path']
     var urlPathSegments = urlPath.split('/');
 
-    // Example routePathSegments = ['', 'example', '*']
-    var routePathSegments = routePath.split('/');
+    if (!isRegExp) {
+      // Example routePathSegments = ['', 'example', '*']
+      var routePathSegments = routePath.split('/');
 
-    // Get path variables
-    // urlPath '/customer/123'
-    // routePath '/customer/:id'
-    // parses id = '123'
-    for (var index = 0; index < routePathSegments.length; index++) {
-      var routeSegment = routePathSegments[index];
-      if (routeSegment.charAt(0) === ':') {
-        args[routeSegment.substring(1)] = urlPathSegments[index];
+      // Get path variables
+      // urlPath '/customer/123'
+      // routePath '/customer/:id'
+      // parses id = '123'
+      for (var index = 0; index < routePathSegments.length; index++) {
+        var routeSegment = routePathSegments[index];
+        if (routeSegment.charAt(0) === ':') {
+          args[routeSegment.substring(1)] = urlPathSegments[index];
+        }
       }
     }
 

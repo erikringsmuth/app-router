@@ -32,13 +32,16 @@
     &lt;!-- matches using a path variable --&gt;
     &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
 
+    &lt;!-- matches a pattern like '/word/number' --&gt;
+    &lt;app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"&gt;&lt;/app-route&gt;
+
     &lt;!-- matches everything else --&gt;
     &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
   &lt;/app-router&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code-block>
       <p>Changing the URL will find the first <code-snippet>app-route</code-snippet> that matches, load the element or template, and replace the current view.</p>
-      
+
       <h2>Data Binding</h2>
       <p>Path variables and query parameters automatically attach to the element's attributes.</p>
 
