@@ -172,12 +172,12 @@ describe('router.testRoute(routePath, urlPath, trailingSlashOption)', function()
     expect(router.testRoute('/example/route/longer', '/example/path', 'strict')).toEqual(false);
   });
 
-  it('should ignore trailing slashes if app-router has attribute `trailingSlash="ignore"`', function() {
+  it('should ignore trailing slashes if `trailingSlash` is "ignore"', function() {
     expect(router.testRoute('/example/path', '/example/path/', 'ignore')).toEqual(true);
     expect(router.testRoute('/example/path/', '/example/path', 'ignore')).toEqual(true);
   });
 
-  it('should enforce trailing slashes if app-router has attribute `trailingSlash="strict"` (the default)', function() {
+  it('should enforce trailing slashes if `trailingSlash` is "strict" (the default)', function() {
     expect(router.testRoute('/example/path', '/example/path/', 'strict')).toEqual(false);
     expect(router.testRoute('/example/path/', '/example/path', 'strict')).toEqual(false);
   });
