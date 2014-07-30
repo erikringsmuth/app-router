@@ -22,6 +22,7 @@
       <li><a href="#/imported-bundled-custom-element">/imported-bundled-custom-element</a></li>
       <li><a href="#/template">/template</a></li>
       <li><a href="#/inline-template">/inline-template</a></li>
+      <li><a href="#/word/123">/regular-expression</a></li>
     </ul>
 
     <!-- defaults -->
@@ -34,6 +35,11 @@
       <app-route path="/inline-template" template>
         <template>
           <h2>Inline Template Page</h2>
+        </template>
+      </app-route>
+      <app-route path="/^\/\w+\/\d+$/i" regex template>
+        <template>
+          <h2>Regular Expression <code>/^\/\w+\/\d+$/i</code></h2>
         </template>
       </app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>

@@ -39,7 +39,7 @@ describe('router.activateRoute(route, urlPath)', function() {
     router.activateRoute(route, '/order/123');
 
     // assert
-    expect(router.importAndActivateCustomElement).toHaveBeenCalledWith('page/order-page.html', null, '/order/:id', '/order/123');
+    expect(router.importAndActivateCustomElement).toHaveBeenCalledWith('page/order-page.html', null, '/order/:id', '/order/123', false);
   });
 
   it('should active a pre-registered custom element when the app-route has an `element` attribute and no `import` or `template` attributes', function() {
@@ -54,7 +54,7 @@ describe('router.activateRoute(route, urlPath)', function() {
     router.activateRoute(route, '/order/123');
 
     // assert
-    expect(router.activateCustomElement).toHaveBeenCalledWith('order-page', '/order/:id', '/order/123');
+    expect(router.activateCustomElement).toHaveBeenCalledWith('order-page', '/order/:id', '/order/123', false);
   });
 
   it('should import and activate a template when the app-route has a `template` and `import` attribute', function() {
@@ -137,104 +137,129 @@ describe('router.parseUrlPath(url)', function() {
   });
 });
 
-describe('router.testRoute(routePath, urlPath, trailingSlashOption)', function() {
+describe('router.testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', function() {
   var router = document.createElement('app-router');
 
   it('should return true on an exact match', function() {
-    expect(router.testRoute('/example/path', '/example/path', 'strict')).toEqual(true);
+    expect(router.testRoute('/example/path', '/example/path', 'strict', false)).toEqual(true);
   });
 
   it('should return true on an exact match of the root path', function() {
-    expect(router.testRoute('/', '/', 'strict')).toEqual(true);
+    expect(router.testRoute('/', '/', 'strict', false)).toEqual(true);
   });
 
   it('should return true when matching with a wildcard', function() {
-    expect(router.testRoute('/example/*', '/example/path', 'strict')).toEqual(true);
+    expect(router.testRoute('/example/*', '/example/path', 'strict', false)).toEqual(true);
   });
 
   it('should return true when matching with a path argument', function() {
-    expect(router.testRoute('/:patharg/path', '/example/path', 'strict')).toEqual(true);
+    expect(router.testRoute('/:patharg/path', '/example/path', 'strict', false)).toEqual(true);
   });
 
   it('should return true when matching on a combination of wildcards and path arguments', function() {
-    expect(router.testRoute('/*/:patharg', '/example/path', 'strict')).toEqual(true);
+    expect(router.testRoute('/*/:patharg', '/example/path', 'strict', false)).toEqual(true);
   });
 
   it('should always return true when matching on "*"', function() {
-    expect(router.testRoute('*', '/example/path', 'strict')).toEqual(true);
+    expect(router.testRoute('*', '/example/path', 'strict', false)).toEqual(true);
   });
 
   it('should not match when one path has a trailing \'/\' but the other doesn\'t', function() {
-    expect(router.testRoute('/example/route/', '/example/route', 'strict')).toEqual(false);
+    expect(router.testRoute('/example/route/', '/example/route', 'strict', false)).toEqual(false);
   });
 
   it('should return false if the route path does not have the same number of path segments as the URL path', function() {
-    expect(router.testRoute('/example/route/longer', '/example/path', 'strict')).toEqual(false);
+    expect(router.testRoute('/example/route/longer', '/example/path', 'strict', false)).toEqual(false);
   });
 
   it('should ignore trailing slashes if `trailingSlash` is "ignore"', function() {
-    expect(router.testRoute('/example/path', '/example/path/', 'ignore')).toEqual(true);
-    expect(router.testRoute('/example/path/', '/example/path', 'ignore')).toEqual(true);
+    expect(router.testRoute('/example/path', '/example/path/', 'ignore', false)).toEqual(true);
+    expect(router.testRoute('/example/path/', '/example/path', 'ignore', false)).toEqual(true);
   });
 
   it('should enforce trailing slashes if `trailingSlash` is "strict" (the default)', function() {
-    expect(router.testRoute('/example/path', '/example/path/', 'strict')).toEqual(false);
-    expect(router.testRoute('/example/path/', '/example/path', 'strict')).toEqual(false);
+    expect(router.testRoute('/example/path', '/example/path/', 'strict', false)).toEqual(false);
+    expect(router.testRoute('/example/path/', '/example/path', 'strict', false)).toEqual(false);
+  });
+
+  it('should match when the route path is a matching regular expression', function() {
+    expect(router.testRoute('/^\\/\\w+\\/\\d+$/', '/word/123', 'strict', true)).toEqual(true);
+  });
+
+  it('should match when the route path is a matching regular expression with the \'i\' option', function() {
+    expect(router.testRoute('/^\\/\\w+\\/\\d+$/i', '/word/123', 'strict', true)).toEqual(true);
+  });
+
+  it('should not match when the route path is a matching regular expression', function() {
+    expect(router.testRoute('/^\\/\\w+\\/\\d+$/i', '/word/non-number', 'strict', true)).toEqual(false);
+  });
+
+  it('should not match when the route path regular expression does not start with a slash', function() {
+    expect(router.testRoute('^\\/\\w+\\/\\d+$/i', '/word/123', 'strict', true)).toEqual(false);
+  });
+
+  it('should not match when the route path regular expression does not end with a slash followed by zero or more options', function() {
+    expect(router.testRoute('/^\\/\\w+\\/\\d+$', '/word/123', 'strict', true)).toEqual(false);
   });
 });
 
-describe('router.routeArguments(routePath, urlPath, url)', function() {
+describe('router.routeArguments(routePath, urlPath, url, isRegExp)', function() {
   var router = document.createElement('app-router');
 
   it('should parse string query parameters', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=example%20string');
+    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=example%20string', false);
     expect(args.queryParam).toEqual('example string');
   });
 
   it('should parse boolean query parameters', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=true');
+    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=true', false);
     expect(args.queryParam).toEqual(true);
   });
 
   it('should parse number query parameters', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=12.34');
+    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=12.34', false);
     expect(args.queryParam).toEqual(12.34);
   });
 
   it('should get the query parameter from the hash path if it exists', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=correct');
+    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=correct', false);
     expect(args.queryParam).toEqual('correct');
   });
 
   it('should correctly get a query param with an equals sign in the value', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=some=text');
+    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=some=text', false);
     expect(args.queryParam).toEqual('some=text');
   });
 
   it('should get the query param if it\'s followed by a hash', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=true#hash');
+    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=true#hash', false);
     expect(args.queryParam).toEqual(true);
   });
 
   it('should parse string path parameters', function() {
-    var args = router.routeArguments('/person/:name', '/person/jon', 'http://domain.com/person/jon?queryParam=true');
+    var args = router.routeArguments('/person/:name', '/person/jon', 'http://domain.com/person/jon?queryParam=true', false);
     expect(args.name).toEqual('jon');
   });
 
   it('should parse number path parameters', function() {
-    var args = router.routeArguments('/customer/:id', '/customer/123', 'http://domain.com/customer/123?queryParam=true');
+    var args = router.routeArguments('/customer/:id', '/customer/123', 'http://domain.com/customer/123?queryParam=true', false);
     expect(args.id).toEqual(123);
   });
 
   it('should parse complicated URLs', function() {
-    var args = router.routeArguments('/customer/:id', '/customer/456', 'http://domain.com/customer/123?queryParam=false#!/customer/456?queryParam=true&queryParam2=some%20string');
+    var args = router.routeArguments('/customer/:id', '/customer/456', 'http://domain.com/customer/123?queryParam=false#!/customer/456?queryParam=true&queryParam2=some%20string', false);
     expect(args.id).toEqual(456);
     expect(args.queryParam).toEqual(true);
     expect(args.queryParam2).toEqual('some string');
   });
 
   it('should not add an empty string value when the search is empty', function() {
-    var args = router.routeArguments('*', '', 'http://domain.com/');
+    var args = router.routeArguments('*', '', 'http://domain.com/', false);
     expect(args.hasOwnProperty('')).toBeFalsy();
+  });
+
+  it('should still parse query parameters on regex paths', function() {
+    var args = router.routeArguments('/^\\/\\w+\\/\\d+$/i', '/example/123', 'http://domain.com/word/123?queryParam=correct', false);
+    expect(args.queryParam).toEqual('correct');
   });
 });

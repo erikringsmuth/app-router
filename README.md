@@ -27,6 +27,9 @@ Lazy-loads content. Binds path variables and query parameters to page element's 
       <!-- matches using a path variable -->
       <app-route path="/order/:id" import="/pages/order-page.html"></app-route>
 
+      <!-- matches a pattern like '/word/number' -->
+      <app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"></app-route>
+
       <!-- matches everything else -->
       <app-route path="*" import="/pages/not-found-page.html"></app-route>
     </app-router>
