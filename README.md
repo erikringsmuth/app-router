@@ -201,8 +201,13 @@ Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a
 ## Demo Site
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
 
-## Build and Test [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
-Source files are under the `src` folder. The build process writes to the root directory.
+## Build, Test, and Debug [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
+Source files are under the `src` folder. The build process writes to the root directory. The easiest way to debug is to include the source script rather than the minified HTML import.
+```html
+<script src="/bower_components/app-router/src/app-router.js"></script>
+```
+
+To build:
 - Run `bower install` and `npm install` to install dev dependencies
 - Lint, build, and minify code changes with `gulp` (watch with `gulp watch`)
 - Start a static content server to run tests (node `http-server` or `python -m SimpleHTTPServer`)
