@@ -159,7 +159,7 @@ If you want the active route's content isolated in a shadow tree you can add the
 </app-router>
 ```
 
-#### Init
+#### init
 The router initializes itself when attached to the DOM. You can defer initialization by setting `init="manual"` and calling `init()` later.
 ```html
 <app-router init="manual">

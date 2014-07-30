@@ -11,7 +11,9 @@
 
   // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"]></app-router>
   var router = Object.create(HTMLElement.prototype);
+
   var importedURIs = {};
+  var isIE = 'ActiveXObject' in window || navigator.userAgent.toLowerCase().indexOf('msie') !== -1;
 
   // Initial set up when attached
   router.attachedCallback = function() {
@@ -26,13 +28,16 @@
       return;
     }
     this.isInitialized = true;
-    this.previousState = '';
     this.activeRoute = document.createElement('app-route');
 
-    // listen for URL change events
+    // Listen for URL change events.
     this.stateChangeHandler = this.go.bind(this);
     window.addEventListener('popstate', this.stateChangeHandler, false);
-    window.addEventListener('hashchange', this.stateChangeHandler, false);
+    if (isIE) {
+      // IE is truly special! A hashchange is supposed to trigger a popstate, making popstate the only
+      // even you should need to listen to. Not the case in IE! Make another event listener for it!
+      window.addEventListener('hashchange', this.stateChangeHandler, false);
+    }
 
     // set up a shadow root or <active-route> element for the active route's content
     if (this.hasAttribute('shadow')) {
@@ -49,22 +54,19 @@
   // clean up global event listeners
   router.detachedCallback = function() {
     window.removeEventListener('popstate', this.stateChangeHandler, false);
-    window.removeEventListener('hashchange', this.stateChangeHandler, false);
+    if (isIE) {
+      window.removeEventListener('hashchange', this.stateChangeHandler, false);
+    }
   };
 
   // go() - Find the first <app-route> that matches the current URL and change the active route
   router.go = function() {
-    // In some modern browsers a hashchange also fires a popstate. There isn't a check to see if the browser will fire
-    // one or both. We have to keep track of the previous state to prevent it from loading the active route twice.
-    if (this.previousState !== window.location.href) {
-      this.previousState = window.location.href;
-      var urlPath = this.urlPath(window.location.href);
-      var routes = this.querySelectorAll('app-route');
-      for (var i = 0; i < routes.length; i++) {
-        if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
-          this.activateRoute(routes[i], urlPath);
-          break;
-        }
+    var urlPath = this.urlPath(window.location.href);
+    var routes = this.querySelectorAll('app-route');
+    for (var i = 0; i < routes.length; i++) {
+      if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
+        this.activateRoute(routes[i], urlPath);
+        break;
       }
     }
   };
