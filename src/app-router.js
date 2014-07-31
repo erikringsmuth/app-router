@@ -12,6 +12,11 @@
   // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"]></app-router>
   var router = Object.create(HTMLElement.prototype);
   var importedURIs = {};
+  var eventHandlers = {
+    before: [],
+    routeChangeStart: [],
+    after: []
+  };
 
   // Initial set up when attached
   router.attachedCallback = function() {
@@ -63,12 +68,43 @@
   router.go = function() {
     var urlPath = this.urlPath(window.location.href);
     var routes = this.querySelectorAll('app-route');
+    this.fire('before', urlPath);
     for (var i = 0; i < routes.length; i++) {
       if (this.testRoute(routes[i].getAttribute('path'), urlPath)) {
         this.activateRoute(routes[i], urlPath);
         break;
       }
     }
+  };
+
+  // on(event, handler) - Add an event listener.
+  router.on = function(event, handler){
+    if(typeof eventHandlers[event] !== 'undefined'){
+      eventHandlers[event].push(handler);
+    }
+    return this;
+  };
+
+  // fire(event) - Fire an event
+  router.fire = function(event){
+    if(eventHandlers[event]){
+      var args = Array.prototype.splice.call(arguments, 1);
+      for(var i = 0; i < eventHandlers[event].length; i++){
+        eventHandlers[event][i].apply(this, args);
+      }
+    }
+    return this;
+  };
+
+  // off(event, handler) - Remove an event handler
+  router.off = function(event, handler){
+    if(eventHandlers[event]){
+      var index = eventHandlers[event].indexOf(handler);
+      if(index !== -1){
+        eventHandlers[event].splice(index, 1);
+      }
+    }
+    return this;
   };
 
   // activateRoute(route, urlPath) - Activate the route
@@ -82,6 +118,8 @@
     var elementName = route.getAttribute('element');
     var isTemplate = route.hasAttribute('template');
     var isElement = !isTemplate;
+
+    this.fire('routeChangeStart', route);
 
     // import custom element
     if (isElement && importUri) {
@@ -99,6 +137,7 @@
     else if (isTemplate && !importUri) {
       this.activateTemplate(route);
     }
+
   };
 
   // importAndActivateCustomElement(importUri, elementName, routePath, urlPath) - Import the custom element then replace the active route
@@ -169,6 +208,7 @@
       this.activeRouteContent.removeChild(this.activeRouteContent.firstChild);
     }
     this.activeRouteContent.appendChild(newElement);
+    this.fire('after', this.activeRouteContent);
   };
 
   // urlPath(url) - Parses the url to get the path
