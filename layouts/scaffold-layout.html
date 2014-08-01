@@ -4,22 +4,20 @@
 <link rel="import" href="/app-router/bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="/app-router/bower_components/core-item/core-item.html">
 
-<polymer-element name="scaffold-layout" noscript>
+<polymer-element name="scaffold-layout" attributes="selected" noscript>
   <template>
     <style>
       :host /deep/ core-toolbar {
-        background-color: #2f83d0;
-        color: #fff;
-        text-shadow: 0px 1px 0px #215b90;
+        background-color: #fff;
+        color: #222;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 0 4px #eee;
       }
       :host /deep/ core-header-panel[main] {
         background-color: #fff;
       }
       :host /deep/ core-header-panel[navigation] {
         background-color: #fff;
-      }
-      :host /deep/ core-header-panel[navigation] core-toolbar {
-        background-color: #2a76bb;
       }
       :host /deep/ core-header-panel[navigation] core-item {
         padding: 2px 12px;
@@ -29,13 +27,17 @@
         border-top: 1px solid #f5f5f5;
       }
       :host /deep/ core-header-panel[navigation] a {
-        color: #444;
+        color: #555;
         text-decoration: none;
       }
       :host /deep/ core-header-panel[navigation] a:hover core-item,
       :host /deep/ core-header-panel[navigation] a:focus core-item {
-        background-color: #f5f5f5;
-        color: #111;
+        background-color: #fcfcfc;
+        color: #222;
+        border-right: 6px solid #f5f5f5;
+      }
+      :host /deep/ core-header-panel[navigation] a[active] core-item {
+        border-right: 6px solid #f5f5f5;
       }
       .content {
         padding: 20px;
@@ -45,10 +47,10 @@
       <core-header-panel navigation flex mode="seamed">
         <core-toolbar>&lt;app-router&gt;</core-toolbar>
         <div>
-          <a href="/app-router/#"><core-item icon="home" label="Home"></core-item></a>
-          <a href="/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"><core-item icon="polymer" label="Data Binding"></core-item></a>
-          <a href="/app-router/#/layouts"><core-item icon="view-quilt" label="Multiple Layouts"></core-item></a>
-          <a href="/app-router/#/api"><core-item icon="settings" label="API"></core-item></a>
+          <a active?="{{selected == 'home'}}" href="/app-router/#"><core-item icon="home" label="Home"></core-item></a>
+          <a active?="{{selected == 'databinding'}}" href="/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"><core-item icon="polymer" label="Data Binding"></core-item></a>
+          <a active?="{{selected == 'layouts'}}" href="/app-router/#/layouts"><core-item icon="view-quilt" label="Multiple Layouts"></core-item></a>
+          <a active?="{{selected == 'api'}}" href="/app-router/#/api"><core-item icon="settings" label="API"></core-item></a>
           <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages"><core-item icon="drive-document" label="gh-pages source"></core-item></a>
           <a href="https://github.com/erikringsmuth/app-router"><core-item icon="exit-to-app" label="GitHub"></core-item></a>
         </div>

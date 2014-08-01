@@ -1,3 +1,8 @@
 body {
   font-family: sans-serif;
+  color: #353535;
+  margin: 0px;
+}
+body /deep/ p {
+  color: #555;
 }

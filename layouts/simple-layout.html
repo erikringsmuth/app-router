@@ -6,6 +6,20 @@
 <polymer-element name="simple-layout" noscript>
   <template>
     <style>
+      :host /deep/ core-toolbar {
+        background-color: #fff;
+        color: #555;
+        font-size: 1em;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 0 4px #eee;
+      }
+      :host /deep/ core-toolbar span {
+        font-size: 1.3em;
+      }
+      :host /deep/ core-toolbar core-item:hover,
+      :host /deep/ core-toolbar core-item:focus {
+        color: #222;
+      }
       .content {
         padding: 20px;
       }
