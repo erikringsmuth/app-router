@@ -1,8 +1,8 @@
-<link rel="import" href="/app-router/bower_components/polymer/polymer.html">
-<link rel="import" href="/app-router/bower_components/core-scaffold/core-scaffold.html">
-<link rel="import" href="/app-router/bower_components/core-header-panel/core-header-panel.html">
-<link rel="import" href="/app-router/bower_components/core-toolbar/core-toolbar.html">
-<link rel="import" href="/app-router/bower_components/core-item/core-item.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-scaffold/core-scaffold.html">
+<link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../bower_components/core-item/core-item.html">
 
 <polymer-element name="scaffold-layout" attributes="selected" noscript>
   <template>
@@ -47,10 +47,10 @@
       <core-header-panel navigation flex mode="seamed">
         <core-toolbar>&lt;app-router&gt;</core-toolbar>
         <div>
-          <a active?="{{selected == 'home'}}" href="/app-router/#"><core-item icon="home" label="Home"></core-item></a>
-          <a active?="{{selected == 'databinding'}}" href="/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"><core-item icon="polymer" label="Data Binding"></core-item></a>
-          <a active?="{{selected == 'layouts'}}" href="/app-router/#/layouts"><core-item icon="view-quilt" label="Multiple Layouts"></core-item></a>
-          <a active?="{{selected == 'api'}}" href="/app-router/#/api"><core-item icon="settings" label="API"></core-item></a>
+          <a active?="{{selected == 'home'}}" href="../#"><core-item icon="home" label="Home"></core-item></a>
+          <a active?="{{selected == 'databinding'}}" href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"><core-item icon="polymer" label="Data Binding"></core-item></a>
+          <a active?="{{selected == 'layouts'}}" href="../#/layouts"><core-item icon="view-quilt" label="Multiple Layouts"></core-item></a>
+          <a active?="{{selected == 'api'}}" href="../#/api"><core-item icon="settings" label="API"></core-item></a>
           <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages"><core-item icon="drive-document" label="gh-pages source"></core-item></a>
           <a href="https://github.com/erikringsmuth/app-router"><core-item icon="exit-to-app" label="GitHub"></core-item></a>
         </div>
