@@ -3,16 +3,12 @@
 <link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../bower_components/core-item/core-item.html">
+<link rel="import" href="../css/core-style.html">
 
 <polymer-element name="scaffold-layout" attributes="selected" noscript>
   <template>
+    <core-style ref="layout"></core-style>
     <style>
-      :host /deep/ core-toolbar {
-        background-color: #fff;
-        color: #222;
-        border-bottom: 1px solid #ddd;
-        box-shadow: 0 0 4px #eee;
-      }
       :host /deep/ core-header-panel[main] {
         background-color: #fff;
       }
@@ -38,9 +34,6 @@
       }
       :host /deep/ core-header-panel[navigation] a[active] core-item {
         border-right: 6px solid #f5f5f5;
-      }
-      .content {
-        padding: 20px;
       }
     </style>
     <core-scaffold>

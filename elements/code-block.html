@@ -1,24 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../css/core-style.html">
 <script src="../bower_components/google-code-prettify/bin/prettify.min.js"></script>
 
 <polymer-element name="code-block">
   <template>
-    <link rel="stylesheet" href="../css/prettify-bootstrap-light.css">
-    <style>
-      pre {
-        display: block;
-        padding: 9.5px;
-        margin: 0 0 10px;
-        font-size: 13px;
-        line-height: 1.42857143;
-        color: #333;
-        word-break: break-all;
-        word-wrap: break-word;
-        background-color: #fdfdfd;
-        border: 1px solid #f1f1f1;
-        border-radius: 4px;
-      }
-    </style>
+    <core-style ref="code"></core-style>
     <pre id="code" class="prettify"><content></content></pre>
   </template>
   <script>

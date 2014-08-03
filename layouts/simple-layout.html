@@ -2,16 +2,14 @@
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../bower_components/core-item/core-item.html">
 <link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../css/core-style.html">
 
 <polymer-element name="simple-layout" noscript>
   <template>
+    <core-style ref="layout"></core-style>
     <style>
       :host /deep/ core-toolbar {
-        background-color: #fff;
-        color: #555;
         font-size: 1em;
-        border-bottom: 1px solid #ddd;
-        box-shadow: 0 0 4px #eee;
       }
       :host /deep/ core-toolbar span {
         font-size: 1.3em;
@@ -22,9 +20,6 @@
       :host /deep/ core-toolbar core-item:hover,
       :host /deep/ core-toolbar core-item:focus {
         color: #222;
-      }
-      .content {
-        padding: 20px;
       }
     </style>
     <core-toolbar>
