@@ -75,6 +75,38 @@
 &lt;app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"&gt;&lt;/app-route&gt;</code-block>
       <p>Note: The regular expression must start with a <code-snippet>/</code-snippet> and end with a <code-snippet>/</code-snippet> optionally followed by <code-snippet>i</code-snippet>. Options global <code-snippet>g</code-snippet>, multiline <code-snippet>m</code-snippet>, and sticky <code-snippet>y</code-snippet> aren't valid when matching paths.</p>
 
+      <h2>lifecycle events</h2>
+      <p>Lifecycle events let you hook into different stages of the route process. If you're listening to events you should manually initialize the router to ensure your event listeners are attached before the first route loads.</p>
+<code-block>&lt;app-router init="manual"&gt;
+  &lt;!-- app-routes --&gt;
+&lt;/app-router&gt;
+&lt;script&gt;
+  var router = document.querySelector('app-router');
+  router.addEventListener('state-change', function(event) {
+    event.type; // 'state-change'
+    event.detail.path; // parsed URL path
+    event.preventDefault(); // cancel the new route
+  });
+  router.init();
+&lt;/script&gt;</code-block>
+
+      <h4>state-change (app-router)</h4>
+      <p>A <code-snippet>state-change</code-snippet> event is fired when the URL changes. This is triggered by a <code-snippet>hashchange</code-snippet>,  <code-snippet>popstate</code-snippet>, or full page load.</p>
+<code-block>document.querySelector('app-router').addEventListener('state-change', function(event) {
+  event.type; // 'state-change'
+  event.detail.path; // parsed URL path
+  event.preventDefault(); // cancel the new route
+});</code-block>
+
+      <h4>not-found (app-router)</h4>
+      <p></p>
+
+      <h4>activate-route-start (app-router, app-route)</h4>
+      <p></p>
+
+      <h4>activate-route-end (app-router, app-route)</h4>
+      <p></p>
+
     </scaffold-layout>
   </template>
 </polymer-element>
