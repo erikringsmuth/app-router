@@ -55,12 +55,11 @@
       window.addEventListener('hashchange', this.stateChangeHandler, false);
     }
 
-    // set up a shadow root or <active-route> element for the active route's content
+    // set up an <active-route> element for the active route's content
+    this.activeRouteContent = document.createElement('active-route');
+    this.appendChild(this.activeRouteContent);
     if (this.hasAttribute('shadow')) {
-      this.activeRouteContent = this.createShadowRoot();
-    } else {
-      this.activeRouteContent = document.createElement('active-route');
-      this.appendChild(this.activeRouteContent);
+      this.activeRouteContent = this.activeRouteContent.createShadowRoot();
     }
 
     // load the web component for the active route

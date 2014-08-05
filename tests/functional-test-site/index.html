@@ -53,6 +53,13 @@
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
 
+    <!-- shadow -->
+    <p>Hide content in a shadow root. Only matches "/custom-element".</p>
+    <app-router shadow id="shadow-router">
+      <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
+      <app-route path="*" import="pages/not-found-page.html"></app-route>
+    </app-router>
+
     <!-- init="manual" -->
     <p>Should manually be initialized. Only matches "/custom-element".</p>
     <app-router init="manual" id="manual-init">
