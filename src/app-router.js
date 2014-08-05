@@ -78,7 +78,10 @@
   // go() - Find the first <app-route> that matches the current URL and change the active route
   router.go = function() {
     var urlPath = this.parseUrlPath(window.location.href);
-    if (!fire('state-change', { path: urlPath }, this)) {
+    var eventDetail = {
+      path: urlPath
+    };
+    if (!fire('state-change', eventDetail, this)) {
       return;
     }
     var routes = this.querySelectorAll('app-route');
@@ -88,7 +91,7 @@
         break;
       }
     }
-    fire('not-found', { path: urlPath }, this);
+    fire('not-found', eventDetail, this);
   };
 
   // activateRoute(route, urlPath) - Activate the route

@@ -34,12 +34,17 @@ describe('router.activateRoute(route, urlPath)', function() {
     route.setAttribute('path', '/order/:id');
     route.setAttribute('import', 'page/order-page.html');
     spyOn(router, 'importAndActivateCustomElement');
+    var eventDetail = {
+      path: '/order/123',
+      route: route,
+      oldRoute: router.activeRoute
+    };
 
     // act
     router.activateRoute(route, '/order/123');
 
     // assert
-    expect(router.importAndActivateCustomElement).toHaveBeenCalledWith('page/order-page.html', null, '/order/:id', '/order/123', false);
+    expect(router.importAndActivateCustomElement).toHaveBeenCalledWith('page/order-page.html', null, '/order/:id', '/order/123', false, eventDetail);
   });
 
   it('should active a pre-registered custom element when the app-route has an `element` attribute and no `import` or `template` attributes', function() {
@@ -49,12 +54,17 @@ describe('router.activateRoute(route, urlPath)', function() {
     route.setAttribute('path', '/order/:id');
     route.setAttribute('element', 'order-page');
     spyOn(router, 'activateCustomElement');
+    var eventDetail = {
+      path: '/order/123',
+      route: route,
+      oldRoute: router.activeRoute
+    };
 
     // act
     router.activateRoute(route, '/order/123');
 
     // assert
-    expect(router.activateCustomElement).toHaveBeenCalledWith('order-page', '/order/:id', '/order/123', false);
+    expect(router.activateCustomElement).toHaveBeenCalledWith('order-page', '/order/:id', '/order/123', false, eventDetail);
   });
 
   it('should import and activate a template when the app-route has a `template` and `import` attribute', function() {
@@ -65,12 +75,17 @@ describe('router.activateRoute(route, urlPath)', function() {
     route.setAttribute('import', 'page/order-page.html');
     route.setAttribute('template', 'template');
     spyOn(router, 'importAndActivateTemplate');
+    var eventDetail = {
+      path: '/order/123',
+      route: route,
+      oldRoute: router.activeRoute
+    };
 
     // act
     router.activateRoute(route, '/order/123');
 
     // assert
-    expect(router.importAndActivateTemplate).toHaveBeenCalledWith('page/order-page.html', route);
+    expect(router.importAndActivateTemplate).toHaveBeenCalledWith('page/order-page.html', route, eventDetail);
   });
 
   it('should activate an in-line template when the app-route has a `template` attribute but no `import` attribute', function() {
@@ -80,12 +95,17 @@ describe('router.activateRoute(route, urlPath)', function() {
     route.setAttribute('path', '/order/*');
     route.setAttribute('template', 'template');
     spyOn(router, 'activateTemplate');
+    var eventDetail = {
+      path: '/order/123',
+      route: route,
+      oldRoute: router.activeRoute
+    };
 
     // act
     router.activateRoute(route, '/order/123');
 
     // assert
-    expect(router.activateTemplate).toHaveBeenCalledWith(route);
+    expect(router.activateTemplate).toHaveBeenCalledWith(route, eventDetail);
   });
 });
 
