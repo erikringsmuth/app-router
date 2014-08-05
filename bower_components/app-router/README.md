@@ -3,7 +3,7 @@
 
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
 
-Lazy-loads content. Binds path variables and query parameters to page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/`, hash paths `#/`, and hashbang paths `#!/`.
+Lazy-loads content. Binds path variables and query parameters to the page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/`, hash paths `#/`, and hashbang paths `#!/`.
 
 [Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
 
@@ -198,11 +198,18 @@ history.go(0); // go to the current state in the history stack, this fires a pop
 #### Full page load
 Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/new/page`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
-## Demo Site
-Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router). The <a href="https://github.com/erikringsmuth/app-router/tree/gh-pages">gh-pages branch</a> shows the demo site code.
+## Demo Site & Example Setup
+Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
 
-## Build and Test [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
-Source files are under the `src` folder. The build process writes to the root directory.
+You can download an example setup here https://github.com/erikringsmuth/app-router-examples to get running locally.
+
+## Build, Test, and Debug [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
+Source files are under the `src` folder. The build process writes to the root directory. The easiest way to debug is to include the source script rather than the minified HTML import.
+```html
+<script src="/bower_components/app-router/src/app-router.js"></script>
+```
+
+To build:
 - Run `bower install` and `npm install` to install dev dependencies
 - Lint, build, and minify code changes with `gulp` (watch with `gulp watch`)
 - Start a static content server to run tests (node `http-server` or `python -m SimpleHTTPServer`)

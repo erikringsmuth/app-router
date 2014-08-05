@@ -15,6 +15,22 @@
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
 
+  // fire(type, detail, node) - Fire a new CustomEvent(type, detail) on the node
+  //
+  // listen with document.querySelector('app-router').addEventListener(type, function(event) {
+  //   event.detail, event.preventDefault()
+  // })
+  function fire(type, detail, node) {
+    // create a CustomEvent the old way for IE9/10 support
+    var event = document.createEvent('CustomEvent');
+
+    // initCustomEvent(type, bubbles, cancelable, detail)
+    event.initCustomEvent(type, false, true, detail);
+
+    // returns false when event.preventDefault() is called, true otherwise
+    return node.dispatchEvent(event);
+  }
+
   // Initial set up when attached
   router.attachedCallback = function() {
     if(this.getAttribute('init') !== 'manual') {
@@ -62,6 +78,12 @@
   // go() - Find the first <app-route> that matches the current URL and change the active route
   router.go = function() {
     var urlPath = this.parseUrlPath(window.location.href);
+    var eventDetail = {
+      path: urlPath
+    };
+    if (!fire('state-change', eventDetail, this)) {
+      return;
+    }
     var routes = this.querySelectorAll('app-route');
     for (var i = 0; i < routes.length; i++) {
       if (this.testRoute(routes[i].getAttribute('path'), urlPath, this.getAttribute('trailingSlash'), routes[i].hasAttribute('regex'))) {
@@ -69,10 +91,23 @@
         break;
       }
     }
+    fire('not-found', eventDetail, this);
   };
 
   // activateRoute(route, urlPath) - Activate the route
   router.activateRoute = function(route, urlPath) {
+    var eventDetail = {
+      path: urlPath,
+      route: route,
+      oldRoute: this.activeRoute
+    };
+    if (!fire('activate-route-start', eventDetail, this)) {
+      return;
+    }
+    if (!fire('activate-route-start', eventDetail, route)) {
+      return;
+    }
+    
     this.activeRoute.removeAttribute('active');
     route.setAttribute('active', 'active');
     this.activeRoute = route;
@@ -86,25 +121,25 @@
 
     // import custom element
     if (isElement && importUri) {
-      this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp);
+      this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp, eventDetail);
     }
     // pre-loaded custom element
     else if (isElement && !importUri && elementName) {
-      this.activateCustomElement(elementName, routePath, urlPath, isRegExp);
+      this.activateCustomElement(elementName, routePath, urlPath, isRegExp, eventDetail);
     }
     // import template
     else if (isTemplate && importUri) {
-      this.importAndActivateTemplate(importUri, route);
+      this.importAndActivateTemplate(importUri, route, eventDetail);
     }
     // pre-loaded template
     else if (isTemplate && !importUri) {
-      this.activateTemplate(route);
+      this.activateTemplate(route, eventDetail);
     }
   };
 
-  // importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp) - Import the custom element then replace the active route
+  // importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp, eventDetail) - Import the custom element then replace the active route
   // with a new instance of the custom element
-  router.importAndActivateCustomElement = function(importUri, elementName, routePath, urlPath, isRegExp) {
+  router.importAndActivateCustomElement = function(importUri, elementName, routePath, urlPath, isRegExp, eventDetail) {
     if (!importedURIs.hasOwnProperty(importUri)) {
       importedURIs[importUri] = true;
       var elementLink = document.createElement('link');
@@ -112,11 +147,11 @@
       elementLink.setAttribute('href', importUri);
       document.head.appendChild(elementLink);
     }
-    this.activateCustomElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''), routePath, urlPath, isRegExp);
+    this.activateCustomElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''), routePath, urlPath, isRegExp, eventDetail);
   };
 
-  // activateCustomElement(elementName, routePath, urlPath, isRegExp) - Replace the active route with a new instance of the custom element
-  router.activateCustomElement = function(elementName, routePath, urlPath, isRegExp) {
+  // activateCustomElement(elementName, routePath, urlPath, isRegExp, eventDetail) - Replace the active route with a new instance of the custom element
+  router.activateCustomElement = function(elementName, routePath, urlPath, isRegExp, eventDetail) {
     var resourceEl = document.createElement(elementName);
     var routeArgs = this.routeArguments(routePath, urlPath, window.location.href, isRegExp);
     for (var arg in routeArgs) {
@@ -124,22 +159,22 @@
         resourceEl[arg] = routeArgs[arg];
       }
     }
-    this.activeElement(resourceEl);
+    this.activeElement(resourceEl, eventDetail);
   };
 
-  // importAndActivateTemplate(importUri, route) - Import the template then replace the active route with a clone of the template's content
-  router.importAndActivateTemplate = function(importUri, route) {
+  // importAndActivateTemplate(importUri, route, eventDetail) - Import the template then replace the active route with a clone of the template's content
+  router.importAndActivateTemplate = function(importUri, route, eventDetail) {
     if (importedURIs.hasOwnProperty(importUri)) {
       // previously imported. this is an async operation and may not be complete yet.
       var previousLink = document.querySelector('link[href="' + importUri + '"]');
       if (previousLink.import) {
         // the import is complete
-        this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true));
+        this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true), eventDetail);
       } else {
         // wait for `onload`
         previousLink.onload = function() {
           if (route.hasAttribute('active')) {
-            this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true));
+            this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true), eventDetail);
           }
         }.bind(this);
       }
@@ -151,25 +186,27 @@
       templateLink.setAttribute('href', importUri);
       templateLink.onload = function() {
         if (route.hasAttribute('active')) {
-          this.activeElement(document.importNode(templateLink.import.querySelector('template').content, true));
+          this.activeElement(document.importNode(templateLink.import.querySelector('template').content, true), eventDetail);
         }
       }.bind(this);
       document.head.appendChild(templateLink);
     }
   };
 
-  // activateTemplate(route) - Replace the active route with a clone of the template's content
-  router.activateTemplate = function(route) {
+  // activateTemplate(route, eventDetail) - Replace the active route with a clone of the template's content
+  router.activateTemplate = function(route, eventDetail) {
     var clone = document.importNode(route.querySelector('template').content, true);
-    this.activeElement(clone);
+    this.activeElement(clone, eventDetail);
   };
 
-  // activeElement(element) - Replace the active route's content with the new element
-  router.activeElement = function(element) {
+  // activeElement(element, eventDetail) - Replace the active route's content with the new element
+  router.activeElement = function(element, eventDetail) {
     while (this.activeRouteContent.firstChild) {
       this.activeRouteContent.removeChild(this.activeRouteContent.firstChild);
     }
     this.activeRouteContent.appendChild(element);
+    fire('activate-route-end', eventDetail, this);
+    fire('activate-route-end', eventDetail, eventDetail.route);
   };
 
   // urlPath(url) - Parses the url to get the path

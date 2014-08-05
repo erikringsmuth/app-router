@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -27,13 +27,13 @@
     "platform": "Polymer/platform-dev",
     "polymer": "Polymer/polymer-dev"
   },
-  "_release": "0.5.0",
+  "_release": "0.6.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.5.0",
-    "commit": "3c9a7f735869a0678d2b2ae6c2a79b2800130f1b"
+    "tag": "v0.6.0",
+    "commit": "06631aa7fb69bf9d77b317e443b56217a6ccf275"
   },
   "_source": "git://github.com/erikringsmuth/app-router.git",
-  "_target": "~0.5.0",
+  "_target": "~0.6.0",
   "_originalSource": "app-router"
 }
