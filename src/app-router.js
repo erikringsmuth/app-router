@@ -15,6 +15,22 @@
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
 
+  // fire(type, detail, node) - Fire a new CustomEvent(type, detail) on the node
+  //
+  // listen with document.querySelector('app-router').addEventListener(type, function(event) {
+  //   event.detail, event.preventDefault()
+  // })
+  function fire(type, detail, node) {
+    // create a CustomEvent the old way for IE9/10 support
+    var event = document.createEvent('CustomEvent');
+
+    // initCustomEvent(type, bubbles, cancelable, detail)
+    event.initCustomEvent(type, false, true, detail);
+
+    // returns false when event.preventDefault() is called, true otherwise
+    return node.dispatchEvent(event);
+  }
+
   // Initial set up when attached
   router.attachedCallback = function() {
     if(this.getAttribute('init') !== 'manual') {
@@ -62,6 +78,9 @@
   // go() - Find the first <app-route> that matches the current URL and change the active route
   router.go = function() {
     var urlPath = this.parseUrlPath(window.location.href);
+    if (!fire('state-change', { path: urlPath }, this)) {
+      return;
+    }
     var routes = this.querySelectorAll('app-route');
     for (var i = 0; i < routes.length; i++) {
       if (this.testRoute(routes[i].getAttribute('path'), urlPath, this.getAttribute('trailingSlash'), routes[i].hasAttribute('regex'))) {
@@ -69,10 +88,18 @@
         break;
       }
     }
+    fire('not-found', null, this);
   };
 
   // activateRoute(route, urlPath) - Activate the route
   router.activateRoute = function(route, urlPath) {
+    if (!fire('activate-route-start', { route: route, path: urlPath }, this)) {
+      return;
+    }
+    if (!fire('activate-route-start', { route: route, path: urlPath }, route)) {
+      return;
+    }
+    
     this.activeRoute.removeAttribute('active');
     route.setAttribute('active', 'active');
     this.activeRoute = route;
@@ -100,6 +127,9 @@
     else if (isTemplate && !importUri) {
       this.activateTemplate(route);
     }
+
+    fire('activate-route-end', { route: route, path: urlPath }, this);
+    fire('activate-route-end', { route: route, path: urlPath }, route);
   };
 
   // importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp) - Import the custom element then replace the active route
