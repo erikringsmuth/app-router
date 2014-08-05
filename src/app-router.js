@@ -88,7 +88,7 @@
         break;
       }
     }
-    fire('not-found', null, this);
+    fire('not-found', { path: urlPath }, this);
   };
 
   // activateRoute(route, urlPath) - Activate the route
