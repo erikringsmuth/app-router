@@ -26,8 +26,10 @@
 
       <p>If you want the active route's content isolated in a shadow tree you can add the <code-snippet>shadow</code-snippet> attribute like this.</p>
 <code-block>&lt;app-router shadow&gt;
-  # shadow-root &lt;!-- the active route's content will be inside the shadow root --&gt;
   &lt;!-- app-routes --&gt;
+  &lt;active-route&gt;
+    # shadow-root &lt;!-- the active route's content will be inside the shadow root --&gt;
+  &lt;/active-route&gt;
 &lt;/app-router&gt;</code-block>
 
       <h4>init</h4>
