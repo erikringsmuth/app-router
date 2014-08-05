@@ -76,7 +76,7 @@
       <p>Note: The regular expression must start with a <code-snippet>/</code-snippet> and end with a <code-snippet>/</code-snippet> optionally followed by <code-snippet>i</code-snippet>. Options global <code-snippet>g</code-snippet>, multiline <code-snippet>m</code-snippet>, and sticky <code-snippet>y</code-snippet> aren't valid when matching paths.</p>
 
       <h2>lifecycle events</h2>
-      <p>Lifecycle events let you hook into different stages of the route process. If you're listening to events you should manually initialize the router to ensure your event listeners are attached before the first route loads.</p>
+      <p>Lifecycle events let you hook into different stages of the route process. If you're listening to events you should manually initialize the router to ensure your event listeners are attached before the first route loads. You can attach event listeners to the router or specific routes.</p>
 <code-block>&lt;app-router init="manual"&gt;
   &lt;!-- app-routes --&gt;
 &lt;/app-router&gt;
@@ -91,21 +91,36 @@
 &lt;/script&gt;</code-block>
 
       <h4>state-change (app-router)</h4>
-      <p>A <code-snippet>state-change</code-snippet> event is fired when the URL changes. This is triggered by a <code-snippet>hashchange</code-snippet>,  <code-snippet>popstate</code-snippet>, or full page load.</p>
-<code-block>document.querySelector('app-router').addEventListener('state-change', function(event) {
-  event.type; // 'state-change'
-  event.detail.path; // parsed URL path
-  event.preventDefault(); // cancel the new route
-});</code-block>
+      <p><code-snippet>state-change</code-snippet> is fired when the URL changes. This is triggered by a <code-snippet>hashchange</code-snippet>,  <code-snippet>popstate</code-snippet>, or full page load.</p>
+<code-block>// event.detail
+{
+  path: '/new-path'
+}</code-block>
 
       <h4>not-found (app-router)</h4>
-      <p></p>
+      <p><code-snippet>not-found</code-snippet> is fired after a <code-snippet>state-change</code-snippet> if no matching route is found.</p>
+<code-block>// event.detail
+{
+  path: '/new-path'
+}</code-block>
 
       <h4>activate-route-start (app-router, app-route)</h4>
-      <p></p>
+      <p><code-snippet>activate-route-start</code-snippet> is fired on both the router and the matching route before the route is loaded.</p>
+<code-block>// event.detail
+{
+  path: '/new-path',
+  route: newRoute,
+  oldRoute: oldRoute
+}</code-block>
 
       <h4>activate-route-end (app-router, app-route)</h4>
-      <p></p>
+      <p><code-snippet>activate-route-end</code-snippet> is fired on both the router and the matching route after the route has been changed.</p>
+<code-block>// event.detail
+{
+  path: '/new-path',
+  route: newRoute,
+  oldRoute: oldRoute
+}</code-block>
 
     </scaffold-layout>
   </template>
