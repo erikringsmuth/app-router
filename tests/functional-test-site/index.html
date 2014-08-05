@@ -23,6 +23,7 @@
       <li><a href="#/template">/template</a></li>
       <li><a href="#/inline-template">/inline-template</a></li>
       <li><a href="#/word/123">/regular-expression</a></li>
+      <li><a href="#/canceled-event">/canceled-event</a></li>
     </ul>
 
     <!-- defaults -->
@@ -63,9 +64,14 @@
     </script>
 
     <!-- lifecycle events -->
-    <p>Logs lifecycle events. Only matches "/custom-element".</p>
-    <app-router id="lifecycle-events">
+    <p>Logs lifecycle events. Should <code>preventDefault()</code> when navigating to <code>/canceled-event</code>.</p>
+    <app-router init="manual" id="lifecycle-events">
       <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
+      <app-route path="/canceled-event" template id="canceled-event">
+        <template>
+          <h2>Canceled Event (broken if you can see this)</h2>
+        </template>
+      </app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
     <script>
@@ -85,6 +91,11 @@
         router.addEventListener('activate-route-end', routerEventHandler);
         firstRoute.addEventListener('activate-route-start', routeEventHandler);
         firstRoute.addEventListener('activate-route-end', routeEventHandler);
+
+        document.querySelector('#canceled-event').addEventListener('activate-route-start', function(event) {
+          event.preventDefault();
+        });
+        router.init();
       })();
     </script>
 
