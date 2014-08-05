@@ -62,5 +62,31 @@
       document.querySelector('#manual-init').init();
     </script>
 
+    <!-- lifecycle events -->
+    <p>Logs lifecycle events. Only matches "/custom-element".</p>
+    <app-router id="lifecycle-events">
+      <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
+      <app-route path="*" import="pages/not-found-page.html"></app-route>
+    </app-router>
+    <script>
+      (function() {
+        var router = document.querySelector('#lifecycle-events');
+        var firstRoute = router.querySelector('app-route');
+        function routerEventHandler(event) {
+          console.log('router: ' + event.type);
+          console.log(event.detail);
+        }
+        function routeEventHandler(event) {
+          console.log('route: ' + event.type);
+          console.log(event.detail);
+        }
+        router.addEventListener('state-change', routerEventHandler);
+        router.addEventListener('activate-route-start', routerEventHandler);
+        router.addEventListener('activate-route-end', routerEventHandler);
+        firstRoute.addEventListener('activate-route-start', routeEventHandler);
+        firstRoute.addEventListener('activate-route-end', routeEventHandler);
+      })();
+    </script>
+
   </body>
 </html>
