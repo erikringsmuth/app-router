@@ -32,8 +32,7 @@ or, if you would prefer to do it in CSS, just give `html`, `body`, and `core-hea
       height: 100%;
     }
 
-Special
-support is provided for scrolling modes when one uses a core-toolbar or equivalent
+Special support is provided for scrolling modes when one uses a core-toolbar or equivalent
 for the header section.
 
 Example:
@@ -51,6 +50,13 @@ Example:
     <core-header-panel>
       <div class="core-header">Header</div>
       <div>Content goes here...</div>
+    </core-header-panel>
+    
+To have the content fits to the main area, use `fit` attribute.
+
+    <core-header-panel>
+      <div class="core-header">standard</div>
+      <div class="content" fit>content fits 100% below the header</div>
     </core-header-panel>
 
 Use `mode` to control the header and scrolling behavior.
@@ -87,6 +93,14 @@ Use `mode` to control the header and scrolling behavior.
 <script>
 
   Polymer('core-header-panel', {
+    
+    /**
+     * Fired when the content has been scrolled.  `details.target` returns
+     * the scrollable element which you can use to access scroll info such as
+     * `scrollTop`.
+     *
+     * @event scroll
+     */
 
     publish: {
       /**
@@ -153,7 +167,7 @@ Use `mode` to control the header and scrolling behavior.
        * @type boolean
        * @default false
        */
-      shadow: false,
+      shadow: false
     },
     
     domReady: function() {
@@ -166,6 +180,17 @@ Use `mode` to control the header and scrolling behavior.
 
     get header() {
       return this.$.headerContent.getDistributedNodes()[0];
+    },
+    
+    /**
+     * Returns the scrollable element.
+     *
+     * @property scroller
+     * @type Object
+     */
+    get scroller() {
+      return this.mode === 'scroll' ? 
+          this.$.outerContainer : this.$.mainContainer;
     },
     
     scroll: function() {
@@ -184,11 +209,14 @@ Use `mode` to control the header and scrolling behavior.
             (atTop && shadowMode[this.mode] || noShadow[this.mode]));
         
         if (tallMode[this.mode]) {
-          header.classList.toggle(this.tallClass, atTop);
+          header.classList.toggle(this.tallClass, atTop || 
+              main.scrollHeight < this.$.outerContainer.offsetHeight);
         }
         
         header.classList.toggle('animate', tallMode[this.mode]);
       }
+      
+      this.fire('scroll', {target: this.scroller}, this, false);
     }
 
   });

@@ -9,6 +9,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link href="core-transition-pages.html" rel="import">
 
+<!--
+Warning: This transition does not work well in combination with other transitions, because
+it operates on the page rather than the page's children.
+-->
+
 <core-style id="slide-from-right">
   polyfill-next-selector { content: ':host(.slide-from-right) > *'; }
   :host(.slide-from-right) ::content > * {
@@ -19,16 +24,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   polyfill-next-selector { content: ':host(.slide-from-right) > .core-selected ~ [animate]:not(.core-selected)'; }
   :host(.slide-from-right) ::content > .core-selected ~ [animate]:not(.core-selected) {
     -webkit-transform: translateX(100%);
+    transform: translateX(100%);
   }
 
   polyfill-next-selector { content: ':host(.slide-from-right) > [animate]:not(.core-selected)'; }
   :host(.slide-from-right) ::content > [animate]:not(.core-selected) {
     -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
   }
 
   polyfill-next-selector { content: ':host(.slide-from-right) > .core-selected'; }
   :host(.slide-from-right) ::content > .core-selected {
     -webkit-transform: none;
+    transform: none;
   }
 </core-style>
 

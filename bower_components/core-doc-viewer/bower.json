@@ -12,6 +12,6 @@
     "core-header-panel": "Polymer/core-header-panel#>=0.3.0 <1.0.0",
     "context-free-parser": "Polymer/context-free-parser#>=0.3.0 <1.0.0",
     "marked-element": "PolymerLabs/marked-element#>=0.3.0 <1.0.0",
-    "highlightjs-element": "PolymerLabs/highlightjs-element#>=0.3.0 <1.0.0"
+    "prettify-element": "Polymer/prettify-element#>=0.3.0 <1.0.0"
   }
 }

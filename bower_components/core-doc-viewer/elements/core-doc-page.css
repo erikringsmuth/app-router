@@ -180,3 +180,32 @@ pre code {
   font-size: 1.2em;
 }
 
+code, pre {
+  color: #9f499b;
+  font-family: "Source Code Pro",Monaco,Menlo,Consolas,"Courier New",monospace;
+}
+
+pre .typ,pre .inline,.prettyprint .typ,.prettyprint .inline {
+    color: #6b499f
+}
+pre .pun,.prettyprint .pun {
+    color: #5c6bc0
+}
+pre .str,pre .string,.prettyprint .str,.prettyprint .string {
+    color: #ff4081
+}
+pre .pln,.prettyprint .pln {
+    color: #7986cb
+}
+pre .kwd,.prettyprint .kwd {
+    color: #d61a7f
+}
+pre .atn,pre .attribute-name,.prettyprint .atn,.prettyprint .attribute-name {
+    color: #6b499f
+}
+pre .atv,pre .attribute-value,.prettyprint .atv,.prettyprint .attribute-value {
+    color: #7986cb
+}
+pre .com,pre .comment,.prettyprint .com,.prettyprint .comment {
+    color: #8a8a8a
+}

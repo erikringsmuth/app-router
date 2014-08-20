@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../platform/platform.js"></script>
   <link rel="import" href="core-iconset.html">
+  <link rel="import" href="../core-icon/core-icon.html">
 
 </head>
 <body unresolved>
@@ -24,72 +25,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       icons="location place starta stopb bus car train walk">
   </core-iconset>
 
-  <!-- 
-    Create an element that uses an iconset to display an icon.
-    By using iconset, the element can allow the set of available icons to be
-    easily changed by the user.
-
-    Here we're using the converntion 'iconset:icon' to specify a particular
-    iconset and an icon name within that set.
-   -->
-  <polymer-element name="icon-demo" attributes="icon">
-
-    <template>
-      <style>
-        :host {
-          display: inline-block;
-          margin: 2px;
-        }
-      </style>
-      <core-iconset id="meta"></core-iconset>
-      <content></content>
-    </template>
-
-    <script>
-
-      Polymer('icon-demo', {
-        
-        iconChanged: function() {
-          if (!this.icon) {
-            return;
-          }
-          var parts = this.icon.split(':');
-          var icon = parts.pop();
-          // find the iconSet for the name given via the icon property
-          var iconset = this.$.meta.byId(parts.pop());
-          if (iconset) {
-            // size the element as needed
-            this.style.height = this.style.width = iconset.iconSize + 'px';
-            // use iconset's applyAsBackground method to set the given icon
-            // as the element's background image.
-            iconset.applyIcon(this, icon);
-          }
-        }
-
-      });
-
-    </script>
-
-  </polymer-element>
+  <core-iconset id="my-icons-big" src="my-icons-big.png" width="192" iconSize="48"
+      icons="location place starta stopb bus car train walk">
+  </core-iconset>
 
   <!-- Now create a bunch of icons using our iconset -->
-  <icon-demo icon="my-icons:location"></icon-demo>
-  <icon-demo icon="my-icons:place"></icon-demo>
-  <icon-demo icon="my-icons:starta"></icon-demo>
-  <icon-demo icon="my-icons:stopb"></icon-demo>
-  <icon-demo icon="my-icons:bus"></icon-demo>
-  <icon-demo icon="my-icons:car"></icon-demo>
-  <icon-demo icon="my-icons:train"></icon-demo>
-  <icon-demo icon="my-icons:walk"></icon-demo>
+  <core-icon icon="my-icons:location"></core-icon>
+  <core-icon icon="my-icons:place"></core-icon>
+  <core-icon icon="my-icons:starta"></core-icon>
+  <core-icon icon="my-icons:stopb"></core-icon>
+  <core-icon icon="my-icons:bus"></core-icon>
+  <core-icon icon="my-icons:car"></core-icon>
+  <core-icon icon="my-icons:train"></core-icon>
+  <core-icon icon="my-icons:walk"></core-icon>
   <br>
   <!-- icons may also be specified by index -->
-  <icon-demo icon="my-icons:0"></icon-demo>
-  <icon-demo icon="my-icons:1"></icon-demo>
-  <icon-demo icon="my-icons:2"></icon-demo>
-  <icon-demo icon="my-icons:3"></icon-demo>
-  <icon-demo icon="my-icons:4"></icon-demo>
-  <icon-demo icon="my-icons:5"></icon-demo>
-  <icon-demo icon="my-icons:6"></icon-demo>
-  <icon-demo icon="my-icons:7"></icon-demo>
+  <style>
+    .embiggen core-icon {
+      width: 48px;
+      height: 48px;
+    }
+  </style>
+
+  <div class="embiggen">
+    <core-icon icon="my-icons-big:0"></core-icon>
+    <core-icon icon="my-icons-big:1"></core-icon>
+    <core-icon icon="my-icons-big:2"></core-icon>
+    <core-icon icon="my-icons-big:3"></core-icon>
+    <core-icon icon="my-icons-big:4"></core-icon>
+    <core-icon icon="my-icons-big:5"></core-icon>
+    <core-icon icon="my-icons-big:6"></core-icon>
+    <core-icon icon="my-icons-big:7"></core-icon>
+  </div>
+
  </body>
 </html>

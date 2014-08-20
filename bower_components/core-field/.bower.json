@@ -5,12 +5,12 @@
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-field",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "03f1bd6ad04551672af73061098f68d4b71885d3"
+    "tag": "0.3.5",
+    "commit": "bf6b093a3af4fc12e3dd78db910a614fe7a6d631"
   },
   "_source": "git://github.com/Polymer/core-field.git",
   "_target": ">=0.3.0 <1.0.0",

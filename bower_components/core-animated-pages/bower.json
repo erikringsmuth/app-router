@@ -4,6 +4,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0",
     "core-selector": "Polymer/core-selector#>=0.3.0 <1.0.0",
+    "core-style": "Polymer/core-style#>=0.3.0 <1.0.0",
     "core-transition": "Polymer/core-transition#>=0.3.0 <1.0.0"
   }
 }

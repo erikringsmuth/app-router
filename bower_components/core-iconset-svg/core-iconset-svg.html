@@ -116,9 +116,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @param {Element} element The element to which the icon is
        * applied.
        * @param {String|Number} icon The name the icon to apply.
+       * @return {Element} The icon element
        */
-      applyIcon: function(element, icon, scale) {
-        var root = element.shadowRoot || element;
+      applyIcon: function(element, icon) {
+        var root = element;
         // remove old
         var old = root.querySelector('svg');
         if (old) {
@@ -129,16 +130,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!svg) {
           return;
         }
-        var size = scale * this.iconSize;
-        if (size) {
-          svg.style.height = svg.style.width = size + 'px';
-        } else {
-          svg.setAttribute('height', '100%');
-          svg.setAttribute('width', '100%');
-          svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-        }
+        svg.setAttribute('height', '100%');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
         svg.style.display = 'block';
         root.insertBefore(svg, root.firstElementChild);
+        return svg;
       },
       
       /**

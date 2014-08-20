@@ -14,12 +14,22 @@ html /deep/ core-item {
   white-space: nowrap;
 }
 
+html /deep/ core-item.font-scalable {
+  min-height: 2.5em;
+}
+
 html /deep/ core-item.core-selected {
   font-weight: bold;
 }
 
 html /deep/ core-item::shadow core-icon {
   margin: 0 16px 0 4px;
+}
+
+html /deep/ core-item.font-scalable::shadow core-icon {
+  margin: 0 1em 0 0.25em;
+  height: 1.5em;
+  width: 1.5em;
 }
 
 html /deep/ core-item::shadow ::content > a {

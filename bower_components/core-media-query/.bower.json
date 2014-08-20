@@ -5,12 +5,12 @@
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-media-query",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "10e765076ed5b81ecaa6d5f1a63fa9a3c810b812"
+    "tag": "0.3.5",
+    "commit": "a6e34b10bc9a8cf0a5bcefec818ac0d9f3fca1b2"
   },
   "_source": "git://github.com/Polymer/core-media-query.git",
   "_target": ">=0.3.0 <1.0.0",

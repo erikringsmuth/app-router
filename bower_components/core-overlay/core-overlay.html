@@ -270,10 +270,10 @@ Fired when the `core-overlay`'s `opened` property changes.
         if (transition) {
           transition.teardown(old);
         } else {
-          old.style.position = null;
-          old.style.outline = null;
+          old.style.position = '';
+          old.style.outline = '';
         }
-        old.style.display = null;
+        old.style.display = '';
       }
     },
 
@@ -284,7 +284,7 @@ Fired when the `core-overlay`'s `opened` property changes.
         return;
       }
       this.target.__overlaySetup = true;
-      this.target.style.display = null;
+      this.target.style.display = '';
       var transition = this.getTransition();
       if (transition) {
         transition.setup(this.target);
@@ -302,6 +302,7 @@ Fired when the `core-overlay`'s `opened` property changes.
     },
 
     openedChanged: function() {
+      this.transitioning = true;
       this.ensureTargetSetup();
       this.prepareRenderOpened();
       // continue styling after delay so display state can change
@@ -309,7 +310,7 @@ Fired when the `core-overlay`'s `opened` property changes.
       // note: we wait a full frame so that transition changes executed
       // during measuring do not cause transition
       this.async(function() {
-        this.target.style.display = null;
+        this.target.style.display = '';
         this.async('renderOpened');
       });
       this.fire('core-overlay-open', this.opened);
@@ -371,6 +372,7 @@ Fired when the `core-overlay`'s `opened` property changes.
       if (e && e.target !== this.target) {
         return;
       }
+      this.transitioning = false;
       if (!this.opened) {
         this.resetTargetDimensions();
         this.target.style.display = 'none';
@@ -414,13 +416,13 @@ Fired when the `core-overlay`'s `opened` property changes.
     prepareMeasure: function(target) {
       target.style.transition = target.style.webkitTransition = 'none';
       target.style.transform = target.style.webkitTransform = 'none';
-      target.style.display = null;
+      target.style.display = '';
     },
 
     finishMeasure: function(target) {
       target.style.display = 'none';
-      target.style.transform = target.style.webkitTransform = null;
-      target.style.transition = target.style.webkitTransition = null;
+      target.style.transform = target.style.webkitTransform = '';
+      target.style.transition = target.style.webkitTransition = '';
     },
 
     getTransition: function() {
@@ -437,7 +439,11 @@ Fired when the `core-overlay`'s `opened` property changes.
         focusNode.focus();
       } else {
         focusNode.blur();
-        focusOverlay();
+        if (currentOverlay() == this) {
+          console.warn('Current core-overlay is attempting to focus itself as next! (bug)');
+        } else {
+          focusOverlay();
+        }
       }
     },
 
@@ -480,9 +486,9 @@ Fired when the `core-overlay`'s `opened` property changes.
     },
 
     resetTargetDimensions: function() {
-      this.target.style.top = this.target.style.left = null;
-      this.target.style.right = this.target.style.bottom = null;
-      this.target.style.width = this.target.style.height = null;
+      this.target.style.top = this.target.style.left = '';
+      this.target.style.right = this.target.style.bottom = '';
+      this.target.style.width = this.target.style.height = '';
       this._shouldPosition = null;
     },
 
@@ -556,14 +562,14 @@ Fired when the `core-overlay`'s `opened` property changes.
     addElementListener: function(node, event, methodName, capture) {
       var fn = this._makeBoundListener(methodName);
       if (node && fn) {
-        node.addEventListener(event, fn, capture);
+        Polymer.addEventListener(node, event, fn, capture);
       }
     },
 
     removeElementListener: function(node, event, methodName, capture) {
       var fn = this._makeBoundListener(methodName);
       if (node && fn) {
-        node.removeEventListener(event, fn, capture);
+        Polymer.removeEventListener(node, event, fn, capture);
       }
     },
 
@@ -605,7 +611,7 @@ Fired when the `core-overlay`'s `opened` property changes.
     var i = overlays.indexOf(overlay);
     if (i >= 0) {
       overlays.splice(i, 1);
-      setZ(overlay, null);
+      setZ(overlay, '');
     }
   }
   
@@ -637,7 +643,15 @@ Fired when the `core-overlay`'s `opened` property changes.
   
   function focusOverlay() {
     var current = currentOverlay();
-    if (current) {
+    // We have to be careful to focus the next overlay _after_ any current
+    // transitions are complete (due to the state being toggled prior to the
+    // transition). Otherwise, we risk infinite recursion when a transitioning
+    // (closed) overlay becomes the current overlay.
+    //
+    // NOTE: We make the assumption that any overlay that completes a transition
+    // will call into focusOverlay to kick the process back off. Currently:
+    // transitionend -> applyFocus -> focusOverlay.
+    if (current && !current.transitioning) {
       current.applyFocus();
     }
   }

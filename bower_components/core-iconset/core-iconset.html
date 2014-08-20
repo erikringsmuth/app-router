@@ -212,21 +212,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @param {Element} element The element to which the background is
        * applied.
        * @param {String|Number} icon The name or index of the icon to apply.
-       * @param {String} theme (optional) The name of the theme for the icon.
        * @param {Number} scale (optional, defaults to 1) A scaling factor 
        * with which the icon can be magnified.
+       * @return {Element} The icon element.
        */
       applyIcon: function(element, icon, scale) {
-         var offset = this.getOffset(icon);
-         scale = scale || 1;
-         if (element && offset) {
-           var style = element.style;
-           style.backgroundImage = 'url(' + this.src + ')';
-           style.backgroundPosition = (-offset.offsetX * scale + 'px') + 
-              ' ' + (-offset.offsetY * scale + 'px');
-           style.backgroundSize = scale === 1 ? 'auto' :
-              this.width * scale + 'px';
-         }
+        var offset = this.getOffset(icon);
+        scale = scale || 1;
+        if (element && offset) {
+          var icon = element._icon || document.createElement('div');
+          var style = icon.style;
+          style.backgroundImage = 'url(' + this.src + ')';
+          style.backgroundPosition = (-offset.offsetX * scale + 'px') + 
+             ' ' + (-offset.offsetY * scale + 'px');
+          style.backgroundSize = scale === 1 ? 'auto' :
+             this.width * scale + 'px';
+          if (icon.parentNode !== element) {
+            element.appendChild(icon);
+          }
+          return icon;
+        }
       }
 
     });

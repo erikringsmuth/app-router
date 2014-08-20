@@ -1,1 +1,0 @@
-window.test = 1;

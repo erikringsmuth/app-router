@@ -10,16 +10,7 @@ html /deep/ core-icon {
   vertical-align: middle;
   background-repeat: no-repeat;
   fill: currentcolor;
-}
-
-html /deep/ core-icon[size=""] {
   position: relative;
-}
-
-html /deep/ core-icon[size=""] > svg {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  height: 24px;
+  width: 24px;
 }

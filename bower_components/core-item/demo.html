@@ -13,17 +13,34 @@
   
     body {
       font-family: sans-serif;
+      font-size: 16px;
       margin: 20px;
     }
     
     core-item {
       width: 300px;
     }
+
+    core-item.big {
+      font-size: 24px;
+    }
+
+    core-item.small {
+      font-size: 12px;
+    }
     
     core-item.contact-item {
       height: 50px;
       background-color: #efefef;
       border: 1px solid #ddd;
+    }
+
+    core-item.contact-item .name {
+      font-size: 1.125em;
+    }
+
+    core-item.contact-item .address {
+      font-size: 0.75em;
     }
     
   </style>
@@ -45,13 +62,19 @@
     
     <core-item icon="settings" label="Settings"><a href="#settings" target="_self"></a></core-item>
     <core-item icon="account-box" label="Account"><a href="#account" target="_self"></a></core-item>
+
+    <h2>items sized with CSS:</h2>
+    <core-item icon="settings" label="Settings" class="font-scalable big"></core-item>
+    <core-item icon="account-box" label="Account" class="font-scalable big"></core-item>
+    <core-item icon="settings" label="Settings" class="font-scalable small"></core-item>
+    <core-item icon="account-box" label="Account" class="font-scalable small"></core-item>
     
     <h2>custom item:</h2>
     
-    <core-item icon="account-circle" class="label-outline">
+    <core-item icon="account-circle" class="contact-item">
       <div flex>
-        <div style="font-size: 18px;">John Doe</div>
-        <div style="font-size: 12px;">123 A Street, San Francisco, CA</div>
+        <div class="name">John Doe</div>
+        <div class="address">123 A Street, San Francisco, CA</div>
       </div>
       <core-icon icon="more-vert"></core-icon>
     </core-item>

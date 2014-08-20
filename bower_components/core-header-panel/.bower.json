@@ -5,12 +5,12 @@
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-header-panel",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "17fe3618b42a01e8b813e877df69e47bb875856d"
+    "tag": "0.3.5",
+    "commit": "3f93b1618d1dff853ac631d9bb0506d2be05666c"
   },
   "_source": "git://github.com/Polymer/core-header-panel.git",
   "_target": ">=0.3.0 <1.0.0",

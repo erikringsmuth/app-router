@@ -69,6 +69,21 @@
             case 'type':
               subCurrent[pragma] = content;
               break;
+
+            case 'param':
+              var eventParmsRe = /\{(.+)\}\s+(\w+[.\w+]+)\s+(.*)$/;
+
+              var params = content.match(eventParmsRe);
+              if (params) {
+                var subEventObj = {
+                  type: params[1],
+                  name: params[2],
+                  description: params[3]
+                };
+                makePragma(subCurrent, pragma + 's', subEventObj);
+              }
+
+              break;
   
             // everything else
             default:

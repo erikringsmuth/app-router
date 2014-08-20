@@ -32,10 +32,12 @@ Example:
 
 <link rel="stylesheet" href="core-item.css" shim-shadowdom>
 
-<polymer-element name="core-item" attributes="label icon src size" horizontal center layout>
+<polymer-element name="core-item" attributes="label icon src" horizontal center layout>
 <template>
 
-  <core-icon src="{{src}}" icon="{{icon}}" size="{{size}}" hidden?="{{!src && !icon}}"></core-icon>{{label}}<content></content>
+  <core-icon src="{{src}}" icon="{{icon}}" hidden?="{{!src && !icon}}"></core-icon>
+  <div id="label">{{label}}</div>
+  <content></content>
   
 </template>
 <script>
@@ -64,14 +66,6 @@ Example:
      * @attribute label
      * @type string
      * @default ''
-     */
-
-    /**
-     * Specifies the size of the icon in pixel units.
-     *
-     * @attribute size
-     * @type number
-     * @default 24
      */
 
   });

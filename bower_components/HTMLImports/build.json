@@ -1,9 +1,0 @@
-[
-  "../MutationObservers/build.json",
-  "src/scope.js",
-  "src/Loader.js",
-  "src/Parser.js",
-  "src/HTMLImports.js",
-  "src/Observer.js",
-  "src/boot.js"
-]

@@ -8,44 +8,28 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
 -->
 <html>
-  <head>
-    <title>core-icon-button</title>
-    
-    <script src="../platform/platform.js"></script>
-    
-    <link rel="import" href="core-icon-button.html">
-    
-  </head>
+<head>
+  <title>core-icon-button</title>
   
-  <body unresolved>
+  <script src="../platform/platform.js"></script>
   
+  <link rel="import" href="core-icon-button.html">
+  <style>
+  </style>
+  
+</head>
 
-    <polymer-element name="x-buttons">
-      <template>
-        <core-iconset id="meta"></core-iconset>
-        <template repeat="{{icon in iconNames}}">
-          <core-icon-button icon="{{icon}}"></core-icon-button>
-        </template>
-      </template>
-      <script>
-        Polymer('x-buttons', {
-          ready: function() {
-            this.iconNames = this.$.meta.byId('icons').iconNames;
-          }
-        });
-      </script>
-    </polymer-element>
+<body unresolved>
 
-    <div>
-      <x-buttons></x-buttons>
-    </div>
-    <br>
-    <div theme="core-light-theme">
-      <x-buttons></x-buttons>
-    </div>
-    <br>
-    <div theme="core-dark-theme" style="background: #333;">
-      <x-buttons></x-buttons>
-    </div>
-  </body>
+
+<template is="auto-binding">
+    <template repeat="{{icon in $.meta.metaData.icons.iconNames}}">
+      <core-icon-button icon="{{icon}}" title="{{icon}}"></core-icon-button>
+    </template>
+    <core-icon-button icon="menu"><span>label</span></core-icon-button>
+  </div>
+  <core-iconset id="meta"></core-iconset>
+</template>
+
+</body>
 </html>

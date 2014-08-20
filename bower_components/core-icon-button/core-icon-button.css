@@ -11,9 +11,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   display: inline-block;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  width: 38px;
-  height: 38px;
-  background-image: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
   border-radius: 2px;
   padding: 7px;
   margin: 2px;
@@ -67,4 +67,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 core-icon {
   pointer-events: none;
+}
+
+/* note: this is a polyfill aware selector */
+:host ::content > :not(core-icon) {
+  margin-left: 4px;
 }

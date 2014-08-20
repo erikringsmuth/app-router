@@ -11,6 +11,7 @@
     "core-docs": "Polymer/core-docs#>=0.3.0 <1.0.0",
     "core-drag-drop": "Polymer/core-drag-drop#>=0.3.0 <1.0.0",
     "core-drawer-panel": "Polymer/core-drawer-panel#>=0.3.0 <1.0.0",
+    "core-dropdown": "Polymer/core-dropdown#>=0.3.0 <1.0.0",
     "core-field": "Polymer/core-field#>=0.3.0 <1.0.0",
     "core-header-panel": "Polymer/core-header-panel#>=0.3.0 <1.0.0",
     "core-icon-button": "Polymer/core-icon-button#>=0.3.0 <1.0.0",

@@ -12,15 +12,15 @@
     "core-header-panel": "Polymer/core-header-panel#>=0.3.0 <1.0.0",
     "context-free-parser": "Polymer/context-free-parser#>=0.3.0 <1.0.0",
     "marked-element": "PolymerLabs/marked-element#>=0.3.0 <1.0.0",
-    "highlightjs-element": "PolymerLabs/highlightjs-element#>=0.3.0 <1.0.0"
+    "prettify-element": "Polymer/prettify-element#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-doc-viewer",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "9bf119ac9100a241f5ef64a9e87a7663675a3622"
+    "tag": "0.3.5",
+    "commit": "29756d67e6d02bd24b905093ae280f8851a88278"
   },
   "_source": "git://github.com/Polymer/core-doc-viewer.git",
   "_target": ">=0.3.0 <1.0.0",

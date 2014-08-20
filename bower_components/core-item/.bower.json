@@ -6,12 +6,12 @@
     "core-icons": "Polymer/core-icons#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-item",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "63f5be842d1a61e5b58e4fc59b5a235e0f09d342"
+    "tag": "0.3.5",
+    "commit": "9d4c6a97a7e70ebfb62bd9266892cfe13de7b70b"
   },
   "_source": "git://github.com/Polymer/core-item.git",
   "_target": ">=0.3.0 <1.0.0",

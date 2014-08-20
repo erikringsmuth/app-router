@@ -9,12 +9,12 @@
     "core-toolbar": "Polymer/core-toolbar#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-menu-button",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "11972d18a16c969aabd5724c1743d828ab2f0f4d"
+    "tag": "0.3.5",
+    "commit": "9457832fed31a58b392c2a04911b209ca10252cd"
   },
   "_source": "git://github.com/Polymer/core-menu-button.git",
   "_target": ">=0.3.0 <1.0.0",

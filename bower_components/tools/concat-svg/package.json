@@ -1,9 +1,0 @@
-{
-  "name": "concat-svg",
-  "version": "0.0.0",
-  "description": "",
-  "main": "concat-svg.js",
-  "dependencies": {
-    "cheerio": "^0.15.0"
-  }
-}

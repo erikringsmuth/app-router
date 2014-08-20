@@ -6,12 +6,12 @@
     "core-selection": "Polymer/core-selection#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-selector",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "28ab8c4503172b28f1c3abd2d561473b20e2af7b"
+    "tag": "0.3.5",
+    "commit": "8c99bc7559b098ea82ced4fc03b7c0beb65e87da"
   },
   "_source": "git://github.com/Polymer/core-selector.git",
   "_target": ">=0.3.0 <1.0.0",

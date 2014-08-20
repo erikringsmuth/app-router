@@ -14,15 +14,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   left: 0;
   width: 100%;
   height: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 #drawer {
   position: absolute;
   top: 0;
   left: 0;
-  /* FIXME(ffu): remove hard-coded drawer panel width */
-  width: 256px;
   height: 100%;
   box-sizing: border-box;
   -mox-box-sizing: border-box;
@@ -36,12 +34,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 /*
 right-drawer: make drawer on the right side
 */
-:host(.right-drawer) #drawer {
+.right-drawer #drawer {
   left: auto;
   right: 0;
 }
 
-:host(.right-drawer) .transition #drawer {
+.right-drawer.transition #drawer {
   transition: -webkit-transform ease-in-out 0.3s, width ease-in-out 0.3s;
   transition: transform ease-in-out 0.3s, width ease-in-out 0.3s;
 }
@@ -62,20 +60,17 @@ polyfill-next-selector { content: ':host [drawer]'; }
   top: 0;
   right: 0;
   bottom: 0;
-  left: 256px;
-  overflow: auto;
 }
 
 .transition #main {
   transition: left ease-in-out 0.3s, padding ease-in-out 0.3s;
 }
 
-:host(.right-drawer) #main {
+.right-drawer #main {
   left: 0;
-  right: 256px;
 }
 
-:host(.right-drawer) .transition #main {
+.right-drawer.transition #main {
   transition: right ease-in-out 0.3s, padding ease-in-out 0.3s;
 }
 
@@ -97,26 +92,14 @@ polyfill-next-selector { content: '#main > [main]'; }
 }
 
 /*
-no-peek: helper class to make drawer panel 100% width in narrow layout
-*/
-:host(.no-peek) .narrow-layout > #drawer {
-  width: 100%;
-}
-
-:host(.no-peek) .narrow-layout > #drawer:not(.core-selected) {
-  left: -100%;
-}
-
-:host(.no-peek.right-drawer) .narrow-layout > #drawer:not(.core-selected) {
-  left: auto;
-  right: -100%;
-}
-
-/*
 narrow layout
 */
 .narrow-layout > #drawer.core-selected {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.right-drawer.narrow-layout > #drawer.core-selected {
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 polyfill-next-selector { content: ':host .narrow-layout > #drawer > [drawer]'; }
@@ -129,7 +112,7 @@ polyfill-next-selector { content: ':host .narrow-layout > #drawer > [drawer]'; }
   transform: translate3d(-100%, 0, 0);
 }
 
-:host(.right-drawer) .narrow-layout > #drawer:not(.core-selected) {
+.right-drawer.narrow-layout > #drawer:not(.core-selected) {
   left: auto;
   -webkit-transform: translate3d(100%, 0, 0);
   transform: translate3d(100%, 0, 0);
@@ -140,13 +123,14 @@ polyfill-next-selector { content: ':host .narrow-layout > #drawer > [drawer]'; }
   padding: 0;
 }
 
-:host(.right-drawer) .narrow-layout > #main {
+.right-drawer.narrow-layout > #main {
   left: 0;
   right: 0;
   padding: 0;
 }
 
-.narrow-layout > #main:not(.core-selected) #scrim {
+.narrow-layout > #main:not(.core-selected) #scrim,
+.dragging #scrim {
   visibility: visible;
   opacity: 1;
 }

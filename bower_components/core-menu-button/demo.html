@@ -22,6 +22,17 @@ license that can be found in the LICENSE file.
       background-color: #cfa0e9;
       overflow: hidden;
     }
+
+		.small::shadow core-icon-button {
+			padding: 12px;
+		}
+
+		.small::shadow core-icon-button::shadow core-icon {
+			display: block;
+			height: 14px;
+			width: 14px;
+		}
+
   </style>
 </head>
 <body class="core-body-text" unresolved>
@@ -40,6 +51,14 @@ license that can be found in the LICENSE file.
 	<core-toolbar>
 
 		<core-menu-button icon="menu">
+
+			<core-item icon="settings" label="Settings"></core-item>
+			<core-item icon="add" label="Add"></core-item>
+			<core-item icon="search" label="Search"></core-item>
+
+		</core-menu-button>
+
+		<core-menu-button icon="menu" class="small">
 
 			<core-item icon="settings" label="Settings"></core-item>
 			<core-item icon="add" label="Add"></core-item>

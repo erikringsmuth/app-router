@@ -4,13 +4,13 @@
   "dependencies": {
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
   },
-  "version": "0.3.4",
+  "version": "0.3.5",
   "homepage": "https://github.com/Polymer/core-layout",
-  "_release": "0.3.4",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "8bee263c2b917483a5b6b11ad50f0603eb93dc59"
+    "tag": "0.3.5",
+    "commit": "b3e60118a0f859868ddc60d180ea28f42426c0f8"
   },
   "_source": "git://github.com/Polymer/core-layout.git",
   "_target": ">=0.3.0 <1.0.0",

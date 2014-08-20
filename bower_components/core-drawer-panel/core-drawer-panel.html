@@ -25,9 +25,25 @@ Example:
       <div main> Main panel... </div>
     </core-drawer-panel>
     
-To position the drawer to the right, add `right-drawer` to the class list.
+The drawer and the main panels are not scrollable.  You can set CSS overflow
+property on the elements to make them scrollable or use `core-header-panel`.
 
-    <core-drawer-panel class="right-drawer">
+Example:
+
+    <core-drawer-panel>
+      <core-header-panel drawer>
+        <core-toolbar></core-toolbar>
+        <div> Drawer content... </div>
+      </core-header-panel>
+      <core-header-panel main>
+        <core-toolbar></core-toolbar>
+        <div> Main content... </div>
+      </core-header-panel>
+    </core-drawer-panel>
+    
+To position the drawer to the right, add `rightDrawer` attribute.
+
+    <core-drawer-panel rightDrawer>
       <div drawer> Drawer panel... </div>
       <div main> Main panel... </div>
     </core-drawer-panel>
@@ -40,21 +56,21 @@ To position the drawer to the right, add `right-drawer` to the class list.
 <link rel="import" href="../core-media-query/core-media-query.html">
 <link rel="import" href="../core-selector/core-selector.html">
 
-<polymer-element name="core-drawer-panel">
+<polymer-element name="core-drawer-panel" touch-action="auto">
 <template>
 
   <link rel="stylesheet" href="core-drawer-panel.css">
 
   <core-media-query query="max-width: {{responsiveWidth}}" queryMatches="{{queryMatches}}"></core-media-query>
 
-  <core-selector class="{{ {'narrow-layout' : queryMatches, transition : transition} | tokenList }}" valueattr="id" selected="{{selected}}">
+  <core-selector class="{{ {'narrow-layout' : queryMatches, transition : transition, dragging : dragging, 'right-drawer': rightDrawer} | tokenList }}" valueattr="id" selected="{{selected}}">
 
-    <div id="main" >
+    <div id="main" _style="left: {{ narrow || rightDrawer ? '0' : drawerWidth }}; right: {{ rightDrawer ? (narrow ? '' : drawerWidth) : '' }};">
       <content select="[main]"></content>
       <div id="scrim" on-tap="{{togglePanel}}"></div>
     </div>
     
-    <div id="drawer">
+    <div id="drawer" _style="width: {{ drawerWidth }}">
       <content select="[drawer]"></content>
     </div>
 
@@ -73,6 +89,16 @@ To position the drawer to the right, add `right-drawer` to the class list.
      */
 
     publish: {
+      
+      /**
+       * Width of the drawer panel.
+       *
+       * @attribute drawerWidth
+       * @type string
+       * @default '256px'
+       */
+      drawerWidth: '256px',
+      
       /**
        * Max-width when the panel changes to narrow layout.
        *
@@ -110,10 +136,38 @@ To position the drawer to the right, add `right-drawer` to the class list.
        * @type boolean
        * @default false
        */
-      narrow: {value: false, reflect: true}
+      narrow: {value: false, reflect: true},
+      
+      /**
+       * If true, position the drawer to the right.
+       *
+       * @attribute rightDrawer
+       * @type boolean
+       * @default false
+       */
+      rightDrawer: false,
+      
+      /**
+       * If true, swipe to open/close the drawer is disabled.
+       *
+       * @attribute disableSwipe
+       * @type boolean
+       * @default false
+       */
+      disableSwipe: false
+    },
+    
+    eventDelegates: {
+      trackstart: 'trackStart',
+      trackx: 'trackx',
+      trackend: 'trackEnd'
     },
     
     transition: false,
+
+    edgeSwipeSensitivity : 15,
+    
+    dragging : false,
     
     domReady: function() {
       // to avoid transition at the beginning e.g. page loads
@@ -124,14 +178,29 @@ To position the drawer to the right, add `right-drawer` to the class list.
       });
     },
 
+    /**
+     * Toggles the panel open and closed.
+     * 
+     * @method togglePanel
+     */
     togglePanel: function() {
       this.selected = this.selected === 'main' ? 'drawer' : 'main';
     },
     
+    /**
+     * Opens the drawer.
+     * 
+     * @method openDrawer
+     */
     openDrawer: function() {
       this.selected = 'drawer';
     },
     
+    /**
+     * Closes the drawer.
+     * 
+     * @method closeDrawer
+     */
     closeDrawer: function() {
       this.selected = 'main';
     },
@@ -141,7 +210,61 @@ To position the drawer to the right, add `right-drawer` to the class list.
         this.selected = this.defaultSelected;
       }
       this.narrow = this.queryMatches;
+      this.setAttribute('touch-action', 
+          this.narrow && !this.disableSwipe ? 'pan-y' : '');
       this.fire('core-responsive-change', {narrow: this.narrow});
+    },
+    
+    // swipe support for the drawer, inspired by
+    // https://github.com/Polymer/core-drawer-panel/pull/6
+    trackStart : function(e) {
+      if (this.narrow && !this.disableSwipe) {
+        this.dragging = true;
+
+        if (this.selected === 'main') {
+          this.dragging = this.rightDrawer ?
+              e.pageX >= this.offsetWidth - this.edgeSwipeSensitivity :
+              e.pageX <= this.edgeSwipeSensitivity;
+        }
+
+        if (this.dragging) {
+          this.width = this.$.drawer.offsetWidth;
+          this.transition = false;
+          e.preventTap();
+        }
+      }
+    },
+
+    trackx : function(e) {
+      if (this.dragging) {
+        var x;
+        if (this.rightDrawer) {
+          x = Math.max(0, (this.selected === 'main') ? this.width + e.dx : e.dx);
+        } else {
+          x = Math.min(0, (this.selected === 'main') ? e.dx - this.width : e.dx);
+        }
+        this.moveDrawer(x);
+      }
+    },
+
+    trackEnd : function(e) {
+      if (this.dragging) {
+        this.dragging = false;
+        this.transition = true;
+        this.moveDrawer(null);
+
+        if (this.rightDrawer) {
+          this.selected = e.xDirection > 0 ? 'main' : 'drawer';
+        } else {
+          this.selected = e.xDirection > 0 ? 'drawer' : 'main';
+        }
+      }
+    },
+    
+    moveDrawer: function(translateX) {
+      var s = this.$.drawer.style;
+      s.webkitTransform = s.transform = 
+          translateX === null ? '' : 'translate3d(' + translateX + 'px, 0, 0)';
     }
 
   });

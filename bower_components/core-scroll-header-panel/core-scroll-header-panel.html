@@ -14,6 +14,28 @@ rest of the scrollable content.  Upon scrolling slightly up at any point, the
 header scrolls back into view.  This saves screen space and allows users to
 access important controls by easily moving them back to the view.
 
+__Important:__ The `core-scroll-header-panel` will not display if its parent does not have a height.
+
+Using [layout attributes](http://www.polymer-project.org/docs/polymer/layout-attrs.html), you can easily make the `core-scroll-header-panel` fill the screen
+
+    <body fullbleed layout vertical>
+      <core-scroll-header-panel flex>
+        <core-toolbar>
+          <div>Hello World!</div>
+        </core-toolbar>
+      </core-scroll-header-panel>
+    </body>
+
+or, if you would prefer to do it in CSS, just give `html`, `body`, and `core-scroll-header-panel` a height of 100%:
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    core-scroll-header-panel {
+      height: 100%;
+    }
+
 `core-scroll-header-panel` works well with `core-toolbar` but can use any element 
 that represents a header by adding a `core-header` class to it.  Use the attribute 
 or class `content` to delineate the content section.
@@ -71,7 +93,7 @@ or class `content` to delineate the content section.
      
     publish: {
       /**
-       * If true, the header's height will condense to `condensedHeaderHeight`
+       * If true, the header's height will condense to `_condensedHeaderHeight`
        * as the user scrolls down from the top of the content area.
        *
        * @attribute condenses
@@ -131,12 +153,13 @@ or class `content` to delineate the content section.
       /**
        * The height of the header when it is condensed.
        *
-       * By default, this will be 1/3 of `headerHeight`.
+       * By default, `_condensedHeaderHeight` is 1/3 of `headerHeight` unless
+       * this is specified.
        *
        * @attribute condensedHeaderHeight
        * @type number
        */
-      condensedHeaderHeight: 0,
+      condensedHeaderHeight: 0
     },
 
     prevScrollTop: 0,
@@ -169,26 +192,37 @@ or class `content` to delineate the content section.
     },
     
     headerHeightChanged: function() {
-      if (this.condensedHeaderHeight) {
-        this.condensedHeaderHeightChanged();
-      } else {
-        // assume condensedHeaderHeight is 1/3 of the headerHeight
-        this.condensedHeaderHeight = this.headerHeight * 1 / 3;
+      if (!this.condensedHeaderHeight) {
+        // assume _condensedHeaderHeight is 1/3 of the headerHeight
+        this._condensedHeaderHeight = this.headerHeight * 1 / 3;
       }
+      this.condensedHeaderHeightChanged();
     },
     
     condensedHeaderHeightChanged: function() {
+      if (this.condensedHeaderHeight) {
+        this._condensedHeaderHeight = this.condensedHeaderHeight;
+      }
       if (this.headerHeight) {
-        this.headerMargin = this.headerHeight - this.condensedHeaderHeight;
+        this.headerMargin = this.headerHeight - this._condensedHeaderHeight;
+      }
+    },
+    
+    condensesChanged: function() {
+      if (this.condenses) {
+        this.scroll();
+      } else {
+        // reset transform/opacity set on the header
+        this.condenseHeader(null);
       }
     },
     
     setup: function() {
       var s = this.scroller.style;
-      s.paddingTop = this.fixed ? null : this.headerHeight + 'px';
-      s.top = this.fixed ? this.headerHeight + 'px' : null;
+      s.paddingTop = this.fixed ? '' : this.headerHeight + 'px';
+      s.top = this.fixed ? this.headerHeight + 'px' : '';
       if (this.fixed) {
-        this.transformHeader(0);
+        this.transformHeader(null);
       } else {
         this.scroll();
       }
@@ -199,36 +233,43 @@ or class `content` to delineate the content section.
       this.translateY(s, -y);
       
       if (this.condenses) {
-        // adjust top bar in core-header so the top bar stays at the top
-        if (this.header.$ && this.header.$.topBar) {
-          s = this.header.$.topBar.style;
-          this.translateY(s, Math.min(y, this.headerMargin));
-        }
-        // transition header bg
-        s = this.$.headerBg.style;
-        if (!this.noDissolve) {
-          s.opacity = (this.headerMargin - y) / this.headerMargin;
-        }
-        // adjust header bg so it stays at the center
-        this.translateY(s, y / 2);
-        // transition condensed header bg
-        if (!this.noDissolve) {
-          s = this.$.condensedHeaderBg.style;
-          s.opacity = y / this.headerMargin;
-          // adjust condensed header bg so it stays at the center
-          this.translateY(s, y / 2);
-        }
+        this.condenseHeader(y);
       }
       
-      this.fire('core-header-transform',
-          {y: y, height: this.headerHeight, condensedHeight: this.condensedHeaderHeight});
+      this.fire('core-header-transform', {y: y, height: this.headerHeight, 
+          condensedHeight: this._condensedHeaderHeight});
+    },
+    
+    condenseHeader: function(y) {
+      var reset = y == null;
+      // adjust top bar in core-header so the top bar stays at the top
+      if (this.header.$ && this.header.$.topBar) {
+        this.translateY(this.header.$.topBar.style, 
+            reset ? null : Math.min(y, this.headerMargin));
+      }
+      // transition header bg
+      var hbg = this.$.headerBg.style;
+      if (!this.noDissolve) {
+        hbg.opacity = reset ? '' : (this.headerMargin - y) / this.headerMargin;
+      }
+      // adjust header bg so it stays at the center
+      this.translateY(hbg, reset ? null : y / 2);
+      // transition condensed header bg
+      var chbg = this.$.condensedHeaderBg.style;
+      if (!this.noDissolve) {
+        chbg = this.$.condensedHeaderBg.style;
+        chbg.opacity = reset ? '' : y / this.headerMargin;
+        // adjust condensed header bg so it stays at the center
+        this.translateY(chbg, reset ? null : y / 2);
+      }
     },
     
     translateY: function(s, y) {
-      s.webkitTransform = s.transform = 'translate3d(0, ' + y + 'px, 0)';
+      s.transform = s.webkitTransform = y == null ? '' : 
+          'translate3d(0, ' + y + 'px, 0)';
     },
     
-    scroll: function() {
+    scroll: function(event) {
       if (!this.header) {
         return;
       }
@@ -239,18 +280,20 @@ or class `content` to delineate the content section.
           this.headerMargin : this.headerHeight, Math.max(0, 
           (this.noReveal ? sTop : this.y + sTop - this.prevScrollTop)));
       
-      if (this.condenses && this.prevScrollTop > sTop && sTop > this.headerMargin) {
+      if (this.condenses && this.prevScrollTop >= sTop && sTop > this.headerMargin) {
         y = Math.max(y, this.headerMargin);
       }
       
-      if (!this.fixed && y !== this.y) {
+      if (!event || !this.fixed && y !== this.y) {
         requestAnimationFrame(this.transformHeader.bind(this, y));
       }
       
       this.prevScrollTop = sTop;
       this.y = y;
       
-      this.fire('scroll', {target: this.scroller}, this, false);
+      if (event) {
+        this.fire('scroll', {target: this.scroller}, this, false);
+      }
     }
 
   });

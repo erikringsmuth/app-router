@@ -208,8 +208,16 @@ Example:
     </core-animated-pages>
 
 @element core-animated-pages
+@extends core-selector
 @status beta
 @homepage github.io
+-->
+<!--
+Fired before a page transition occurs. Both pages involved in the transition are visible when
+this event fires. This is useful if there is something the client needs to do when a page becomes
+visible.
+
+@event core-animated-pages-transition-prepare
 -->
 <!--
 Fired when a page transition completes.
@@ -318,6 +326,11 @@ Fired when a page transition completes.
         dst: dst,
         easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
       }
+
+      // fire an event so clients have a chance to do something when the
+      // new page becomes visible but before it draws.
+      this.fire('core-animated-pages-transition-prepare');
+
       //
       // prepare transition
       this._transitionElements.forEach(function(transition) {

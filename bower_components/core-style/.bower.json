@@ -5,12 +5,12 @@
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-style",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "c47137e4572cff3a72a68b2a9d83c80a86182cd6"
+    "tag": "0.3.5",
+    "commit": "f5c5847be698afefe3d311c6e4062becb56ca832"
   },
   "_source": "git://github.com/Polymer/core-style.git",
   "_target": ">=0.3.0 <1.0.0",

@@ -4,15 +4,16 @@
   "dependencies": {
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0",
     "core-selector": "Polymer/core-selector#>=0.3.0 <1.0.0",
+    "core-style": "Polymer/core-style#>=0.3.0 <1.0.0",
     "core-transition": "Polymer/core-transition#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-animated-pages",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "2b2d67769f25b8b446d46c672a2b1c7d0fec126b"
+    "tag": "0.3.5",
+    "commit": "0886640a0d87926a01d8efd3dbc2f58b1eac514f"
   },
   "_source": "git://github.com/Polymer/core-animated-pages.git",
   "_target": ">=0.3.0 <1.0.0",

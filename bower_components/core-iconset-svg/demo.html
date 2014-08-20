@@ -15,25 +15,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../platform/platform.js"></script>
   <link rel="import" href="svg-sample-icons.html">
   <style shim-shadowdom>
-    svg-icon-demo:nth-of-type(1) {
+    .embiggen core-icon {
+      height: 128px;
+      width: 128px;
+    }
+
+    core-icon:nth-of-type(1) {
       fill: orange;
     }
 
-    svg-icon-demo:nth-of-type(2) {
+    core-icon:nth-of-type(2) {
       fill: green;
       stroke: orange;
     }
 
-    svg-icon-demo:nth-of-type(3) {
+    core-icon:nth-of-type(3) {
       fill: navy;
     }
 
-    svg-icon-demo {
+    core-icon {
       transition: all 0.5s;
       -webkit-transition: all 0.5s;
     }
 
-    svg-icon-demo:hover {
+    core-icon:hover {
       -webkit-filter: drop-shadow( 2px 2px 2px #333 );
       filter: drop-shadow( 2px 2px 2px #333 );
     }
@@ -41,67 +46,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body unresolved>
 
-  <!-- 
-    Create an element that uses an iconset to display an icon.
-    By using iconset, the element can allow the set of available icons to be
-    easily changed by the user.
-
-    Here we're using the converntion 'iconset:icon' to specify a particular
-    iconset and an icon name within that set.
-   -->
-  <polymer-element name="svg-icon-demo" attributes="icon size">
-
-    <template>
-      <style>
-        :host {
-          display: inline-block;
-          vertical-align: middle;
-          margin: 2px;
-        }
-      </style>
-      <core-iconset id="meta"></core-iconset>
-    </template>
-
-    <script>
-
-      Polymer('svg-icon-demo', {
-        
-        size: 100,
-        iconChanged: function() {
-          if (!this.icon) {
-            return;
-          }
-          var parts = this.icon.split(':');
-          var icon = parts.pop();
-          // find the iconSet for the name given via the icon property
-          var iconset = this.$.meta.byId(parts.pop());
-          this.style.height = this.style.width = this.size + 'px';
-          if (iconset) {
-            iconset.applyIcon(this, icon);
-          }
-        }
-
-      });
-
-    </script>
-
-  </polymer-element>
-
-  <!-- Now some icons using our iconset -->
-  <div>
-    <template repeat="{{}}">
-      <svg-icon-demo icon="{{}}"></svg-icon-demo>
-    </template>
-  </div>
-  <core-meta id="meta" type="iconset"></core-meta>
+  <template is="auto-binding">
+    <div class="embiggen">
+      <template repeat="{{icon in icons}}">
+        <core-icon icon="{{icon}}"></core-icon>
+      </template>
+    </div>
+    <core-meta id="meta" type="iconset"></core-meta>
+  </template>
   <script>
-    addEventListener('polymer-ready', function() {
-      var icons = document.querySelector('#meta').byId('svg-sample-icons').iconNames;
-      icons = icons.map(function(ic){ return 'svg-sample-icons:' + ic });
-      var plates = document.querySelectorAll('template');
-      for (var i = 0, p; p = plates[i]; i++) {
-        p.model = icons;
-      }
+    addEventListener('template-bound', function(e) {
+      var template = e.target;
+      var setName = 'svg-sample-icons';
+      var icons = template.$.meta.byId(setName).iconNames;
+      template.icons = icons.map(function(ic){ return setName + ':' +ic });
     });
   </script>
 </body>

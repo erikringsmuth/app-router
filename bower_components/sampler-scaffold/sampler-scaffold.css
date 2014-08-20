@@ -39,15 +39,6 @@ core-toolbar::shadow #bottomBar {
   padding: 0 0 20px 60px;
 }
 
-/* adjust drawerPanel drawer's width instead of using the default */
-#drawerPanel::shadow #drawer {
-  width: 320px;
-}
-
-#drawerPanel::shadow #main {
-  left: 320px;
-}
-
 /* menu */
 core-menu#menu {
   padding: 8px 0;

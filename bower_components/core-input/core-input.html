@@ -18,27 +18,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
  *
  *     <core-input multiline placeholder="Enter multiple lines here"></core-input>
  *
- * The text input's value is considered "committed" if the user hits the `enter`
- * key or blurs the input after changing the value. The "change" event is fired
+ * The text input's value is considered "committed" if the user hits the "enter"
+ * key or blurs the input after changing the value. The `change` event is fired
  * when the value becomes committed, and the committed value is stored in the
- * "value" property. The current value of the input is stored in the "inputValue"
+ * `value` property. The current value of the input is stored in the `inputValue`
  * property.
  *
- * core-input also can optionally validate the value by providing it with a
- * regular expression to match against, or a validation function. The
- * "input-invalid" event is fired if the input value changes and is invalid.
- * The "invalid" property is also available for observation.
+ * Validation
+ * ----------
+ *
+ * core-input can optionally validate the value using the HTML5 constraints API,
+ * similar to native inputs. There are two methods to enable input validation:
+ *
+ * 1. By setting the `type` attribute. For example, setting it to `email` will
+ *    check the value is a valid email, and setting it to `number` will check
+ *    the input is a number.
+ *
+ * 2. By setting attributes related to validation. The attributes are `pattern`,
+ *    `min`, `max`, `step` and `required`.
+ *
+ * Only `required` is supported for multiline inputs currently.
  *
  * Example:
  *
- *     // valid only if the value is a number
- *     <core-input validate="^[0-9]*$" on-input-invalid="{{inputInvalidAction}}"></core-input>
+ *     <core-input type="email" placeholder="enter your email"></core-input>
  *
- *     this.$.input.validate = /^[0-9]*$/;  // valid only if the value is a number
+ *     <core-input type="number" min="5" placeholder="enter a number greater than or equal to 5"></core-input>
  *
- *     this.$.input2.validate = function(value) {
- *       return value === 'foo';  // valid only if the value is 'foo'
- *     }
+ *     <core-input pattern=".*abc.*" placeholder="enter something containing 'abc'"></core-input>
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation
+ * for more info on validation.
  *
  * @group Polymer Core Elements
  * @element core-input
@@ -78,18 +88,18 @@ Fired when the inputValue of this text input changes and passes validation.
 -->
 <link href="../polymer/polymer.html" rel="import">
 
-<polymer-element name="core-input">
+<polymer-element name="core-input" on-focus="{{focusAction}}">
 
   <template>
 
     <link href="core-input.css" rel="stylesheet">
 
     <template if="{{multiline}}">
-      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" fit?="{{rows === 'fit'}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" required?="{{required}}" readonly?="{{readonly}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{focusAction}}" on-blur="{{blurAction}}"></textarea>
+      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" fit?="{{rows === 'fit'}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}"></textarea>
     </template>
 
     <template if="{{!multiline}}">
-      <input id="input" value="{{inputValue}}" disabled?="{{disabled}}" type="{{type}}" placeholder="{{placeholder}}" required?="{{required}}" readonly?="{{readonly}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{focusAction}}" on-blur="{{blurAction}}">
+      <input id="input" value="{{inputValue}}" disabled?="{{disabled}}" type="{{type}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" pattern="{{pattern}}" min="{{min}}" max="{{max}}" step="{{step}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-keydown="{{keydownAction}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}">
     </template>
 
   </template>
@@ -119,15 +129,6 @@ Fired when the inputValue of this text input changes and passes validation.
         disabled: false,
   
         /**
-         * Set the input type. Not supported for `multiline`.
-         *
-         * @attribute type
-         * @type string
-         * @default text
-         */
-        type: 'text',
-
-        /**
          * If true, the user cannot modify the value of the input.
          *
          * @attribute readonly
@@ -137,14 +138,14 @@ Fired when the inputValue of this text input changes and passes validation.
         readonly: false,
 
         /**
-         * If true, the input is invalid until the value becomes non-null.
+         * If true, this input will automatically gain focus on page load.
          *
-         * @attribute required
+         * @attribute autofocus
          * @type boolean
          * @default false
          */
-        required: false,
-        
+        autofocus: false,
+
         /**
          * If true, this input accepts multi-line input like a `<textarea>`
          *
@@ -187,36 +188,73 @@ Fired when the inputValue of this text input changes and passes validation.
          * @default ''
          */
         value: '',
-  
+
         /**
-         * If this property is not null, the text input's inputValue will be
-         * validated. You can validate the value with either a regular expression
-         * or a custom function.
+         * Set the input type. Not supported for `multiline`.
          *
-         * To use a regular expression, set this property to a RegExp object or
-         * a string containing the regular expression to match against. To use a
-         * custom validator, set this property to a function with the signature
-         * function(value) that returns a boolean. The input is valid if the
-         * function returns true.
-         *
-         * Example:
-         *
-         *     // valid only if the value is a number
-         *     <core-input validate="^[0-9]*$"></core-input> 
-         * 
-         *     // valid only if the value is a number
-         *     this.$.input.validate = /^[0-9]*$/;
-         *
-         *     this.$.input2.validate = function(value) {
-         *         // valid only if the value is 'foo'
-         *         return value === 'foo';  
-         *     }
-         *
-         * @attribute validate
-         * @type string|RegExp|Function(value)
-         * @default null
+         * @attribute type
+         * @type string
+         * @default text
          */
-        validate: null,
+        type: 'text',
+
+        /**
+         * If true, the input is invalid if its value is null.
+         *
+         * @attribute required
+         * @type boolean
+         * @default false
+         */
+        required: false,
+
+        /**
+         * A regular expression to validate the input value against. See
+         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
+         * for more info. Not supported if `multiline` is true.
+         *
+         * @attribute pattern
+         * @type string
+         * @default '.*'
+         */
+        // FIXME(yvonne): The default is set to .* because we can't bind to pattern such
+        // that the attribute is unset if pattern is null.
+        pattern: '.*',
+
+        /**
+         * If set, the input is invalid if the value is less than this property. See
+         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
+         * for more info. Not supported if `multiline` is true.
+         *
+         * @attribute min
+         */
+        min: null,
+
+        /**
+         * If set, the input is invalid if the value is greater than this property. See
+         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
+         * for more info. Not supported if `multiline` is true.
+         *
+         * @attribute max
+         */
+        max: null,
+
+        /**
+         * If set, the input is invalid if the value is not `min` plus an integral multiple
+         * of this property. See
+         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
+         * for more info. Not supported if `multiline` is true.
+         *
+         * @attribute step
+         */
+        step: null,
+
+        /**
+         * The maximum length of the input value.
+         *
+         * @attribute maxlength
+         * @type number
+         */
+        maxlength: null,
   
         /**
          * If this property is true, the text input's inputValue failed validation.
@@ -225,44 +263,20 @@ Fired when the inputValue of this text input changes and passes validation.
          * @type boolean
          * @default false
          */
-        invalid: false,
+        invalid: false
       },
-      
-      validateValue: function() {
-        var valid = true;
 
-        if (this.validate) {
-
-          if (!this.inputValue) {
-            valid = !this.required;
-          } else if (typeof this.validate === 'string') {
-            valid = new RegExp(this.validate).exec(this.inputValue);
-          } else if (this.validate.exec) {
-            valid = this.validate.exec(this.inputValue);
-          } else if (this.validate instanceof Function) {
-            valid = this.validate.call(this, this.inputValue);
-          }
-
-        } else if (this.required) {
-          valid = !!this.inputValue;
-        }
-
-        this.invalid = !valid;
+      ready: function() {
+        this.handleTabindex(this.getAttribute('tabindex'));
       },
 
       invalidChanged: function() {
         this.classList.toggle('invalid', this.invalid);
-        if (this.invalid) {
-          this.fire('input-invalid', {value: this.inputValue});
-        } else {
-          this.fire('input-valid', {value: this.inputValue});
-        }
+        this.fire('input-'+ (this.invalid ? 'invalid' : 'valid'), {value: this.inputValue});
       },
 
       inputValueChanged: function() {
-        if (this.validate || this.required) {
-          this.validateValue();
-        }
+        this.updateValidity_();
       },
 
       valueChanged: function() {
@@ -270,7 +284,21 @@ Fired when the inputValue of this text input changes and passes validation.
       },
 
       requiredChanged: function() {
-        this.validateValue();
+        this.updateValidity_();
+      },
+
+      attributeChanged: function(attr, oldVal, curVal) {
+        if (attr === 'tabindex') {
+          this.handleTabindex(curVal);
+        }
+      },
+
+      handleTabindex: function(tabindex) {
+        if (tabindex > 0) {
+          this.$.input.setAttribute('tabindex', -1);
+        } else {
+          this.$.input.removeAttribute('tabindex');
+        }
       },
 
       /**
@@ -282,32 +310,123 @@ Fired when the inputValue of this text input changes and passes validation.
          this.value = this.inputValue;
       },
 
-      inputChangeAction: function() {
-        this.commit();
-        if (!window.ShadowDOMPolyfill) {
-          // re-fire non-bubbling event
-          this.fire('change', null, this, false);
+      updateValidity_: function() {
+        if (this.$.input.willValidate) {
+          this.invalid = !this.$.input.validity.valid;
         }
       },
 
-      focusAction: function() {
-        // re-fire non-bubbling event
-        this.fire('focus', null, this, false);
+      keydownAction: function() {
+        // for type = number, the value is the empty string unless the input is a valid number.
+        // FIXME(yvonne): check other types
+        if (this.type === 'number') {
+          this.async(function() {
+            this.updateValidity_();
+          });
+        }
       },
 
-      blurAction: function() {
-        // re-fire non-bubbling event
-        this.fire('blur', null, this, false);
+      inputChangeAction: function() {
+        this.commit();
+        if (!window.ShadowDOMPolyfill) {
+          // re-fire event that does not bubble across shadow roots
+          this.fire('change', null, this);
+        }
+      },
+
+      focusAction: function(e) {
+        if (this.getAttribute('tabindex') > 0) {
+          // Forward focus to the inner input if tabindex is set on the element
+          // This will not cause an infinite loop because focus will not fire on the <input>
+          // again if it's already focused.
+          this.$.input.focus();
+        }
+      },
+
+      inputFocusAction: function(e) {
+        if (window.ShadowDOMPolyfill) {
+          // re-fire non-bubbling event if polyfill
+          this.fire('focus', null, this, false);
+        }
+      },
+
+      inputBlurAction: function() {
+        if (window.ShadowDOMPolyfill) {
+          // re-fire non-bubbling event
+          this.fire('blur', null, this, false);
+        }
+      },
+
+      blur: function() {
+        // forward blur method to the internal input / textarea element
+        this.$.input.blur();
+      },
+
+      click: function() {
+        // forward click method to the internal input / textarea element
+        this.$.input.click();
+      },
+
+      focus: function() {
+        // forward focus method to the internal input / textarea element
+        this.$.input.focus();
+      },
+
+      select: function() {
+        // forward select method to the internal input / textarea element
+        this.$.input.focus();
+      },
+
+      setSelectionRange: function(selectionStart, selectionEnd, selectionDirection) {
+        // forward setSelectionRange method to the internal input / textarea element
+        this.$.input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+      },
+
+      setRangeText: function(replacement, start, end, selectMode) {
+        // forward setRangeText method to the internal input element
+        if (!this.multiline) {
+          this.$.input.setRangeText(replacement, start, end, selectMode);
+        }
+      },
+
+      stepDown: function(n) {
+        // forward stepDown method to the internal input element
+        if (!this.multiline) {
+          this.$.input.stepDown(n);
+        }
+      },
+
+      stepUp: function(n) {
+        // forward stepUp method to the internal input element
+        if (!this.multiline) {
+          this.$.input.stepUp(n);
+        }
+      },
+
+      get willValidate() {
+        return this.$.input.willValidate;
+      },
+
+      get validity() {
+        return this.$.input.validity;
+      },
+
+      get validationMessage() {
+        return this.$.input.validationMessage;
+      },
+
+      checkValidity: function() {
+        var r = this.$.input.checkValidity();
+        this.updateValidity_();
+        return r;
+      },
+
+      setCustomValidity: function(message) {
+        this.$.input.setCustomValidity(message);
+        this.updateValidity_();
       }
 
     });
-
-    CoreInput = function() {
-      return document.createElement('core-input');
-    };
-    CoreInput.validate = {
-      number: /^[0-9]*$/
-    };
   </script>
 
 </polymer-element>

@@ -5,12 +5,12 @@
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-localstorage",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "5493b3efd1ce122f01843e7fb1f7443d85f9f0de"
+    "tag": "0.3.5",
+    "commit": "fcd9792aa1bf34e52a6b976f7d025d5d5a5c199d"
   },
   "_source": "git://github.com/Polymer/core-localstorage.git",
   "_target": ">=0.3.0 <1.0.0",

@@ -5,12 +5,12 @@
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-signals",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "9ffd4a5b3059fb476fd5102d5398d3a3204077aa"
+    "tag": "0.3.5",
+    "commit": "9d727f813b322f91c97fc347dfa1c64a359d5cfa"
   },
   "_source": "git://github.com/Polymer/core-signals.git",
   "_target": ">=0.3.0 <1.0.0",

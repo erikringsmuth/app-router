@@ -6,12 +6,12 @@
     "core-media-query": "Polymer/core-media-query#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-drawer-panel",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "1884aa224f381cc1a591665fa0d8d875590f5952"
+    "tag": "0.3.5",
+    "commit": "1ddf02182a57786bb97764dcabf05dee7fcac288"
   },
   "_source": "git://github.com/Polymer/core-drawer-panel.git",
   "_target": ">=0.3.0 <1.0.0",

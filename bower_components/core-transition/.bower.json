@@ -6,12 +6,12 @@
     "core-meta": "Polymer/core-meta#>=0.3.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-transition",
-  "version": "0.3.4",
-  "_release": "0.3.4",
+  "version": "0.3.5",
+  "_release": "0.3.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.4",
-    "commit": "21a04281819c779d160043954c78e56fb6952a53"
+    "tag": "0.3.5",
+    "commit": "12960cd196487364d35492d6d172c30aeccb70a9"
   },
   "_source": "git://github.com/Polymer/core-transition.git",
   "_target": ">=0.3.0 <1.0.0",

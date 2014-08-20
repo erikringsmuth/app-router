@@ -1,0 +1,36 @@
+:host {
+  position: relative;
+  display: inline-block;
+  background-color: #fff;
+}
+
+#control core-item {
+  margin-left: 12px;
+  max-width: inherit;
+}
+
+#control core-item::shadow #label {
+  overflow: hidden;
+  /* FIXME not working for some reason */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#arrow {
+  margin: 0 12px;
+}
+
+#menu {
+  position: absolute;
+  left: 0;
+  margin: 0;
+  padding: 0 12px;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  background-color: #fff;
+}
+
+:host([halign="right"]) #menu {
+  left: auto;
+  right: 0;
+}
