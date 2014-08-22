@@ -1,0 +1,31 @@
+{
+  "name": "WeakMap",
+  "main": "weakmap.js",
+  "homepage": "https://github.com/Polymer/WeakMap",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "description": "Shim for ES6 WeakMap",
+  "keywords": [
+    "weakmap"
+  ],
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.3.5",
+  "_release": "0.3.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.5",
+    "commit": "82541df620f0e20c8205f54c1affc03e51485726"
+  },
+  "_source": "git://github.com/Polymer/WeakMap.git",
+  "_target": ">=0.3.0 <1.0.0",
+  "_originalSource": "Polymer/WeakMap"
+}

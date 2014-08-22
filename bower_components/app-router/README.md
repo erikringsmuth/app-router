@@ -153,36 +153,6 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 </app-router>
 ```
 
-#### Shadow DOM
-The router puts the active route's content in an `<active-route></active-route>` element.
-```html
-<app-router>
-  <!-- app-routes -->
-  <active-route><!-- active route content --></active-route>
-</app-router>
-```
-
-If you want the active route's content isolated in a shadow tree you can add the `shadow` attribute like this.
-```html
-<app-router shadow>
-  <!-- app-routes -->
-  <active-route>
-    # shadow-root <!-- the active route's content will be inside the shadow root -->
-  </active-route>
-</app-router>
-```
-
-#### init
-The router initializes itself when attached to the DOM. You can defer initialization by setting `init="manual"` and calling `init()` later.
-```html
-<app-router init="manual">
-  <!-- app-routes -->
-</app-router>
-<script>
-  document.querySelector('app-router').init();
-</script>
-```
-
 ## Navigation
 There are three ways change the active route. `hashchange`, `pushState()`, and a full page load.
 

@@ -1,0 +1,18 @@
+[
+  "build/boot.js",
+  "src/patches-shadowdom-native.js",
+
+  "src/lang.js",
+  "src/dom.js",
+  "src/template.js",
+  "src/inspector.js",
+  "src/unresolved.js",
+  "src/module.js",
+  "src/microtask.js",
+  "src/url.js",
+
+  "src/loader.js",
+  "src/styleloader.js",
+
+  "src/patches-mdv.js"
+]

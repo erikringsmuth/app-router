@@ -1,0 +1,31 @@
+{
+  "name": "WeakMap",
+  "version": "0.0.0",
+  "description": "Shim of the ES6 WeakMap",
+  "main": "Gruntfile.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "grunt": "~0.4.1",
+    "karma-mocha": "*",
+    "karma-ie-launcher": "*",
+		"karma-safari-launcher": "*",
+    "karma-script-launcher": "*",
+    "karma-crbot-reporter": "*",
+    "grunt-karma": "*"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Polymer/WeakMap.git"
+  },
+  "author": "Polymer Authors",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}
