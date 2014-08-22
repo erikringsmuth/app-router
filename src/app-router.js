@@ -87,7 +87,7 @@
     for (var i = 0; i < routes.length; i++) {
       if (this.testRoute(routes[i].getAttribute('path'), urlPath, this.getAttribute('trailingSlash'), routes[i].hasAttribute('regex'))) {
         this.activateRoute(routes[i], urlPath);
-        break;
+        return;
       }
     }
     fire('not-found', eventDetail, this);
