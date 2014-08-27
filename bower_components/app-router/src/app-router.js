@@ -9,7 +9,7 @@
     prototype: Object.create(HTMLElement.prototype)
   });
 
-  // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"]></app-router>
+  // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"] [pathType="auto|regular|hash"]></app-router>
   var router = Object.create(HTMLElement.prototype);
 
   var importedURIs = {};
@@ -76,7 +76,7 @@
 
   // go() - Find the first <app-route> that matches the current URL and change the active route
   router.go = function() {
-    var urlPath = this.parseUrlPath(window.location.href);
+    var urlPath = this.parseUrlPath(window.location.href, this.getAttribute('pathType'));
     var eventDetail = {
       path: urlPath
     };
@@ -106,7 +106,7 @@
     if (!fire('activate-route-start', eventDetail, route)) {
       return;
     }
-    
+
     this.activeRoute.removeAttribute('active');
     route.setAttribute('active', 'active');
     this.activeRoute = route;
@@ -152,7 +152,7 @@
   // activateCustomElement(elementName, routePath, urlPath, isRegExp, eventDetail) - Replace the active route with a new instance of the custom element
   router.activateCustomElement = function(elementName, routePath, urlPath, isRegExp, eventDetail) {
     var resourceEl = document.createElement(elementName);
-    var routeArgs = this.routeArguments(routePath, urlPath, window.location.href, isRegExp);
+    var routeArgs = this.routeArguments(routePath, urlPath, window.location.href, isRegExp, this.getAttribute('pathType'));
     for (var arg in routeArgs) {
       if (routeArgs.hasOwnProperty(arg)) {
         resourceEl[arg] = routeArgs[arg];
@@ -208,7 +208,7 @@
     fire('activate-route-end', eventDetail, eventDetail.route);
   };
 
-  // urlPath(url) - Parses the url to get the path
+  // urlPath(url, pathType) - Parses the url to get the path
   //
   // This will return the hash path if it exists or return the real path if no hash path exists.
   //
@@ -216,7 +216,7 @@
   // path = '/example/path'
   //
   // Note: The URL must contain the protocol like 'http(s)://'
-  router.parseUrlPath = function(url) {
+  router.parseUrlPath = function(url, pathType) {
     // The relative URI is everything after the third slash including the third slash
     // Example relativeUri = '/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
     var splitUrl = url.split('/');
@@ -228,15 +228,19 @@
 
     // The hash is everything from the first # up to the the search starting with ? if it exists
     // Example hash = '#/example/path'
-    var hashIndex = relativeUri.indexOf('#');
-    if (hashIndex !== -1) {
-      var hash = relativeUri.substring(hashIndex).split('?')[0];
-      if (hash.substring(0, 2) === '#/') {
-        // Hash path
-        path = hash.substring(1);
-      } else if (hash.substring(0, 3) === '#!/') {
-        // Hashbang path
-        path = hash.substring(2);
+    if (pathType !== 'regular') {
+      var hashIndex = relativeUri.indexOf('#');
+      if (hashIndex !== -1) {
+        var hash = relativeUri.substring(hashIndex).split('?')[0];
+        if (hash.substring(0, 2) === '#/') {
+          // Hash path
+          path = hash.substring(1);
+        } else if (hash.substring(0, 3) === '#!/') {
+          // Hashbang path
+          path = hash.substring(2);
+        } else if (pathType === 'hash') {
+          path = hash.substring(1);
+        }
       }
     }
 
@@ -320,8 +324,8 @@
     return true;
   };
 
-  // router.routeArguments(routePath, urlPath, url, isRegExp) - Gets the path variables and query parameter values from the URL
-  router.routeArguments = function routeArguments(routePath, urlPath, url, isRegExp) {
+  // router.routeArguments(routePath, urlPath, url, isRegExp, pathType) - Gets the path variables and query parameter values from the URL
+  router.routeArguments = function routeArguments(routePath, urlPath, url, isRegExp, pathType) {
     var args = {};
 
     // Example urlPathSegments = ['', example', 'path']
@@ -355,18 +359,20 @@
       }
     }
     // If it's a hash URL we need to get the search from the hash
-    var hashPathIndex = url.indexOf('#/');
-    var hashBangPathIndex = url.indexOf('#!/');
-    if (hashPathIndex !== -1 || hashBangPathIndex !== -1) {
-      var hash = '';
-      if (hashPathIndex !== -1) {
-        hash = url.substring(hashPathIndex);
-      } else {
-        hash = url.substring(hashBangPathIndex);
-      }
-      searchIndex = hash.indexOf('?');
-      if (searchIndex !== -1) {
-        search = hash.substring(searchIndex);
+    if (pathType !== 'regular') {
+      var hashPathIndex = url.indexOf('#/');
+      var hashBangPathIndex = url.indexOf('#!/');
+      if (hashPathIndex !== -1 || hashBangPathIndex !== -1) {
+        var hash = '';
+        if (hashPathIndex !== -1) {
+          hash = url.substring(hashPathIndex);
+        } else {
+          hash = url.substring(hashBangPathIndex);
+        }
+        searchIndex = hash.indexOf('?');
+        if (searchIndex !== -1) {
+          search = hash.substring(searchIndex);
+        }
       }
     }
 

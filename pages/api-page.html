@@ -53,6 +53,12 @@
   &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
 
+      <h4>Path Type</h4>
+      <p>One set of routes will match regular paths <code-snippet>/</code-snippet> and hash paths <code-snippet>#/</code-snippet>. You can choose a specific mode with the <code-snippet>pathType</code-snippet> attribute. The options are <code-snippet>auto</code-snippet> (default), <code-snippet>hash</code-snippet>, and <code-snippet>regular</code-snippet>.</p>
+<code-block>&lt;app-router pathType="regular"&gt;
+  &lt;!-- always ignore the hash and match on the path --&gt;
+&lt;/app-router&gt;</code-block>
+
       <h4>Shadow DOM</h4>
       <p>The router puts the active route's content in an <code-snippet>&lt;active-route&gt;&lt;/active-route&gt;</code-snippet> element.</p>
 <code-block>&lt;app-router&gt;
