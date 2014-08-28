@@ -65,7 +65,16 @@ Fired when the `core-overlay`'s `opened` property changes.
 @param {Object} detail
 @param {Object} detail.opened the opened state
 -->
+<!--
+Fired when the `core-overlay` has completely opened.
 
+@event core-overlay-open-completed
+-->
+<!--
+Fired when the `core-overlay` has completely closed.
+
+@event core-overlay-close-completed
+-->
 <style>
   .core-overlay-backdrop {
     position: fixed;
@@ -385,6 +394,8 @@ Fired when the `core-overlay`'s `opened` property changes.
           this.layer.removeElement(this.target);
         }
       }
+      this.fire('core-overlay-' + (this.opened ? 'open' : 'close') + 
+          '-completed');
       this.applyFocus();
     },
 

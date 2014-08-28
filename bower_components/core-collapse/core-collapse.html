@@ -40,12 +40,19 @@ will be collapsed.  Use `opened` to show/hide the content.
 <script>
 
   Polymer('core-collapse', {
+
+    /**
+     * Fired when the `core-collapse`'s `opened` property changes.
+     * 
+     * @event core-collapse-open
+     */
+
     /**
      * Fired when the target element has been resized as a result of the opened
      * state changing.
      * 
      * @event core-resize
-    */
+     */
 
     /**
      * The target element.
@@ -146,6 +153,7 @@ will be collapsed.  Use `opened` to show/hide the content.
 
     openedChanged: function() {
       this.update();
+      this.fire('core-collapse-open', this.opened);
     },
 
     /**
@@ -221,6 +229,10 @@ will be collapsed.  Use `opened` to show/hide the content.
       if (!this.fixedSize) {
         this.updateSize('auto', null);
         var s = this.calcSize();
+        if (s == '0px') {
+          this.transitionEnd();
+          return;
+        }
         this.updateSize(0, null);
       }
       this.async(function() {

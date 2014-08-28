@@ -24,9 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 }
 
 .polymer-tooltip {
-   pointer-events: none; 
   position: absolute;
-  display: flex;
   font-size: 10px;
   font-family: sans-serif;
   padding: 8px;
@@ -37,6 +35,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   white-space: nowrap;
   line-height: 6px;
   z-index: 1002; /* TODO: this is brittle. */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 :host([large]) .polymer-tooltip {

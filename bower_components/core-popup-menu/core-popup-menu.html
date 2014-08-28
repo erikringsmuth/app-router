@@ -1,0 +1,198 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+
+`core-popup-menu` is a popup menu that can be positioned relative to another
+element, usually the element that opens or closes the menu. It can be used
+to implement drop-downs, menu buttons, etc..
+
+Example:
+
+    <template is="auto-binding">
+        <div id="control">Your favorite pastry:</div>
+        <core-popup-menu relatedTarget="{{$.control}}" on-core-select="{{selectAction}}">
+          <core-item label="Churro"></core-item>
+          <core-item label="Donut"></core-item>
+          <core-item label="Macaron"></core-item>
+        </core-popup-menu>
+    </template>
+
+@group Polymer Core Elements
+@element core-popup-menu
+@homepage github.io
+-->
+
+<!--
+Fired when an item's selection state is changed. This event is fired both
+when an item is selected or deselected. The `isSelected` detail property
+contains the selection state.
+
+@event core-select
+@param {Object} detail
+  @param {boolean} detail.isSelected true for selection and false for de-selection
+  @param {Object} detail.item the item element
+-->
+<link href="../polymer/polymer.html" rel="import">
+<link href="../core-menu/core-menu.html" rel="import">
+
+<link href="core-popup-overlay.html" rel="import">
+
+<polymer-element name="core-popup-menu">
+<template>
+
+  <link href="core-popup-menu.css" rel="stylesheet">
+
+  <core-popup-overlay id="overlay" target="{{}}" sizingTarget="{{$.menu}}" relatedTarget="{{relatedTarget}}" opened="{{opened}}" halign="{{halign}}" valign="{{valign}}" transition="{{transition}}"></core-popup-overlay>
+
+  <core-menu id="menu" selected="{{selected}}" valueattr="{{valueattr}}" selectedClass="{{selectedClass}}" selectedProperty="{{selectedProperty}}" selectedAttribute="{{selectedAttribute}}" selectedItem="{{selectedItem}}" selectedModel="{{selectedModel}}" selectedIndex="{{selectedIndex}}" on-core-select="{{selectAction}}">
+    <content></content>
+  </core-menu>
+
+</template>
+<script>
+
+  Polymer({
+
+    publish: {
+
+      /**
+       * The element associated with this menu, usually the element that
+       * causes the menu the open.
+       *
+       * @attribute relatedTarget
+       * @type Node
+       */
+      relatedTarget: null,
+
+      /**
+       * If true, the menu is currently visible.
+       *
+       * @attribute opened
+       * @type boolean
+       * @default false
+       */
+      opened: false,
+
+      /**
+       * The horizontal alignment of the pulldown menu relative to the button.
+       *
+       * @attribute halign
+       * @type 'left' | 'right' | 'auto'
+       * @default 'auto'
+       */
+      halign: { value: 'auto', reflect: true },
+
+      /**
+       * The vertical alignment of the pulldown menu relative to the button.
+       *
+       * @attribute valign
+       * @type 'bottom' | 'top' | 'auto'
+       * @default 'auto'
+       */
+      valign: { value: 'auto', reflect: true },
+
+      /**
+       * The transition property specifies a string which identifies a 
+       * <a href="../core-transition/">`core-transition`</a> element that 
+       * will be used to help the overlay open and close. The default
+       * `core-transition-fade` will cause the overlay to fade in and out.
+       *
+       * @attribute transition
+       * @type string
+       * @default 'core-transition-fade'
+       */
+      transition: null,
+
+      /**
+       * Gets or sets the selected element.  Default to use the index
+       * of the item element.
+       *
+       * @attribute selected
+       * @type Object
+       * @default null
+       */
+      selected: null,
+
+      /**
+       * Specifies the attribute to be used for "selected" attribute.
+       *
+       * @attribute valueattr
+       * @type string
+       * @default 'name'
+       */
+      valueattr: 'name',
+
+      /**
+       * Specifies the CSS class to be used to add to the selected element.
+       * 
+       * @attribute selectedClass
+       * @type string
+       * @default 'core-selected'
+       */
+      selectedClass: 'core-selected',
+
+      /**
+       * Specifies the property to be used to set on the selected element
+       * to indicate its active state.
+       *
+       * @attribute selectedProperty
+       * @type string
+       * @default ''
+       */
+      selectedProperty: '',
+
+      /**
+       * Specifies the attribute to set on the selected element to indicate
+       * its active state.
+       *
+       * @attribute selectedAttribute
+       * @type string
+       * @default 'active'
+       */
+      selectedAttribute: 'active',
+
+      /**
+       * Returns the currently selected element.
+       * 
+       * @attribute selectedItem
+       * @type Object
+       * @default null
+       */
+      selectedItem: null,
+
+      /**
+       * In single selection, this returns the model associated with the
+       * selected element.
+       * 
+       * @attribute selectedModel
+       * @type Object
+       * @default null
+       */
+      selectedModel: null,
+
+      /**
+       * In single selection, this returns the selected index.
+       *
+       * @attribute selectedIndex
+       * @type number
+       * @default -1
+       */
+      selectedIndex: -1
+
+    },
+
+    selectAction: function() {
+      this.opened = false;
+    }
+
+  });
+
+</script>
+</polymer-element>

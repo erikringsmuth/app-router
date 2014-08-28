@@ -159,7 +159,18 @@ or class `content` to delineate the content section.
        * @attribute condensedHeaderHeight
        * @type number
        */
-      condensedHeaderHeight: 0
+      condensedHeaderHeight: 0,
+      
+      /**
+       * By default, the top part of the header stays when the header is being
+       * condensed.  Set this to true if you want the top part of the header
+       * to be scrolled away.
+       *
+       * @attribute scrollAwayTopbar
+       * @type boolean
+       * @default false
+       */
+      scrollAwayTopbar: false
     },
 
     prevScrollTop: 0,
@@ -243,7 +254,7 @@ or class `content` to delineate the content section.
     condenseHeader: function(y) {
       var reset = y == null;
       // adjust top bar in core-header so the top bar stays at the top
-      if (this.header.$ && this.header.$.topBar) {
+      if (!this.scrollAwayTopbar && this.header.$ && this.header.$.topBar) {
         this.translateY(this.header.$.topBar.style, 
             reset ? null : Math.min(y, this.headerMargin));
       }
@@ -288,7 +299,7 @@ or class `content` to delineate the content section.
         requestAnimationFrame(this.transformHeader.bind(this, y));
       }
       
-      this.prevScrollTop = sTop;
+      this.prevScrollTop = Math.max(sTop, 0);
       this.y = y;
       
       if (event) {

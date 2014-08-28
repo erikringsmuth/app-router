@@ -55,8 +55,7 @@ contains the selection state.
 <link href="../core-icon/core-icon.html" rel="import">
 <link href="../core-icons/core-icons.html" rel="import">
 <link href="../core-item/core-item.html" rel="import">
-<link href="../core-menu/core-menu.html" rel="import">
-<link href="../core-overlay/core-overlay.html" rel="import">
+<link href="../core-popup-menu/core-popup-menu.html" rel="import">
 
 <polymer-element name="core-dropdown">
 <template>
@@ -64,15 +63,13 @@ contains the selection state.
   <link href="core-dropdown.css" rel="stylesheet">
 
   <div id="control" layout horizontal center on-tap="{{toggle}}">
-    <core-item flex src="{{selectedItem.src}}" icon="{{selectedItem.icon}}" label="{{selectedItem ? selectedItem.label : label}}"></core-item>
+    <core-item flex src="{{selectedItem.src}}" icon="{{selectedItem.icon}}" label="{{selectedItem ? (selectedItem.label || selected) : label}}"></core-item>
     <core-icon id="arrow" icon="{{opened ? 'arrow-drop-up' : 'arrow-drop-down'}}"></core-icon>
   </div>
 
-  <core-overlay target="{{$.menu}}" opened="{{opened}}" on-core-overlay-open="{{openAction}}"></core-overlay>
-
-  <core-menu id="menu" selected="{{selected}}" selectedItem="{{selectedItem}}" selectedClass="{{selectedClass}}" valueattr="{{valueattr}}" selectedProperty="{{selectedProperty}}" selectedAttribute="{{selectedAttribute}}" on-core-select="{{selectAction}}">
-    <content select="*"></content>
-  </core-menu>
+  <core-popup-menu id="menu" relatedTarget="{{$.control}}" opened="{{opened}}" selected="{{selected}}" valueattr="{{valueattr}}" selectedItem="{{selectedItem}}" halign="{{halign}}" valign="{{valign}}">
+    <content></content>
+  </core-popup-menu>
 
 </template>
 <script>
@@ -177,27 +174,8 @@ contains the selection state.
 
     toggle: function() {
       this.opened = !this.opened;
-    },
-
-    openAction: function(e) {
-      if (e.detail) {
-        var rect = this.$.control.getBoundingClientRect();
-        if (this.valign === 'top') {
-          this.$.menu.style.top = 'auto';
-          this.$.menu.style.bottom = rect.height + 'px';
-          this.$.menu.style.maxHeight = (window.innerHeight - (window.innerHeight - rect.top) - 12) + 'px';
-        } else {
-          this.$.menu.style.top = rect.height + 'px';
-          this.$.menu.style.bottom = 'auto';
-          this.$.menu.style.maxHeight = (window.innerHeight - rect.height - rect.top - 12) + 'px';
-        }
-        this.$.menu.style.minWidth = rect.width + 'px';
-      }
-    },
-
-    selectAction: function() {
-      this.opened = false;
     }
+
   });
 
 </script>

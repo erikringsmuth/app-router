@@ -1,0 +1,24 @@
+{
+  "name": "core-popup-menu",
+  "private": false,
+  "dependencies": {
+    "polymer": "Polymer/polymer#>=0.4.0 <1.0.0",
+    "core-icon": "Polymer/core-icon#>=0.4.0 <1.0.0",
+    "core-icon-button": "Polymer/core-icon-button#>=0.4.0 <1.0.0",
+    "core-icons": "Polymer/core-icons#>=0.4.0 <1.0.0",
+    "core-item": "Polymer/core-item#>=0.4.0 <1.0.0",
+    "core-menu": "Polymer/core-menu#>=0.4.0 <1.0.0",
+    "core-overlay": "Polymer/core-overlay#>=0.4.0 <1.0.0"
+  },
+  "homepage": "https://github.com/Polymer/core-popup-menu",
+  "version": "0.4.0",
+  "_release": "0.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.4.0",
+    "commit": "d32f68b37c07f92bf14f6f444a568810016295c4"
+  },
+  "_source": "git://github.com/Polymer/core-popup-menu.git",
+  "_target": ">=0.4.0 <1.0.0",
+  "_originalSource": "Polymer/core-popup-menu"
+}

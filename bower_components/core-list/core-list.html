@@ -387,12 +387,12 @@ For performance reasons, not every item in the list is rendered at once.
 
   // determine proper transform mechanizm
   if (document.documentElement.style.transform !== undefined) {
-    function setTransform(element, string, value) {
+    var setTransform = function(element, string, value) {
       element.style.transform = string;
       element._transformValue = value;
     }
   } else {
-    function setTransform(element, string, value) {
+    var setTransform = function(element, string, value) {
       element.style.webkitTransform = string;
       element._transformValue = value;
     }

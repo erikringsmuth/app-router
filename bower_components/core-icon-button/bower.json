@@ -2,6 +2,6 @@
   "name": "core-icon-button",
   "private": true,
   "dependencies": {
-    "core-icons": "Polymer/core-icons#>=0.3.0 <1.0.0"
+    "core-icons": "Polymer/core-icons#>=0.4.0 <1.0.0"
   }
 }

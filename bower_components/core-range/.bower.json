@@ -2,17 +2,17 @@
   "name": "core-range",
   "private": true,
   "dependencies": {
-    "polymer": "Polymer/polymer#>=0.3.0 <1.0.0"
+    "polymer": "Polymer/polymer#>=0.4.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-range",
-  "version": "0.3.5",
-  "_release": "0.3.5",
+  "version": "0.4.0",
+  "_release": "0.4.0",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.5",
-    "commit": "df0a1a38e891ce4af074a25ac436fa03b76c6397"
+    "tag": "0.4.0",
+    "commit": "a0dadd3a75aa77b5c15844657f3abb8a52950eed"
   },
   "_source": "git://github.com/Polymer/core-range.git",
-  "_target": ">=0.3.0 <1.0.0",
+  "_target": ">=0.4.0 <1.0.0",
   "_originalSource": "Polymer/core-range"
 }

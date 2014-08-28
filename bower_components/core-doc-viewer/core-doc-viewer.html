@@ -1,3 +1,12 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
 <link rel="import" href="elements/core-doc-page.html">
 <link rel="import" href="elements/core-doc-toc.html">
 <link rel="import" href="../core-icon/core-icon.html">
@@ -68,7 +77,7 @@ Arbitrary HTML is also supported
 @homepage github.io
 -->
 
-<polymer-element name="core-doc-viewer" attributes="sources route url">
+<polymer-element name="core-doc-viewer" attributes="sources route url" horizontal layout>
 
   <template>
 
@@ -88,9 +97,8 @@ Arbitrary HTML is also supported
       <context-free-parser url="{{}}" on-data-ready="{{parserDataReady}}"></context-free-parser>
     </template>
 
-    <core-layout></core-layout>
     <core-doc-toc id="toc" data="{{classes}}" selected="{{selected}}"></core-doc-toc>
-    <core-doc-page core-flex data="{{data}}"></core-doc-page>
+    <core-doc-page flex data="{{data}}"></core-doc-page>
 
   </template>
 

@@ -126,7 +126,7 @@ You can configure the duration of the hero transition with the global variable
 
         h.h1.style[TRANSITION_NAME] = wt.join(', ');
         h.h1.style.borderRadius = h.r1;
-        h.h1.style[TRANSFORM_NAME] = 'none';
+        h.h1.style[TRANSFORM_NAME] = '';
       });
 
       this.super(arguments);
@@ -236,8 +236,8 @@ You can configure the duration of the hero transition with the global variable
       this.super(arguments);
       if (scope._heroes) {
         scope._heroes.forEach(function(h) {
-          h.h1.style[TRANSITION_NAME] = null;
-          h.h1.style[TRANSFORM_NAME] = null;
+          h.h1.style[TRANSITION_NAME] = '';
+          h.h1.style[TRANSFORM_NAME] = '';
         });
         scope._heroes = [];
       }

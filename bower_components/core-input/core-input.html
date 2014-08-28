@@ -28,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
  * ----------
  *
  * core-input can optionally validate the value using the HTML5 constraints API,
- * similar to native inputs. There are two methods to enable input validation:
+ * similar to native inputs. There are two methods to configure input validation:
  *
  * 1. By setting the `type` attribute. For example, setting it to `email` will
  *    check the value is a valid email, and setting it to `number` will check
@@ -95,11 +95,11 @@ Fired when the inputValue of this text input changes and passes validation.
     <link href="core-input.css" rel="stylesheet">
 
     <template if="{{multiline}}">
-      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" fit?="{{rows === 'fit'}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}"></textarea>
+      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" fit?="{{rows === 'fit'}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}"></textarea>
     </template>
 
     <template if="{{!multiline}}">
-      <input id="input" value="{{inputValue}}" disabled?="{{disabled}}" type="{{type}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" pattern="{{pattern}}" min="{{min}}" max="{{max}}" step="{{step}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-keydown="{{keydownAction}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}">
+      <input id="input" value="{{inputValue}}" disabled?="{{disabled}}" type="{{type}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" pattern="{{pattern}}" min="{{min}}" max="{{max}}" step="{{step}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-keypress="{{keypressAction}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}">
     </template>
 
   </template>
@@ -263,11 +263,28 @@ Fired when the inputValue of this text input changes and passes validation.
          * @type boolean
          * @default false
          */
-        invalid: false
+        invalid: false,
+
+        /**
+         * If this property is true, validate the input as they are entered.
+         *
+         * @attribute validateImmediately
+         * @type boolean
+         * @default true
+         */
+        validateImmediately: true
       },
 
       ready: function() {
         this.handleTabindex(this.getAttribute('tabindex'));
+      },
+
+      disabledChanged: function() {
+        if (this.disabled) {
+          this.setAttribute('aria-disabled', true);
+        } else {
+          this.removeAttribute('aria-disabled');
+        }
       },
 
       invalidChanged: function() {
@@ -276,7 +293,9 @@ Fired when the inputValue of this text input changes and passes validation.
       },
 
       inputValueChanged: function() {
-        this.updateValidity_();
+        if (this.validateImmediately) {
+          this.updateValidity_();
+        }
       },
 
       valueChanged: function() {
@@ -284,7 +303,9 @@ Fired when the inputValue of this text input changes and passes validation.
       },
 
       requiredChanged: function() {
-        this.updateValidity_();
+        if (this.validateImmediately) {
+          this.updateValidity_();
+        }
       },
 
       attributeChanged: function(attr, oldVal, curVal) {
@@ -316,13 +337,14 @@ Fired when the inputValue of this text input changes and passes validation.
         }
       },
 
-      keydownAction: function() {
-        // for type = number, the value is the empty string unless the input is a valid number.
-        // FIXME(yvonne): check other types
-        if (this.type === 'number') {
-          this.async(function() {
-            this.updateValidity_();
-          });
+      keypressAction: function(e) {
+        // disallow non-numeric input if type = number
+        if (this.type !== 'number') {
+          return;
+        }
+        var c = String.fromCharCode(e.charCode);
+        if (!c.match(/[\d-\.e]/)) {
+          e.preventDefault();
         }
       },
 

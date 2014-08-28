@@ -244,6 +244,11 @@ Fired when an item element is tapped.
         }
       },
 
+      /**
+       * Returns an array of all items.
+       *
+       * @property items
+       */
       get items() {
         if (!this.target) {
           return [];
@@ -277,6 +282,11 @@ Fired when an item element is tapped.
         Polymer.removeEventListener(node, this.activateEvent, this.activateListener);
       },
 
+      /**
+       * Returns the selected item(s). If the `multi` property is true,
+       * this will return an array, otherwise it will return 
+       * the selected item or undefined if there is no selection.
+       */
       get selection() {
         return this.$.selection.getSelection();
       },
@@ -418,7 +428,33 @@ Fired when an item element is tapped.
           }
           target = target.parentNode;
         }
+      },
+      
+      selectIndex: function(index) {
+        var item = this.items[index];
+        if (item) {
+          this.selected = this.valueForNode(item) || index;
+        }
+      },
+      
+      /**
+       * Selects the previous item.  This should be used in single selection only.
+       *
+       * @method selectPrevious
+       */
+      selectPrevious: function() {
+        this.selectIndex(this.selectedIndex - 1);
+      },
+      
+      /**
+       * Selects the next item.  This should be used in single selection only.
+       *
+       * @method selectNext
+       */
+      selectNext: function() {
+        this.selectIndex(this.selectedIndex + 1);
       }
+      
     });
   </script>
 </polymer-element>

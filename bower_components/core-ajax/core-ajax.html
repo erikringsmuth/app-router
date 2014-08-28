@@ -238,7 +238,7 @@ element.
       try {
         return JSON.parse(r);
       } catch (x) {
-        console.warn('core-ajax caught an exception trying to parse reponse as JSON:');
+        console.warn('core-ajax caught an exception trying to parse response as JSON:');
         console.warn('url:', this.url);
         console.warn(x);
         return r;
@@ -303,8 +303,11 @@ element.
       if (args.headers && typeof(args.headers) == 'string') {
         args.headers = JSON.parse(args.headers);
       }
-      if (this.contentType) {
-        args.headers['content-type'] = this.contentType;
+      var hasContentType = Object.keys(args.headers).some(function (header) {
+        return header.toLowerCase() === 'content-type';
+      });
+      if (!hasContentType && this.contentType) {
+        args.headers['Content-Type'] = this.contentType;
       }
       if (this.handleAs === 'arraybuffer' || this.handleAs === 'blob' ||
           this.handleAs === 'document') {

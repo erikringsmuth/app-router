@@ -2,18 +2,18 @@
   "name": "core-list",
   "private": true,
   "dependencies": {
-    "polymer": "Polymer/polymer#>=0.3.0 <1.0.0",
-    "core-selection": "Polymer/core-selection#>=0.3.0 <1.0.0"
+    "polymer": "Polymer/polymer#>=0.4.0 <1.0.0",
+    "core-selection": "Polymer/core-selection#>=0.4.0 <1.0.0"
   },
   "homepage": "https://github.com/Polymer/core-list",
-  "version": "0.3.5",
-  "_release": "0.3.5",
+  "version": "0.4.0",
+  "_release": "0.4.0",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.5",
-    "commit": "eac2a2a06e40a0879ab221e73382ebbec5597080"
+    "tag": "0.4.0",
+    "commit": "0c8b12d50e15f77c152f5b61d54bd9dd12f735a1"
   },
   "_source": "git://github.com/Polymer/core-list.git",
-  "_target": ">=0.3.0 <1.0.0",
+  "_target": ">=0.4.0 <1.0.0",
   "_originalSource": "Polymer/core-list"
 }

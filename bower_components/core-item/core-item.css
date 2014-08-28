@@ -38,4 +38,7 @@ html /deep/ core-item::shadow ::content > a {
   right: 0;
   bottom: 0;
   left: 0;
+  /* IE10 styling to ensure link is clickable. Cannot be completely
+  transparent or minifiers change it to `transparent` which does not work. */
+  background-color: rgba(0, 0, 0, 0.000001);
 }

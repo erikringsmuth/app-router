@@ -23,6 +23,14 @@ license that can be found in the LICENSE file.
       overflow: hidden;
     }
 
+    core-menu-button::shadow #menu {
+    	border: 1px solid #ccc;
+    }
+
+    core-item {
+    	padding: 12px;
+    }
+
 		.small::shadow core-icon-button {
 			padding: 12px;
 		}
@@ -66,9 +74,9 @@ license that can be found in the LICENSE file.
 
 		</core-menu-button>
 
-		<div core-flex>Toolbar</div>
+		<div flex>Toolbar</div>
 
-		<core-menu-button icon="add" halign="right">
+		<core-menu-button icon="add" halign="right" valign="top">
 
 			<core-item icon="star-rate" label="Rate"></core-item>
 			<core-item icon="today" label="Today"></core-item>
@@ -76,7 +84,7 @@ license that can be found in the LICENSE file.
 
 		</core-menu-button>
 
-		<core-menu-button icon="more-vert" halign="right" valign="top">
+		<core-menu-button icon="more-vert" valign="top">
 
 			<core-item icon="visibility" label="Visibility"></core-item>
 			<core-item icon="extension" label="Extension"></core-item>
