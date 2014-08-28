@@ -24,7 +24,7 @@
     "package.json"
   ],
   "devDependencies": {
-    "platform": "Polymer/platform-dev#~0.3.5",
-    "polymer": "Polymer/polymer-dev#~0.3.5"
+    "platform": "Polymer/platform-dev#~0.4.0",
+    "polymer": "Polymer/polymer-dev#~0.4.0"
   }
 }
