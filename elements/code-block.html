@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../css/core-style.html">
-<script src="../bower_components/google-code-prettify/bin/prettify.min.js"></script>
+<link rel="import" href="code-block-import.html">
 
 <polymer-element name="code-block">
   <template>
@@ -8,9 +8,9 @@
     <pre id="code" class="prettify"><content></content></pre>
   </template>
   <script>
-    Polymer('code-block', {
-      attached: function() {
-        this.$.code.innerHTML = prettyPrintOne(this.innerHTML);
+    Polymer({
+      domReady: function() {
+        this.$.code.innerHTML = prettyPrintOne(this.innerHTML.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
       }
     });
   </script>
