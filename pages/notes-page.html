@@ -3,45 +3,43 @@
 <link rel="import" href="../elements/code-block.html">
 <link rel="import" href="../elements/code-snippet.html">
 
-<polymer-element name="notes-page" noscript>
-  <template>
-    <scaffold-layout selected="notes">
-      <div class="title">Notes</div>
+<template>
+  <scaffold-layout selected="notes">
+    <div class="title">Notes</div>
 
-      <h2>HTML Imports & Relative Paths</h2>
+    <h2>HTML Imports & Relative Paths</h2>
 
-      <p>Relative paths work differently when inside of an imported document. The current URL is <code-snippet>/app-router/#/notes</code-snippet>, the current directory is <code-snippet>/app-router/</code-snippet>, and the current imported document is <code-snippet>/app-router/pages/notes-page.html</code-snippet>. This means all relative paths will be relative to <code-snippet>/app-router/pages/</code-snippet> or <code-snippet>/app-router/pages/notes-page.html</code-snippet>, not <code-snippet>/app-router/</code-snippet>.</p>
+    <p>Relative paths work differently when inside of an imported document. The current URL is <code-snippet>/app-router/#/notes</code-snippet>, the current directory is <code-snippet>/app-router/</code-snippet>, and the current imported document is <code-snippet>/app-router/pages/notes-page.html</code-snippet>. This means all relative paths will be relative to <code-snippet>/app-router/pages/</code-snippet> or <code-snippet>/app-router/pages/notes-page.html</code-snippet>, not <code-snippet>/app-router/</code-snippet>.</p>
 
-      <h3>Relative Paths</h3>
-      <ul>
-        <li><a href="test"><code-snippet>href="test"</code-snippet></a> - links to <code-snippet>/app-router/pages/test</code-snippet></li>
-        <li><a href="#test"><code-snippet>href="#test"</code-snippet></a> - links to <code-snippet>/app-router/pages/notes-page.html#test</code-snippet></li>
-      </ul>
+    <h3>Relative Paths</h3>
+    <ul>
+      <li><a href="test"><code-snippet>href="test"</code-snippet></a> - links to <code-snippet>/app-router/pages/test</code-snippet></li>
+      <li><a href="#test"><code-snippet>href="#test"</code-snippet></a> - links to <code-snippet>/app-router/pages/notes-page.html#test</code-snippet></li>
+    </ul>
 
-      <h3>Absolute Paths</h3>
-      <ul>
-        <li><a href="/test"><code-snippet>href="/test"</code-snippet></a> - links to <code-snippet>/test</code-snippet></li>
-        <li><a href="/#/test"><code-snippet>href="/#/test"</code-snippet></a> - links to <code-snippet>/#/test</code-snippet></li>
-      </ul>
+    <h3>Absolute Paths</h3>
+    <ul>
+      <li><a href="/test"><code-snippet>href="/test"</code-snippet></a> - links to <code-snippet>/test</code-snippet></li>
+      <li><a href="/#/test"><code-snippet>href="/#/test"</code-snippet></a> - links to <code-snippet>/#/test</code-snippet></li>
+    </ul>
 
-      <p>I'm not sure if <code-snippet>href="#test"</code-snippet> linking to <code-snippet>/app-router/pages/notes-page.html#test</code-snippet> is intentional or a bug. Using an absolute hash path works <code-snippet>href="/#/test"</code-snippet>.</p>
+    <p>I'm not sure if <code-snippet>href="#test"</code-snippet> linking to <code-snippet>/app-router/pages/notes-page.html#test</code-snippet> is intentional or a bug. Using an absolute hash path works <code-snippet>href="/#/test"</code-snippet>.</p>
 
-      <h3>Relative Path Reasoning</h3>
-      <p>According to the <a href="https://github.com/polymer/HTMLImports#polyfill-notes">platform polyfill notes</a>, HTML Imports treat relative paths in a special way. This allows a custom element to load it's dependencies relative to it's current location. For example, if</p>
-      <code-block>/bower_components/app-router/app-router.html</code-block>
+    <h3>Relative Path Reasoning</h3>
+    <p>According to the <a href="https://github.com/polymer/HTMLImports#polyfill-notes">platform polyfill notes</a>, HTML Imports treat relative paths in a special way. This allows a custom element to load it's dependencies relative to it's current location. For example, if</p>
+    <code-block>/bower_components/app-router/app-router.html</code-block>
 
-      <p>depends on</p>
-      <code-block>/bower_components/app-router/app-router.js</code-block>
+    <p>depends on</p>
+    <code-block>/bower_components/app-router/app-router.js</code-block>
 
-      <p>it can load it with</p>
-      <code-block>&lt;script src="app-router.js"&gt;&lt;/script&gt;</code-block>
+    <p>it can load it with</p>
+    <code-block>&lt;script src="app-router.js"&gt;&lt;/script&gt;</code-block>
 
-      <p>It doesn't matter where you put the <code-snippet>app-router</code-snippet> folder. It doesn't need to be in <code-snippet>/bower-components/</code-snippet> since it's dependencies are loaded relative to the <code-snippet>app-router</code-snippet> directory and not relative to the current URL's directory.</p>
+    <p>It doesn't matter where you put the <code-snippet>app-router</code-snippet> folder. It doesn't need to be in <code-snippet>/bower-components/</code-snippet> since it's dependencies are loaded relative to the <code-snippet>app-router</code-snippet> directory and not relative to the current URL's directory.</p>
 
-      <p>The odd thing is that this also applies to <code-snippet>&lt;a&gt;</code-snippet> tags, not just <code-snippet>&lt;link&gt;</code-snippet> and <code-snippet>&lt;script&gt;</code-snippet> tags. This means <code-snippet>&lt;a href="#test"&gt;&lt;/a&gt;</code-snippet> is relative to the imported document, not the current URL. On this page <code-snippet>&lt;a href="#test"&gt;&lt;/a&gt;</code-snippet> will point to <code-snippet>/app-router/pages/notes-page.html#test</code-snippet>. This is a custom element, not a displayable page.</p>
+    <p>The odd thing is that this also applies to <code-snippet>&lt;a&gt;</code-snippet> tags, not just <code-snippet>&lt;link&gt;</code-snippet> and <code-snippet>&lt;script&gt;</code-snippet> tags. This means <code-snippet>&lt;a href="#test"&gt;&lt;/a&gt;</code-snippet> is relative to the imported document, not the current URL. On this page <code-snippet>&lt;a href="#test"&gt;&lt;/a&gt;</code-snippet> will point to <code-snippet>/app-router/pages/notes-page.html#test</code-snippet>. This is a custom element, not a displayable page.</p>
 
-      <p>I'm not sure if this is a bug or the intended way HTML Imports are supposed to handle this. If anyone knows, let me know!</p>
+    <p>I'm not sure if this is a bug or the intended way HTML Imports are supposed to handle this. If anyone knows, let me know!</p>
 
-    </scaffold-layout>
-  </template>
-</polymer-element>
+  </scaffold-layout>
+</template>
