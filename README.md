@@ -160,7 +160,7 @@ There are three ways to trigger a route change. `hashchange`, `pushState()`, and
 If you're using `hashchange` you don't need to do anything. Clicking a link `<a href="/#/link">New Page</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your Javascript.
 
 #### pushState
-You can use the [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend the `<a>` tag with the HTML5 history API.
+You can use the [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend `<a>` tags with the HTML5 history API.
 
 ```html
 <a is="html5-history-anchor" href="/link" pushstate popstate>/link</a>
