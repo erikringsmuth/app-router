@@ -154,21 +154,35 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 ```
 
 ## Navigation
-There are three ways change the active route. `hashchange`, `pushState()`, and a full page load.
+There are three ways to trigger a route change. `hashchange`, `pushState()`, and a full page load.
 
 #### hashchange
-If you're using `hashchange` you don't need to do anything. Clicking a link `<a href="/#/new/page">New Page</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your code.
+If you're using `hashchange` you don't need to do anything. Clicking a link `<a href="/#/link">New Page</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your Javascript.
 
 #### pushState
-If you're using HTML5 `pushState` you need one extra step. The `pushState()` method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use `pushState()` to navigate to another route you need to call it like this.
+You can use the [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend the `<a>` tag with the HTML5 history API.
 
-```js
-history.pushState(stateObj, title, '/new/page'); // push a new URL into the history stack
-history.go(0); // go to the current state in the history stack, this fires a popstate event
+```html
+<a is="html5-history-anchor" href="/link" pushstate popstate>/link</a>
 ```
 
+Note: When you use HTML5 `pushState()` you have to manually fire a `popstate` event. The `pushState()` method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use `pushState()` to navigate to another route you need to call it like this.
+
+```js
+// push a new URL into the history stack
+history.pushState(stateObj, title, '/link');
+// fire a popstate event
+window.dispatchEvent(new PopStateEvent('popstate', {
+  bubbles: false,
+  cancelable: false,
+  state: history.state
+}));
+```
+
+The [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) takes care of this for you as long as you include the `pushstate` and `popstate` attributes.
+
 #### Full page load
-Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/new/page`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
+Clicking a link `<a href="/link">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/link`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
 ## Demo Site & Example Setup
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
