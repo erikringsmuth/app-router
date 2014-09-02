@@ -157,7 +157,7 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 There are three ways to trigger a route change. `hashchange`, `pushState()`, and a full page load.
 
 #### hashchange
-If you're using `hashchange` you don't need to do anything. Clicking a link `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your Javascript.
+Clicking a link `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your Javascript.
 
 #### pushState
 You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) or [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend `<a>` tags with the HTML5 history API.
@@ -166,20 +166,7 @@ You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-an
 <a is="pushstate-anchor" href="/home">Home</a>
 ```
 
-Note: When you use HTML5 `pushState()` you have to manually fire a `popstate` event. The `pushState()` method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use `pushState()` to navigate to another route you need to call it like this.
-
-```js
-// push a new URL into the history stack
-history.pushState(stateObj, title, '/home');
-// dispatch a popstate event
-window.dispatchEvent(new PopStateEvent('popstate', {
-  bubbles: false,
-  cancelable: false,
-  state: history.state
-}));
-```
-
-The [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) takes care of this for you by calling `pushState()` and dispatching a `popstate` event.
+This will call `pushState()` and dispatch a `popstate` event.
 
 #### Full page load
 Clicking a link `<a href="/home">Home</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
