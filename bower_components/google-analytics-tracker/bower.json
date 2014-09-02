@@ -1,0 +1,14 @@
+{
+  "name": "google-analytics-tracker",
+  "version": "0.1.1",
+  "authors": [
+    "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
+  ],
+  "description": "Google Analytics page view tracker",
+  "keywords": [
+    "web-components"
+  ],
+  "main": "google-analytics-tracker.html",
+  "license": "MIT",
+  "homepage": "https://github.com/erikringsmuth/google-analytics-tracker"
+}

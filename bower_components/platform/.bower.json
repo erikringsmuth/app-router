@@ -21,6 +21,6 @@
     "commit": "23a68c070a3f0ad75a6ded3949021f4b30c9a81a"
   },
   "_source": "git://github.com/Polymer/platform.git",
-  "_target": ">=0.3.0 <1.0.0",
+  "_target": ">=0.4.0 <1.0.0",
   "_originalSource": "Polymer/platform"
 }
