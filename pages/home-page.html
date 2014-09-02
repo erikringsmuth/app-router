@@ -58,20 +58,11 @@ http://www.example.com/order/123?sort=ascending
     <h2>Navigation</h2>
     <p>There are three ways to trigger a route change. <code-snippet>hashchange</code-snippet>, <code-snippet>pushState()</code-snippet>, and a full page load.</p>
     <h4>hashchange</h4>
-    <p>If you're using <code-snippet>hashchange</code-snippet> you don't need to do anything. Clicking a link <code-snippet>&lt;a href="/#/home"&gt;Home&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
+    <p>Clicking a link <code-snippet>&lt;a href="/#/home"&gt;Home&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the new route. You don't need to handle the event in your Javascript.</p>
     <h4>pushState</h4>
     <p>You can use the <a href="https://github.com/erikringsmuth/pushstate-anchor">pushstate-anchor</a> or <a href="https://github.com/erikringsmuth/html5-history-anchor">html5-history-anchor</a> to extend <code-snippet>&lt;a&gt;</code-snippet> tags with the HTML5 history API.</p>
 <code-block>&lt;a is="pushstate-anchor" href="/home"&gt;Home&lt;/a&gt;</code-block>
-    <p>Note: When you use HTML5 <code-snippet>pushState()</code-snippet> you have to manually fire a <code-snippet>popstate</code-snippet> event. The <code-snippet>pushState()</code-snippet> method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use <code-snippet>pushState()</code-snippet> to navigate to another route you need to call it like this.</p>
-<code-block>// push a new URL into the history stack
-history.pushState(stateObj, title, '/home');
-// dispatch a popstate event
-window.dispatchEvent(new PopStateEvent('popstate', {
-  bubbles: false,
-  cancelable: false,
-  state: history.state
-}));</code-block>
-    <p>The <a href="https://github.com/erikringsmuth/pushstate-anchor">pushstate-anchor</a> takes care of this for you by calling <code-snippet>pushState()</code-snippet> and dispatching a <code-snippet>popstate</code-snippet> event.</p>
+    <p>This will call <code-snippet>pushState()</code-snippet> and dispatch a <code-snippet>popstate</code-snippet> event.</p>
     <h4>Full page load</h4>
     <p>Clicking a link <code-snippet>&lt;a href="/home"&gt;Home&lt;/a&gt;</code-snippet> without a hash path will do a full page load. You need to make sure your server will return <code-snippet>index.html</code-snippet> when looking up the resource at <code-snippet>/home</code-snippet>. The simplest set up is to always return <code-snippet>index.html</code-snippet> and let the <code-snippet>app-router</code-snippet> handle the routing including a not found page.</p>
 
