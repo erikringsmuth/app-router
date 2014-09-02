@@ -73,11 +73,6 @@ This will call `pushState()` and dispatch a `popstate` event.
 #### Full page load
 Clicking a link `<a href="/home">Home</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
-## Demo Site & Example Setup
-Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
-
-You can download an example setup here https://github.com/erikringsmuth/app-router-examples to get running locally.
-
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
 
@@ -175,6 +170,11 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
   <app-route path="/home" import="/pages/home-page.html"></app-route>
 </app-router>
 ```
+
+## Demo Site & Example Setup
+Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
+
+You can download an example setup here https://github.com/erikringsmuth/app-router-examples to get running locally.
 
 ## Build, Test, and Debug [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
 Source files are under the `src` folder. The build process writes to the root directory. The easiest way to debug is to include the source script rather than the minified HTML import.
