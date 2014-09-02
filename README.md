@@ -157,7 +157,7 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 There are three ways to trigger a route change. `hashchange`, `pushState()`, and a full page load.
 
 #### hashchange
-If you're using `hashchange` you don't need to do anything. Clicking a link `<a href="/#/link">New Page</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your Javascript.
+If you're using `hashchange` you don't need to do anything. Clicking a link `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your Javascript.
 
 #### pushState
 You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) or [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend `<a>` tags with the HTML5 history API.
@@ -182,7 +182,7 @@ window.dispatchEvent(new PopStateEvent('popstate', {
 The [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) takes care of this for you by calling `pushState()` and dispatching a `popstate` event.
 
 #### Full page load
-Clicking a link `<a href="/link">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/link`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
+Clicking a link `<a href="/home">Home</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
 ## Demo Site & Example Setup
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
