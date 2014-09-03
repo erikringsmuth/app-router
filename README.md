@@ -59,7 +59,7 @@ See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/
 There are three ways to trigger a route change. `hashchange`, `pushState()`, and a full page load.
 
 #### hashchange
-Clicking a link `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your Javascript.
+Clicking `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript.
 
 #### pushState
 You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) or [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend `<a>` tags with the HTML5 history API.
