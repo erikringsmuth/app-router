@@ -58,7 +58,7 @@ http://www.example.com/order/123?sort=ascending
     <h2>Navigation</h2>
     <p>There are three ways to trigger a route change. <code-snippet>hashchange</code-snippet>, <code-snippet>pushState()</code-snippet>, and a full page load.</p>
     <h4>hashchange</h4>
-    <p>Clicking <code-snippet>&lt;a href="/#/home"&gt;Home&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the route matching <code-snippet>/home</code-snippet>. You don't need to handle the event in your Javascript.</p>
+    <p>Clicking <code-snippet>&lt;a href="/#/home"&gt;Home&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the route first route that matches <code-snippet>/home</code-snippet>. You don't need to handle the event in your Javascript.</p>
     <h4>pushState</h4>
     <p>You can use the <a href="https://github.com/erikringsmuth/pushstate-anchor">pushstate-anchor</a> or <a href="https://github.com/erikringsmuth/html5-history-anchor">html5-history-anchor</a> to extend <code-snippet>&lt;a&gt;</code-snippet> tags with the HTML5 history API.</p>
 <code-block>&lt;a is="pushstate-anchor" href="/home"&gt;Home&lt;/a&gt;</code-block>
