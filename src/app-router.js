@@ -133,56 +133,56 @@
 
   // importAndActivate(importUri, route, urlPath, eventDetail) - Import and activate a custom element or template
   router.importAndActivate = function(importUri, route, urlPath, eventDetail) {
-    if (importedURIs.hasOwnProperty(importUri)) {
-      // previously imported. this is an async operation and may not be complete yet.
-      var previousLink = document.querySelector('link[href="' + importUri + '"]');
-      if (previousLink.import) {
-        // import complete
-        this.activateImport(previousLink.import, importUri, route, urlPath, eventDetail);
-      } else {
-        // wait for `onload`
-        previousLink.onload = function() {
-          if (route.hasAttribute('active')) {
-            this.activateImport(previousLink.import, importUri, route, urlPath, eventDetail);
-          }
-        }.bind(this);
+    var importLink;
+    var activateImport = function() {
+      if (route.hasAttribute('active')) {
+        this.activateImport(importLink.import, importUri, route, urlPath, eventDetail);
       }
-    } else {
+    }.bind(this);
+
+    if (!importedURIs.hasOwnProperty(importUri)) {
       // hasn't been imported yet
       importedURIs[importUri] = true;
-      var importLink = document.createElement('link');
+      importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
-      importLink.onload = function() {
-        if (route.hasAttribute('active')) {
-          this.activateImport(importLink.import, importUri, route, urlPath, eventDetail);
-        }
-      }.bind(this);
+      importLink.addEventListener('load', activateImport);
       document.head.appendChild(importLink);
+    } else {
+      // previously imported. this is an async operation and may not be complete yet.
+      importLink = document.querySelector('link[href="' + importUri + '"]');
+      if (importLink.import) {
+        // import complete
+        activateImport();
+      } else {
+        // wait for `onload`
+        importLink.addEventListener('load', activateImport);
+      }
     }
   };
 
-  // activateImport(importElement, importUri, route, urlPath, eventDetail) - Activate an imported custom element or template
-  router.activateImport = function(importElement, importUri, route, urlPath, eventDetail) {
-    // this document
+  // activateImport(importedContent, importUri, route, urlPath, eventDetail) - Activate an imported custom element or template
+  router.activateImport = function(importedContent, importUri, route, urlPath, eventDetail) {
+    // test if it's a template or a custom element
+    //
+    // importing this template:
+    //
     // <template>test</template>
     //
-    // parses to
+    // parses to this:
+    //
     // <html>
     //   <head>
     //     <template>test</template>
     //   </head>
     //   <body></body>
     // </html>
-    //
-    // we are dealing with an imported template if an only if the body contains 1 child that is a template
 
-    // template
-    if (importElement.querySelector('html>head').children.length === 1 && importElement.querySelector('html>head>template') && importElement.querySelector('html>body').children.length === 0) {
-      this.activeElement(document.importNode(importElement.querySelector('html>head>template').content, true), eventDetail);
-    }
-    // custom element
-    else {
+    if (importedContent.head.children.length === 1 && importedContent.head.firstElementChild.tagName === 'TEMPLATE' && importedContent.body.children.length === 0) {
+      // template
+      this.activeElement(document.importNode(importedContent.head.firstElementChild.content, true), eventDetail);
+    } else {
+      // custom element
       this.activateCustomElement(route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, urlPath, eventDetail);
     }
   };
