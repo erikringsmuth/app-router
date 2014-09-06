@@ -111,91 +111,86 @@
     route.setAttribute('active', 'active');
     this.activeRoute = route;
 
-    var importUri = route.getAttribute('import');
-    var routePath = route.getAttribute('path');
-    var isRegExp = route.hasAttribute('regex');
-    var elementName = route.getAttribute('element');
-    var isTemplate = route.hasAttribute('template');
-    var isElement = !isTemplate;
-
-    // import custom element
-    if (isElement && importUri) {
-      this.importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp, eventDetail);
+    // import custom element or template
+    if (route.hasAttribute('import')) {
+      this.importAndActivate(route.getAttribute('import'), route, urlPath, eventDetail);
     }
     // pre-loaded custom element
-    else if (isElement && !importUri && elementName) {
-      this.activateCustomElement(elementName, routePath, urlPath, isRegExp, eventDetail);
+    else if (route.hasAttribute('element')) {
+      this.activateCustomElement(route.getAttribute('element'), route, urlPath, eventDetail);
     }
-    // import template
-    else if (isTemplate && importUri) {
-      this.importAndActivateTemplate(importUri, route, eventDetail);
-    }
-    // pre-loaded template
-    else if (isTemplate && !importUri) {
-      this.activateTemplate(route, eventDetail);
+    // inline template
+    else if (route.firstElementChild.tagName === 'TEMPLATE') {
+      this.activeElement(document.importNode(route.firstElementChild.content, true), eventDetail);
     }
   };
 
-  // importAndActivateCustomElement(importUri, elementName, routePath, urlPath, isRegExp, eventDetail) - Import the custom element then replace the active route
-  // with a new instance of the custom element
-  router.importAndActivateCustomElement = function(importUri, elementName, routePath, urlPath, isRegExp, eventDetail) {
-    if (!importedURIs.hasOwnProperty(importUri)) {
-      importedURIs[importUri] = true;
-      var elementLink = document.createElement('link');
-      elementLink.setAttribute('rel', 'import');
-      elementLink.setAttribute('href', importUri);
-      document.head.appendChild(elementLink);
-    }
-    this.activateCustomElement(elementName || importUri.split('/').slice(-1)[0].replace('.html', ''), routePath, urlPath, isRegExp, eventDetail);
-  };
-
-  // activateCustomElement(elementName, routePath, urlPath, isRegExp, eventDetail) - Replace the active route with a new instance of the custom element
-  router.activateCustomElement = function(elementName, routePath, urlPath, isRegExp, eventDetail) {
-    var resourceEl = document.createElement(elementName);
-    var routeArgs = this.routeArguments(routePath, urlPath, window.location.href, isRegExp, this.getAttribute('pathType'));
-    for (var arg in routeArgs) {
-      if (routeArgs.hasOwnProperty(arg)) {
-        resourceEl[arg] = routeArgs[arg];
-      }
-    }
-    this.activeElement(resourceEl, eventDetail);
-  };
-
-  // importAndActivateTemplate(importUri, route, eventDetail) - Import the template then replace the active route with a clone of the template's content
-  router.importAndActivateTemplate = function(importUri, route, eventDetail) {
+  // importAndActivate(importUri, route, urlPath, eventDetail) - Import and activate a custom element or template
+  router.importAndActivate = function(importUri, route, urlPath, eventDetail) {
     if (importedURIs.hasOwnProperty(importUri)) {
       // previously imported. this is an async operation and may not be complete yet.
       var previousLink = document.querySelector('link[href="' + importUri + '"]');
       if (previousLink.import) {
-        // the import is complete
-        this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true), eventDetail);
+        // import complete
+        this.activateImport(previousLink.import, importUri, route, urlPath, eventDetail);
       } else {
         // wait for `onload`
         previousLink.onload = function() {
           if (route.hasAttribute('active')) {
-            this.activeElement(document.importNode(previousLink.import.querySelector('template').content, true), eventDetail);
+            this.activateImport(previousLink.import, importUri, route, urlPath, eventDetail);
           }
         }.bind(this);
       }
     } else {
-      // template hasn't been loaded yet
+      // hasn't been imported yet
       importedURIs[importUri] = true;
-      var templateLink = document.createElement('link');
-      templateLink.setAttribute('rel', 'import');
-      templateLink.setAttribute('href', importUri);
-      templateLink.onload = function() {
+      var importLink = document.createElement('link');
+      importLink.setAttribute('rel', 'import');
+      importLink.setAttribute('href', importUri);
+      importLink.onload = function() {
         if (route.hasAttribute('active')) {
-          this.activeElement(document.importNode(templateLink.import.querySelector('template').content, true), eventDetail);
+          this.activateImport(importLink.import, importUri, route, urlPath, eventDetail);
         }
       }.bind(this);
-      document.head.appendChild(templateLink);
+      document.head.appendChild(importLink);
     }
   };
 
-  // activateTemplate(route, eventDetail) - Replace the active route with a clone of the template's content
-  router.activateTemplate = function(route, eventDetail) {
-    var clone = document.importNode(route.querySelector('template').content, true);
-    this.activeElement(clone, eventDetail);
+  // activateImport(importElement, importUri, route, urlPath, eventDetail) - Activate an imported custom element or template
+  router.activateImport = function(importElement, importUri, route, urlPath, eventDetail) {
+    // this document
+    // <template>test</template>
+    //
+    // parses to
+    // <html>
+    //   <head>
+    //     <template>test</template>
+    //   </head>
+    //   <body></body>
+    // </html>
+    //
+    // we are dealing with an imported template if an only if the body contains 1 child that is a template
+
+    // template
+    if (importElement.querySelector('html>head').children.length === 1 && importElement.querySelector('html>head>template') && importElement.querySelector('html>body').children.length === 0) {
+      this.activeElement(document.importNode(importElement.querySelector('html>head>template').content, true), eventDetail);
+    }
+    // custom element
+    else {
+      this.activateCustomElement(route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, urlPath, eventDetail);
+    }
+  };
+
+  // activateCustomElement(elementName, route, urlPath, eventDetail) - Replace the active route with a new instance of the custom element
+  router.activateCustomElement = function(elementName, route, urlPath, eventDetail) {
+    var customElement = document.createElement(elementName);
+    var routeArgs = this.routeArguments(route.getAttribute('path'), urlPath, window.location.href, route.hasAttribute('regex'), this.getAttribute('pathType'));
+    for (var arg in routeArgs) {
+      if (routeArgs.hasOwnProperty(arg)) {
+        customElement[arg] = routeArgs[arg];
+      }
+    }
+    this.activeElement(customElement, eventDetail);
   };
 
   // activeElement(element, eventDetail) - Replace the active route's content with the new element
