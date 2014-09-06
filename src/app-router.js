@@ -80,16 +80,22 @@
     var eventDetail = {
       path: urlPath
     };
+
+    // fire a state-change event on the app-router and return early if the user called event.preventDefault()
     if (!fire('state-change', eventDetail, this)) {
       return;
     }
-    var routes = this.querySelectorAll('app-route');
-    for (var i = 0; i < routes.length; i++) {
-      if (this.testRoute(routes[i].getAttribute('path'), urlPath, this.getAttribute('trailingSlash'), routes[i].hasAttribute('regex'))) {
-        this.activateRoute(routes[i], urlPath);
+
+    // find the first matching route
+    var route = this.firstElementChild;
+    while (route) {
+      if (route.tagName === 'APP-ROUTE' && this.testRoute(route.getAttribute('path'), urlPath, this.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
+        this.activateRoute(route, urlPath);
         return;
       }
+      route = route.nextSibling;
     }
+
     fire('not-found', eventDetail, this);
   };
 
