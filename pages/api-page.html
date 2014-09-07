@@ -11,13 +11,12 @@
 
     <h4>import a custom element</h4>
     <p>Lazy-load a custom element.</p>
-<code-block>&lt;app-route path="/customer/:customerId" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;</code-block>
+<code-block>&lt;app-route path="/customer/:customerId" import="/pages/customer-page.html" [element="customer-page"]&gt;&lt;/app-route&gt;</code-block>
     <p>When you navigate to <code-snippet>/customer/123</code-snippet> the router will load <code-snippet>/pages/customer-page.html</code-snippet>, replace the active view with a new <code-snippet>customer-page</code-snippet> element, and bind attributes with <code-snippet>element.setAttribute('customerId', 123)</code-snippet>.</p>
-    <p>You can manually set the element's name with the <code-snippet>element</code-snippet> attribute if it's different from the file name. This is useful when bundling (vulcanizing) custom elements.</p>
-<code-block>&lt;app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"&gt;&lt;/app-route&gt;</code-block>
+    <p>Set the <code-snippet>element</code-snippet> attribute if the element name is different than the file name. This is useful when bundling (vulcanizing) custom elements.</p>
 
     <h4>pre-loaded custom element</h4>
-    <p>You can route to a pre-loaded custom element. In this case, load the element normally in the <code-snippet>&lt;head&gt;</code-snippet> and include the <code-snippet>element="element-name"</code-snippet> attribute on the route. This is how you'd bundle and pre-load custom elements.</p>
+    <p>Include the <code-snippet>element="element-name"</code-snippet> attribute on the route to use a pre-loaded custom element.</p>
 <code-block>&lt;head&gt;
   &lt;link rel="import" href="/pages/page-bundle.html"&gt;
 &lt;/head&gt;
@@ -26,7 +25,7 @@
 &lt;/app-router&gt;</code-block>
 
     <h4>import template</h4>
-    <p>You can use a <code-snippet>&lt;template&gt;</code-snippet> instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the <code-snippet>template</code-snippet> attribute.</p>
+    <p>You can import a <code-snippet>&lt;template&gt;</code-snippet> instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the <code-snippet>template</code-snippet> attribute.</p>
 <code-block>&lt;app-route path="/example" import="/pages/template-page.html" template&gt;&lt;/app-route&gt;</code-block>
 
     <h4>inline template</h4>
