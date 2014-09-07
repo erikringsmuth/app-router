@@ -12,7 +12,6 @@
     <h4>import a custom element</h4>
     <p>Lazy-load a custom element.</p>
 <code-block>&lt;app-route path="/customer/:customerId" import="/pages/customer-page.html" [element="customer-page"]&gt;&lt;/app-route&gt;</code-block>
-    <p>When you navigate to <code-snippet>/customer/123</code-snippet> the router will load <code-snippet>/pages/customer-page.html</code-snippet>, replace the active view with a new <code-snippet>customer-page</code-snippet> element, and bind attributes with <code-snippet>element.setAttribute('customerId', 123)</code-snippet>.</p>
     <p>Set the <code-snippet>element</code-snippet> attribute if the element name is different than the file name. This is useful when bundling (vulcanizing) custom elements.</p>
 
     <h4>pre-loaded custom element</h4>
