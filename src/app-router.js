@@ -10,7 +10,7 @@
   });
 
   // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"] [pathType="auto|regular|hash"]></app-router>
-  var router = Object.create(HTMLElement.prototype);
+  var AppRouter = Object.create(HTMLElement.prototype);
 
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
@@ -32,14 +32,14 @@
   }
 
   // Initial set up when attached
-  router.attachedCallback = function() {
+  AppRouter.attachedCallback = function() {
     if(this.getAttribute('init') !== 'manual') {
       this.init();
     }
   };
 
   // Initialize the router
-  router.init = function() {
+  AppRouter.init = function() {
     if (this.isInitialized) {
       return;
     }
@@ -67,15 +67,15 @@
   };
 
   // clean up global event listeners
-  router.detachedCallback = function() {
+  AppRouter.detachedCallback = function() {
     window.removeEventListener('popstate', this.stateChangeHandler, false);
     if (isIE) {
       window.removeEventListener('hashchange', this.stateChangeHandler, false);
     }
   };
 
-  // go() - Find the first <app-route> that matches the current URL and change the active route
-  router.go = function() {
+  // Find the first <app-route> that matches the current URL and change the active route
+  AppRouter.go = function() {
     var urlPath = this.parseUrlPath(window.location.href, this.getAttribute('pathType'));
     var eventDetail = {
       path: urlPath
@@ -90,7 +90,7 @@
     var route = this.firstElementChild;
     while (route) {
       if (route.tagName === 'APP-ROUTE' && this.testRoute(route.getAttribute('path'), urlPath, this.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
-        this.activateRoute(route, urlPath);
+        activateRoute(this, route, urlPath);
         return;
       }
       route = route.nextSibling;
@@ -99,46 +99,47 @@
     fire('not-found', eventDetail, this);
   };
 
-  // activateRoute(route, urlPath) - Activate the route
-  router.activateRoute = function(route, urlPath) {
+  // Activate the route
+  function activateRoute(router, route, urlPath) {
     var eventDetail = {
       path: urlPath,
       route: route,
-      oldRoute: this.activeRoute
+      oldRoute: router.activeRoute
     };
-    if (!fire('activate-route-start', eventDetail, this)) {
+    if (!fire('activate-route-start', eventDetail, router)) {
       return;
     }
     if (!fire('activate-route-start', eventDetail, route)) {
       return;
     }
 
-    this.activeRoute.removeAttribute('active');
+    router.activeRoute.removeAttribute('active');
     route.setAttribute('active', 'active');
-    this.activeRoute = route;
+    router.activeRoute = route;
 
     // import custom element or template
     if (route.hasAttribute('import')) {
-      this.importAndActivate(route.getAttribute('import'), route, urlPath, eventDetail);
+      importAndActivate(router, route.getAttribute('import'), route, urlPath, eventDetail);
     }
     // pre-loaded custom element
     else if (route.hasAttribute('element')) {
-      this.activateCustomElement(route.getAttribute('element'), route, urlPath, eventDetail);
+      activateCustomElement(router, route.getAttribute('element'), route, urlPath, eventDetail);
     }
     // inline template
-    else if (route.firstElementChild.tagName === 'TEMPLATE') {
-      this.activeElement(document.importNode(route.firstElementChild.content, true), eventDetail);
+    else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
+      activeElement(router, document.importNode(route.firstElementChild.content, true), eventDetail);
     }
-  };
+  }
 
-  // importAndActivate(importUri, route, urlPath, eventDetail) - Import and activate a custom element or template
-  router.importAndActivate = function(importUri, route, urlPath, eventDetail) {
+  // Import and activate a custom element or template
+  function importAndActivate(router, importUri, route, urlPath, eventDetail) {
     var importLink;
-    var activateImport = function() {
+    function importLoadedCallback() {
+      // make sure the user didn't navigate to a different route while it loaded
       if (route.hasAttribute('active')) {
-        this.activateImport(importLink.import, importUri, route, urlPath, eventDetail);
+        activateImport(router, importLink, importUri, route, urlPath, eventDetail);
       }
-    }.bind(this);
+    }
 
     if (!importedURIs.hasOwnProperty(importUri)) {
       // hasn't been imported yet
@@ -146,68 +147,55 @@
       importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
-      importLink.addEventListener('load', activateImport);
+      importLink.addEventListener('load', importLoadedCallback);
       document.head.appendChild(importLink);
     } else {
       // previously imported. this is an async operation and may not be complete yet.
       importLink = document.querySelector('link[href="' + importUri + '"]');
       if (importLink.import) {
         // import complete
-        activateImport();
+        importLoadedCallback();
       } else {
         // wait for `onload`
-        importLink.addEventListener('load', activateImport);
+        importLink.addEventListener('load', importLoadedCallback);
       }
     }
-  };
+  }
 
-  // activateImport(importedContent, importUri, route, urlPath, eventDetail) - Activate an imported custom element or template
-  router.activateImport = function(importedContent, importUri, route, urlPath, eventDetail) {
-    // test if it's a template or a custom element
-    //
-    // importing this template:
-    //
-    // <template>test</template>
-    //
-    // parses to this:
-    //
-    // <html>
-    //   <head>
-    //     <template>test</template>
-    //   </head>
-    //   <body></body>
-    // </html>
-
-    if (importedContent.head.children.length === 1 && importedContent.head.firstElementChild.tagName === 'TEMPLATE' && importedContent.body.children.length === 0) {
-      // template
-      this.activeElement(document.importNode(importedContent.head.firstElementChild.content, true), eventDetail);
-    } else {
-      // custom element
-      this.activateCustomElement(route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, urlPath, eventDetail);
+  // Activate the imported custom element or template
+  function activateImport(router, importLink, importUri, route, urlPath, eventDetail) {
+    if (route.hasAttribute('active')) {
+      if (route.hasAttribute('template')) {
+        // template
+        activeElement(router, document.importNode(importLink.import.querySelector('template').content, true), eventDetail);
+      } else {
+        // custom element
+        activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, urlPath, eventDetail);
+      }
     }
-  };
+  }
 
-  // activateCustomElement(elementName, route, urlPath, eventDetail) - Replace the active route with a new instance of the custom element
-  router.activateCustomElement = function(elementName, route, urlPath, eventDetail) {
+  // Data bind the custom element then activate it
+  function activateCustomElement(router, elementName, route, urlPath, eventDetail) {
     var customElement = document.createElement(elementName);
-    var routeArgs = this.routeArguments(route.getAttribute('path'), urlPath, window.location.href, route.hasAttribute('regex'), this.getAttribute('pathType'));
+    var routeArgs = router.routeArguments(route.getAttribute('path'), urlPath, window.location.href, route.hasAttribute('regex'), router.getAttribute('pathType'));
     for (var arg in routeArgs) {
       if (routeArgs.hasOwnProperty(arg)) {
         customElement[arg] = routeArgs[arg];
       }
     }
-    this.activeElement(customElement, eventDetail);
-  };
+    activeElement(router, customElement, eventDetail);
+  }
 
-  // activeElement(element, eventDetail) - Replace the active route's content with the new element
-  router.activeElement = function(element, eventDetail) {
-    while (this.activeRouteContent.firstChild) {
-      this.activeRouteContent.removeChild(this.activeRouteContent.firstChild);
+  // Replace the active route's content with the new element
+  function activeElement(router, element, eventDetail) {
+    while (router.activeRouteContent.firstChild) {
+      router.activeRouteContent.removeChild(router.activeRouteContent.firstChild);
     }
-    this.activeRouteContent.appendChild(element);
-    fire('activate-route-end', eventDetail, this);
+    router.activeRouteContent.appendChild(element);
+    fire('activate-route-end', eventDetail, router);
     fire('activate-route-end', eventDetail, eventDetail.route);
-  };
+  }
 
   // urlPath(url, pathType) - Parses the url to get the path
   //
@@ -217,7 +205,7 @@
   // path = '/example/path'
   //
   // Note: The URL must contain the protocol like 'http(s)://'
-  router.parseUrlPath = function(url, pathType) {
+  AppRouter.parseUrlPath = function(url, pathType) {
     // The relative URI is everything after the third slash including the third slash
     // Example relativeUri = '/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string'
     var splitUrl = url.split('/');
@@ -248,11 +236,11 @@
     return path;
   };
 
-  // router.testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
+  // AppRouter.testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
   //
   // Example routePath: '/example/*'
   // Example urlPath = '/example/path'
-  router.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
+  AppRouter.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
     // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
 
     // handle trailing slashes (options: strict (default), ignore)
@@ -325,8 +313,8 @@
     return true;
   };
 
-  // router.routeArguments(routePath, urlPath, url, isRegExp, pathType) - Gets the path variables and query parameter values from the URL
-  router.routeArguments = function routeArguments(routePath, urlPath, url, isRegExp, pathType) {
+  // AppRouter.routeArguments(routePath, urlPath, url, isRegExp, pathType) - Gets the path variables and query parameter values from the URL
+  AppRouter.routeArguments = function routeArguments(routePath, urlPath, url, isRegExp, pathType) {
     var args = {};
 
     // Example urlPathSegments = ['', example', 'path']
@@ -408,6 +396,6 @@
   };
 
   document.registerElement('app-router', {
-    prototype: router
+    prototype: AppRouter
   });
 })(window, document);

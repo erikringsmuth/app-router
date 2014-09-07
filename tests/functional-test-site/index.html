@@ -32,13 +32,13 @@
       <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
       <app-route path="/preloaded-bundled-custom-element" element="preloaded-custom-element-page"></app-route>
       <app-route path="/imported-bundled-custom-element" import="pages/imported-bundled-elements.html" element="imported-custom-element-page"></app-route>
-      <app-route path="/template" import="pages/template-page.html"></app-route>
-      <app-route path="/inline-template">
+      <app-route path="/template" import="pages/template-page.html" template></app-route>
+      <app-route path="/inline-template" template>
         <template>
           <h2>Inline Template Page</h2>
         </template>
       </app-route>
-      <app-route path="/^\/\w+\/\d+$/i" regex>
+      <app-route path="/^\/\w+\/\d+$/i" regex template>
         <template>
           <h2>Regular Expression <code>/^\/\w+\/\d+$/i</code></h2>
         </template>
@@ -74,7 +74,7 @@
     <p>Logs lifecycle events. Should <code>preventDefault()</code> when navigating to <code>/canceled-event</code>.</p>
     <app-router init="manual" id="lifecycle-events">
       <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
-      <app-route path="/canceled-event" id="canceled-event">
+      <app-route path="/canceled-event" template id="canceled-event">
         <template>
           <h2>Canceled Event (broken if you can see this)</h2>
         </template>
