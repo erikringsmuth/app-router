@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+/*
+ * @license
+ * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+ */
+
+fs = require('fs');
+regex = /\uFEFF/g;
+
+inflight = 0;
+index = 0;
+files = process.argv.slice(2);
+limit = 2;
+
+function next() {
+  for (; (inflight < limit) && ((index + inflight) < files.length); inflight++) {
+    debom(files[index++], next);
+  }
+}
+
+function debom(file, callback) {
+  var cont = function() {
+    inflight--;
+    callback();
+  };
+  fs.readFile(file, 'utf8', function(err, data) {
+    if (!err) {
+      if (regex.test(data)) {
+        data = data.replace(regex, '');
+        fs.writeFile(file, data, 'utf8', cont);
+      } else {
+        cont();
+      }
+    } else {
+      cont();
+    }
+  });
+}
+
+next();

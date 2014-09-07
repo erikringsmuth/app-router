@@ -3,7 +3,7 @@
 
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
 
-Lazy-loads content. Binds path variables and query parameters to the page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/`, hash paths `#/`, and hashbang paths `#!/`.
+Lazy-loads content. Binds path variables and query parameters to the page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/` and hash paths `#/`.
 
 [Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
 
@@ -54,6 +54,24 @@ http://www.example.com/order/123?sort=ascending
 ```
 
 See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
+
+## Navigation
+There are three ways to trigger a route change. `hashchange`, `pushState()`, and a full page load.
+
+#### hashchange
+Clicking `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript.
+
+#### pushState
+You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) or [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend `<a>` tags with the HTML5 history API.
+
+```html
+<a is="pushstate-anchor" href="/home">Home</a>
+```
+
+This will call `pushState()` and dispatch a `popstate` event.
+
+#### Full page load
+Clicking a link `<a href="/home">Home</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
@@ -127,7 +145,7 @@ You can use a `<template>` instead of a custom element. This doesn't have data b
 Finally, you can in-line a `<template>` like this.
 
 ```html
-<app-route path="/example" template>
+<app-route path="/example">
   <template>
     <p>Inline template FTW!</p>
   </template>
@@ -152,23 +170,6 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
   <app-route path="/home" import="/pages/home-page.html"></app-route>
 </app-router>
 ```
-
-## Navigation
-There are three ways change the active route. `hashchange`, `pushState()`, and a full page load.
-
-#### hashchange
-If you're using `hashchange` you don't need to do anything. Clicking a link `<a href="/#/new/page">New Page</a>` will fire a `hashchange` event and tell the router to load the new route. You don't need to handle the event in your code.
-
-#### pushState
-If you're using HTML5 `pushState` you need one extra step. The `pushState()` method was not meant to change the page, it was only meant to push state into history. This is an "undo" feature for single page applications. To use `pushState()` to navigate to another route you need to call it like this.
-
-```js
-history.pushState(stateObj, title, '/new/page'); // push a new URL into the history stack
-history.go(0); // go to the current state in the history stack, this fires a popstate event
-```
-
-#### Full page load
-Clicking a link `<a href="/new/page">New Page</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/new/page`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
 ## Demo Site & Example Setup
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).

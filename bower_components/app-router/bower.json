@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -11,7 +11,7 @@
     "polymer",
     "x-tag"
   ],
-  "main": "index.html",
+  "main": "app-router.html",
   "license": "MIT",
   "homepage": "https://github.com/erikringsmuth/app-router",
   "ignore": [
@@ -24,7 +24,7 @@
     "package.json"
   ],
   "devDependencies": {
-    "platform": "Polymer/platform-dev#~0.3.5",
-    "polymer": "Polymer/polymer-dev#~0.3.5"
+    "platform": "Polymer/platform-dev#~0.4.0",
+    "polymer": "Polymer/polymer-dev#~0.4.0"
   }
 }
