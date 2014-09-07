@@ -145,7 +145,7 @@ You can use a `<template>` instead of a custom element. This doesn't have data b
 Finally, you can in-line a `<template>` like this.
 
 ```html
-<app-route path="/example" template>
+<app-route path="/example">
   <template>
     <p>Inline template FTW!</p>
   </template>
