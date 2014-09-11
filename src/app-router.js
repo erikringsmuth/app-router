@@ -86,6 +86,17 @@
       return;
     }
 
+    // If a defaultRoute is defined and the hash has not been defined
+    if (this.hasAttribute('defaultRoute') && /^\/?$/.test(window.location.hash)) {
+      if (window.location.hash === '/' && this.getAttribute('trailingSlash') !== 'ignore') {}
+      else {
+        var defaultRoute = this.querySelector('app-route[path="' + this.getAttribute('defaultRoute') + '"]');
+        if (defaultRoute) {
+          return activateRoute(this, defaultRoute, urlPath);
+        }
+      }
+    }
+
     // find the first matching route
     var route = this.firstElementChild;
     while (route) {
