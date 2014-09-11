@@ -165,6 +165,19 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 </app-router>
 ```
 
+#### Default route
+When you access to your application, you may have not yet defined any router entry point. Ie, if you are using hash, you may want to go to interprete a default route when no hash is given:
+
+
+```html
+<app-router pathType="hash" defaultRoute="/home">
+  <!-- matches '' and /home' -->
+  <app-route path="/home" import="/pages/home-page.html"></app-route>
+</app-router>
+```
+
+You can combine it to the `trailingSlash` attribute to match *'/'* and *'/home/'* as well.
+
 ## Demo Site & Example Setup
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
 
