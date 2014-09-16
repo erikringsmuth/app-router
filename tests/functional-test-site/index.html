@@ -7,6 +7,7 @@
     <script src="/bower_components/platform-dev/platform.js" debug></script>
     <script src="/src/app-router.js"></script>
     <link rel="import" href="pages/bundled-elements.html">
+    <link rel="import" href="/src/app-router.html">
   </head>
   <body>
     <style>
@@ -67,7 +68,9 @@
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
     <script>
-      document.querySelector('#manual-init').init();
+      window.addEventListener('WebComponentsReady', function() {
+        document.querySelector('#manual-init').init();
+      });
     </script>
 
     <!-- lifecycle events -->
@@ -82,7 +85,7 @@
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
     <script>
-      (function() {
+      window.addEventListener('WebComponentsReady', function() {
         var router = document.querySelector('#lifecycle-events');
         var firstRoute = router.querySelector('app-route');
         function routerEventHandler(event) {
@@ -103,7 +106,7 @@
           event.preventDefault();
         });
         router.init();
-      })();
+      });
     </script>
 
   </body>
