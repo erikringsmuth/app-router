@@ -49,6 +49,11 @@ describe('router.parseUrlPath(url, pathType)', function() {
   it('should use the hash as the path when `pathType` is `hash` even if it doesn\'t start with #/ or #!/', function() {
     expect(router.parseUrlPath('http://domain.com/regular/path#hash/path', 'hash')).toEqual('hash/path');
   });
+
+  it('should not use the regular path when `pathType` is `hash`', function() {
+    expect(router.parseUrlPath('http://domain.com/test/', 'hash')).toEqual('/');
+    expect(router.parseUrlPath('http://domain.com/test/index.html', 'hash')).toEqual('/');
+  });
 });
 
 describe('router.testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', function() {
