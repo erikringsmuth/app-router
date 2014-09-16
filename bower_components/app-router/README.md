@@ -111,19 +111,13 @@ This is a simple example showing a page and it's layout.
 Lazy-load a custom element.
 
 ```html
-<app-route path="/customer/:customerId" import="/pages/customer-page.html"></app-route>
+<app-route path="/customer/:customerId" import="/pages/customer-page.html" [element="customer-page"]></app-route>
 ```
 
-When you navigate to `/customer/123` the router will load `/pages/customer-page.html`, replace the active view with a new `customer-page` element, and bind any attributes `element.setAttribute('customerId', 123)`.
-
-You can manually set the element's name with the `element` attribute if it's different from the file name. This is useful when bundling (vulcanizing) custom elements.
-
-```html
-<app-route path="/customer/:customerId" import="/pages/page-bundle.html" element="customer-page"></app-route>
-```
+Set the `element` attribute if the element name is different than the file name. This is useful when bundling (vulcanizing) custom elements.
 
 #### pre-loaded custom element
-You can route to a pre-loaded custom element. In this case, load the element normally in the `<head>` and include the `element="element-name"` attribute on the route. This is how you'd bundle and pre-load custom elements.
+Include the `element="element-name"` attribute on the route to use a pre-loaded custom element.
 
 ```html
 <head>
@@ -135,7 +129,7 @@ You can route to a pre-loaded custom element. In this case, load the element nor
 ```
 
 #### import template
-You can use a `<template>` instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the `template` attribute.
+You can import a `<template>` instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the `template` attribute.
 
 ```html
 <app-route path="/example" import="/pages/template-page.html" template></app-route>

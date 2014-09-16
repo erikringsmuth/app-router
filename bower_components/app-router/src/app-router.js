@@ -219,6 +219,9 @@
     // Example hash = '#/example/path'
     if (pathType !== 'regular') {
       var hashIndex = relativeUri.indexOf('#');
+      if (pathType === 'hash' && hashIndex === -1) {
+        return '/';
+      }
       if (hashIndex !== -1) {
         var hash = relativeUri.substring(hashIndex).split('?')[0];
         if (hash.substring(0, 2) === '#/') {
