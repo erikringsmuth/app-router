@@ -77,7 +77,9 @@
   &lt;!-- app-routes --&gt;
 &lt;/app-router&gt;
 &lt;script&gt;
-  document.querySelector('app-router').init();
+  window.addEventListener('WebComponentsReady', function() {
+    document.querySelector('app-router').init();
+  });
 &lt;/script&gt;</code-block>
 
     <h2>lifecycle events</h2>
@@ -86,13 +88,15 @@
   &lt;!-- app-routes --&gt;
 &lt;/app-router&gt;
 &lt;script&gt;
-  var router = document.querySelector('app-router');
-  router.addEventListener('state-change', function(event) {
-    event.type; // 'state-change'
-    event.detail.path; // parsed URL path
-    event.preventDefault(); // cancel the new route
+  window.addEventListener('WebComponentsReady', function() {
+    var router = document.querySelector('app-router');
+    router.addEventListener('state-change', function(event) {
+      event.type; // 'state-change'
+      event.detail.path; // parsed URL path
+      event.preventDefault(); // cancel the new route
+    });
+    router.init();
   });
-  router.init();
 &lt;/script&gt;</code-block>
 
     <h4>state-change (app-router)</h4>
