@@ -165,6 +165,11 @@ describe('router.routeArguments(routePath, urlPath, url, isRegExp, pathType)', f
     expect(args.id).toEqual(123);
   });
 
+  it('should treat values like 0123 as a string since it starts with a zero and that would be lost converting it to a number', function() {
+    var args = router.routeArguments('/customer/:id', '/customer/0123', 'http://domain.com/customer/0123?queryParam=true', false, null);
+    expect(args.id).toEqual('0123');
+  });
+
   it('should parse complicated URLs', function() {
     var args = router.routeArguments('/customer/:id', '/customer/456', 'http://domain.com/customer/123?queryParam=false#!/customer/456?queryParam=true&queryParam2=some%20string', false, null);
     expect(args.id).toEqual(456);

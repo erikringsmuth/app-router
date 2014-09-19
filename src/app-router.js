@@ -386,7 +386,7 @@
         args[arg] = true;
       } else if (value === 'false') {
         args[arg] = false;
-      } else if (!isNaN(value) && value !== '') {
+      } else if (!isNaN(value) && value !== '' && value.charAt(0) !== '0') {
         // numeric
         args[arg] = +value;
       } else {
