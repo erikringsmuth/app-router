@@ -3,7 +3,7 @@
 
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
 
-Lazy-loads content. Binds path variables and query parameters to the page element's attributes. Supports multiple layouts. Works with `hashchange` and HTML5 `pushState`. One set of routes will match regular paths `/` and hash paths `#/`.
+Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Works with `hashchange` and HTML5 `pushState`.
 
 [Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
 
