@@ -1,58 +1,128 @@
-describe('router.parseUrlPath(url, pathType)', function() {
+describe('router.parseUrl(url, pathType)', function() {
   var router = document.createElement('app-router');
 
-  it('should return the path on a url without a hash or search', function() {
-    expect(router.parseUrlPath('http://domain.com/example/path', null)).toEqual('/example/path');
+  it('should parse a regular path when pathType="auto"', function() {
+    expect(router.parseUrl('http://domain.com/example/path', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '',
+      search: '',
+      isHashPath: false,
+      hashPathPrefix: ''
+    });
   });
 
-  it('should return the path on a url with a search', function() {
-    expect(router.parseUrlPath('http://domain.com/example/path?queryParam=true', null)).toEqual('/example/path');
+  it('should parse a regular path and search when pathType="auto"', function() {
+    expect(router.parseUrl('http://domain.com/example/path?queryParam=true', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '',
+      search: '?queryParam=true',
+      isHashPath: false,
+      hashPathPrefix: ''
+    });
   });
 
-  it('should return the path on a url with a hash', function() {
-    expect(router.parseUrlPath('http://domain.com/example/path#hash', null)).toEqual('/example/path');
+  it('should use the regular path on a url with a hash not starting in #/ when pathType="auto"', function() {
+    expect(router.parseUrl('http://domain.com/example/path#hash', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '#hash',
+      search: '',
+      isHashPath: false,
+      hashPathPrefix: ''
+    });
   });
 
-  it('should return the hash path if it exists', function() {
-    expect(router.parseUrlPath('http://domain.com/#/example/path', null)).toEqual('/example/path');
+  it('should parse a hash path when pathType="auto"', function() {
+    expect(router.parseUrl('http://domain.com/#/example/path', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '#/example/path',
+      search: '',
+      isHashPath: true,
+      hashPathPrefix: ''
+    });
   });
 
-  it('should correctly ignore the query parameters when a hash path exists', function() {
-    expect(router.parseUrlPath('http://domain.com/#/example/path?queryParam=true', null)).toEqual('/example/path');
+  it('should parse the search on a hash path', function() {
+    expect(router.parseUrl('http://domain.com/#/example/path?queryParam=true', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '#/example/path?queryParam=true',
+      search: '?queryParam=true',
+      isHashPath: true,
+      hashPathPrefix: ''
+    });
   });
 
-  it('should return the hashbang path if it exists', function() {
-    expect(router.parseUrlPath('http://domain.com/#!/example/path?queryParam=true', null)).toEqual('/example/path');
+  it('should parse a hashbang path when pathType="auto"', function() {
+    expect(router.parseUrl('http://domain.com/#!/example/path?queryParam=true', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '#!/example/path?queryParam=true',
+      search: '?queryParam=true',
+      isHashPath: true,
+      hashPathPrefix: '!'
+    });
   });
 
-  it('should correctly ignore the query parameters when a hashbang path exists', function() {
-    expect(router.parseUrlPath('http://domain.com/#!/example/path?queryParam=true', null)).toEqual('/example/path');
-  });
-
-  it('should correctly ignore the hash and return the path if it\'s not a hash path', function() {
-    expect(router.parseUrlPath('http://domain.com/example/path?queryParam2=false#notHashPath', null)).toEqual('/example/path');
-  });
-
-  it('should return the hash path when there is both a path and a hash path', function() {
-    expect(router.parseUrlPath('http://domain.com/other/path?queryParam2=false#/example/path?queryParam1=true', null)).toEqual('/example/path');
+  it('should use the hash path and hash search when there is both a regular path and a hash path and pathType="auto"', function() {
+    expect(router.parseUrl('http://domain.com/other/path?queryParam2=false#/example/path?queryParam1=true', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '#/example/path?queryParam1=true',
+      search: '?queryParam1=true',
+      isHashPath: true,
+      hashPathPrefix: ''
+    });
   });
 
   it('should return the hashbang path when there is both a path and a hashbang path', function() {
-    expect(router.parseUrlPath('http://domain.com/other/path?queryParam2=false#!/example/path?queryParam1=true', null)).toEqual('/example/path');
+    expect(router.parseUrl('http://domain.com/other/path?queryParam2=false#!/example/path?queryParam1=true', 'auto')).toEqual({
+      path: '/example/path',
+      hash: '#!/example/path?queryParam1=true',
+      search: '?queryParam1=true',
+      isHashPath: true,
+      hashPathPrefix: '!'
+    });
   });
 
-  it('should use the real path when `pathType` is `regular`', function() {
-    expect(router.parseUrlPath('http://domain.com/#/hash/path', 'regular')).toEqual('/');
-    expect(router.parseUrlPath('http://domain.com/regular/path#/hash/path', 'regular')).toEqual('/regular/path');
+  it('should use the real path when pathType="regular"', function() {
+    expect(router.parseUrl('http://domain.com/#/hash/path', 'regular')).toEqual({
+      path: '/',
+      hash: '#/hash/path',
+      search: '',
+      isHashPath: false,
+      hashPathPrefix: ''
+    });
+    expect(router.parseUrl('http://domain.com/regular/path#/hash/path', 'regular')).toEqual({
+      path: '/regular/path',
+      hash: '#/hash/path',
+      search: '',
+      isHashPath: false,
+      hashPathPrefix: ''
+    });
   });
 
-  it('should use the hash as the path when `pathType` is `hash` even if it doesn\'t start with #/ or #!/', function() {
-    expect(router.parseUrlPath('http://domain.com/regular/path#hash/path', 'hash')).toEqual('hash/path');
+  it('should use the hash as the path when pathType="hash" even if it doesn\'t start with #/ or #!/', function() {
+    expect(router.parseUrl('http://domain.com/regular/path#hash/path', 'hash')).toEqual({
+      path: 'hash/path',
+      hash: '#hash/path',
+      search: '',
+      isHashPath: true,
+      hashPathPrefix: ''
+    });
   });
 
-  it('should not use the regular path when `pathType` is `hash`', function() {
-    expect(router.parseUrlPath('http://domain.com/test/', 'hash')).toEqual('/');
-    expect(router.parseUrlPath('http://domain.com/test/index.html', 'hash')).toEqual('/');
+  it('should not use the regular path when pathType="hash"', function() {
+    expect(router.parseUrl('http://domain.com/test/', 'hash')).toEqual({
+      path: '/',
+      hash: '',
+      search: '',
+      isHashPath: true,
+      hashPathPrefix: ''
+    });
+    expect(router.parseUrl('http://domain.com/test/index.html', 'hash')).toEqual({
+      path: '/',
+      hash: '',
+      search: '',
+      isHashPath: true,
+      hashPathPrefix: ''
+    });
   });
 });
 
@@ -122,78 +192,73 @@ describe('router.testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', 
   });
 });
 
-describe('router.routeArguments(routePath, urlPath, url, isRegExp, pathType)', function() {
+describe('router.routeArguments(routePath, urlPath, search, isRegExp)', function() {
   var router = document.createElement('app-router');
 
-  it('should parse string query parameters', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=example%20string', false, null);
-    expect(args.queryParam).toEqual('example string');
+  it('should parse query parameters', function() {
+    var args = router.routeArguments('*', '/example/path', '?stringQueryParam=example%20string&numQueryParam=12.34', false);
+    expect(args.stringQueryParam).toEqual('example string');
+    expect(args.numQueryParam).toEqual(12.34);
   });
 
-  it('should parse boolean query parameters', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=true', false, null);
-    expect(args.queryParam).toEqual(true);
-  });
-
-  it('should parse number query parameters', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/example/path?queryParam=12.34', false, null);
-    expect(args.queryParam).toEqual(12.34);
-  });
-
-  it('should get the query parameter from the hash path if it exists', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=correct', false, null);
-    expect(args.queryParam).toEqual('correct');
-  });
-
-  it('should correctly get a query param with an equals sign in the value', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=wrong#!/example/path?queryParam=some=text', false, null);
+  it('should correctly get a query parameter with an equals sign in the value', function() {
+    var args = router.routeArguments('*', '/example/path', '?queryParam=some=text&otherParam=123', false);
     expect(args.queryParam).toEqual('some=text');
   });
 
-  it('should get the query param if it\'s followed by a hash', function() {
-    var args = router.routeArguments('*', '/example/path', 'http://domain.com/other/path?queryParam=true#hash', false, null);
-    expect(args.queryParam).toEqual(true);
-  });
-
   it('should parse string path parameters', function() {
-    var args = router.routeArguments('/person/:name', '/person/jon', 'http://domain.com/person/jon?queryParam=true', false, null);
+    var args = router.routeArguments('/person/:name', '/person/jon', '?queryParam=true', false);
     expect(args.name).toEqual('jon');
   });
 
   it('should parse number path parameters', function() {
-    var args = router.routeArguments('/customer/:id', '/customer/123', 'http://domain.com/customer/123?queryParam=true', false, null);
+    var args = router.routeArguments('/customer/:id', '/customer/123', '?queryParam=true', false);
     expect(args.id).toEqual(123);
   });
 
-  it('should treat values like 0123 as a string since it starts with a zero and that would be lost converting it to a number', function() {
-    var args = router.routeArguments('/customer/:id', '/customer/0123', 'http://domain.com/customer/0123?queryParam=true', false, null);
-    expect(args.id).toEqual('0123');
-  });
-
-  it('should parse complicated URLs', function() {
-    var args = router.routeArguments('/customer/:id', '/customer/456', 'http://domain.com/customer/123?queryParam=false#!/customer/456?queryParam=true&queryParam2=some%20string', false, null);
-    expect(args.id).toEqual(456);
-    expect(args.queryParam).toEqual(true);
-    expect(args.queryParam2).toEqual('some string');
-  });
-
   it('should not add an empty string value when the search is empty', function() {
-    var args = router.routeArguments('*', '', 'http://domain.com/', false, null);
+    var args = router.routeArguments('*', '/example/path', '', false);
     expect(args.hasOwnProperty('')).toBeFalsy();
   });
 
   it('should still parse query parameters on regex paths', function() {
-    var args = router.routeArguments('/^\\/\\w+\\/\\d+$/i', '/example/123', 'http://domain.com/word/123?queryParam=correct', false, null);
+    var args = router.routeArguments('/^\\/\\w+\\/\\d+$/i', '/example/123', '?queryParam=correct', true);
     expect(args.queryParam).toEqual('correct');
   });
+});
 
-  it('should parse the regular path when `pathType is `regular` even if there\'s a hash path', function() {
-    var args = router.routeArguments('/customer/:id', '/customer/123', 'http://domain.com/customer/123#/customer/456', false, 'regular');
-    expect(args.id).toEqual(123);
+describe('router.typecast(value)', function() {
+  var router = document.createElement('app-router');
+
+  it('should leave unescaped strings alone', function() {
+    expect(router.typecast('hello world!')).toEqual('hello world!');
   });
 
-  it('should parse the hash when `pathType is `hash` even if the hash doesn\'t start with #/ or #!/', function() {
-    var args = router.routeArguments('customer/:id', 'customer/456', 'http://domain.com/customer/123#customer/456', false, 'hash');
-    expect(args.id).toEqual(456);
+  it('should unescape (url decode) strings', function() {
+    expect(router.typecast('example%20string')).toEqual('example string');
+  });
+
+  it('should convert "true" to `true`', function() {
+    expect(router.typecast('true')).toEqual(true);
+  });
+
+  it('should convert "false" to `false`', function() {
+    expect(router.typecast('false')).toEqual(false);
+  });
+
+  it('should convert integers', function() {
+    expect(router.typecast('123')).toEqual(123);
+  });
+
+  it('should convert numbers with decimal points', function() {
+    expect(router.typecast('123.456')).toEqual(123.456);
+  });
+
+  it('should not convert an empty string to zero', function() {
+    expect(router.typecast('')).toEqual('');
+  });
+
+  it('should not convert a number with leading zeros to a number', function() {
+    expect(router.typecast('00123')).toEqual('00123');
   });
 });
