@@ -273,7 +273,7 @@
   // Example routePath: '/example/*'
   // Example urlPath = '/example/path'
   AppRouter.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
-    // This algorithm tries to fail or succeed as quickly as possible for the most common cases.
+    // this algorithm tries to fail or succeed as quickly as possible for the most common cases
 
     // handle trailing slashes (options: strict (default), ignore)
     if (trailingSlashOption === 'ignore') {
@@ -309,39 +309,39 @@
       return new RegExp(routePath, options).test(urlPath);
     }
 
-    // If the urlPath is an exact match or '*' then the route is a match
+    // if the urlPath is an exact match or '*' then the route is a match
     if (routePath === urlPath || routePath === '*') {
       return true;
     }
 
-    // Look for wildcards
+    // look for wildcards
     if (routePath.indexOf('*') === -1 && routePath.indexOf(':') === -1) {
-      // No wildcards and we already made sure it wasn't an exact match so the test fails
+      // no wildcards and we already made sure it wasn't an exact match so the test fails
       return false;
     }
 
-    // Example urlPathSegments = ['', example', 'path']
+    // example urlPathSegments = ['', example', 'path']
     var urlPathSegments = urlPath.split('/');
 
-    // Example routePathSegments = ['', 'example', '*']
+    // example routePathSegments = ['', 'example', '*']
     var routePathSegments = routePath.split('/');
 
-    // There must be the same number of path segments or it isn't a match
+    // there must be the same number of path segments or it isn't a match
     if (urlPathSegments.length !== routePathSegments.length) {
       return false;
     }
 
-    // Check equality of each path segment
+    // check equality of each path segment
     for (var i = 0; i < routePathSegments.length; i++) {
-      // The path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
+      // the path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
       var routeSegment = routePathSegments[i];
       if (routeSegment !== urlPathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
-        // The path segment wasn't the same string and it wasn't a wildcard or parameter
+        // the path segment wasn't the same string and it wasn't a wildcard or parameter
         return false;
       }
     }
 
-    // Nothing failed. The route matches the URL.
+    // nothing failed. the route matches the URL.
     return true;
   };
 
@@ -349,14 +349,15 @@
   AppRouter.routeArguments = function(routePath, urlPath, search, isRegExp) {
     var args = {};
 
-    // Example urlPathSegments = ['', example', 'path']
-    var urlPathSegments = urlPath.split('/');
-
+    // regular expressions can't have path variables
     if (!isRegExp) {
-      // Example routePathSegments = ['', 'example', '*']
+      // example urlPathSegments = ['', example', 'path']
+      var urlPathSegments = urlPath.split('/');
+
+      // example routePathSegments = ['', 'example', '*']
       var routePathSegments = routePath.split('/');
 
-      // Get path variables
+      // get path variables
       // urlPath '/customer/123'
       // routePath '/customer/:id'
       // parses id = '123'
@@ -379,7 +380,7 @@
       args[queryParameterParts[0]] = queryParameterParts.splice(1, queryParameterParts.length - 1).join('=');
     }
 
-    // Parse the arguments into unescaped strings, numbers, or booleans
+    // parse the arguments into unescaped strings, numbers, or booleans
     for (var arg in args) {
       args[arg] = this.typecast(args[arg]);
     }
@@ -409,4 +410,5 @@
   document.registerElement('app-router', {
     prototype: AppRouter
   });
+
 })(window, document);
