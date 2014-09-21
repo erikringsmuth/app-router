@@ -56,10 +56,10 @@ http://www.example.com/order/123?sort=ascending
 See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Navigation
-The router listens to `popstate` and `hashchange` events. Navigate by clicking links or changing the URL with DOM APIs like `history.pushState()` and `location.hash`. Hash paths `/#/home` match routes without the hash `<app-route path="/home">`.
+The router listens to `popstate` and `hashchange` events. Navigate by clicking links or changing the URL with DOM APIs like `history.pushState()` and `location.hash`.
 
 #### hashchange
-Clicking `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript.
+Clicking `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript. Hash paths `/#/home` match routes without the hash `<app-route path="/home">`.
 
 #### pushState
 You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) or [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend `<a>` tags with the HTML5 history API.
