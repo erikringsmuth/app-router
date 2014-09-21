@@ -56,7 +56,7 @@ http://www.example.com/order/123?sort=ascending
 See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Navigation
-There are three ways to trigger a route change. `hashchange`, `pushState()`, and a full page load.
+The router listens to `popstate` and `hashchange` events. Navigate by clicking links or changing the URL with DOM APIs like `history.pushState()` and `location.hash`. Hash paths `/#/home` match routes without the hash `<app-route path="/home">`.
 
 #### hashchange
 Clicking `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript.
@@ -70,8 +70,7 @@ You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-an
 
 This will call `pushState()` and dispatch a `popstate` event.
 
-#### Full page load
-Clicking a link `<a href="/home">Home</a>` without a hash path will do a full page load. You need to make sure your server will return `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
+Note: You need to make sure the server returns `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
