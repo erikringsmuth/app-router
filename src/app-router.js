@@ -1,4 +1,5 @@
 (function(window, document) {
+  var utilities = {};
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
 
@@ -14,6 +15,7 @@
 
   // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"] [pathType="auto|regular|hash"]></app-router>
   var AppRouter = Object.create(HTMLElement.prototype);
+  AppRouter.util = utilities;
 
   // Initial set up when attached
   AppRouter.attachedCallback = function() {
@@ -89,7 +91,7 @@
 
   // Find the first <app-route> that matches the current URL and change the active route
   AppRouter.go = function() {
-    var url = this.parseUrl(window.location.href, this.getAttribute('pathType'));
+    var url = utilities.parseUrl(window.location.href, this.getAttribute('pathType'));
     var eventDetail = {
       path: url.path
     };
@@ -102,7 +104,7 @@
     // find the first matching route
     var route = this.firstElementChild;
     while (route) {
-      if (route.tagName === 'APP-ROUTE' && this.testRoute(route.getAttribute('path'), url.path, this.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
+      if (route.tagName === 'APP-ROUTE' && utilities.testRoute(route.getAttribute('path'), url.path, this.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
         activateRoute(this, route, url);
         return;
       }
@@ -189,7 +191,7 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var routeArgs = router.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+    var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
     for (var arg in routeArgs) {
       if (routeArgs.hasOwnProperty(arg)) {
         customElement[arg] = routeArgs[arg];
@@ -208,7 +210,7 @@
     fire('activate-route-end', eventDetail, eventDetail.route);
   }
 
-  // AppRouter.parseUrl(location, pathType)
+  // parseUrl(location, pathType) - Augment the native URL() constructor to get info about hash paths
   //
   // Example parseUrl('http://domain.com/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string', 'auto')
   //
@@ -216,25 +218,24 @@
   //   path: '/example/path',
   //   hash: '#/example/path?queryParam1=true&queryParam2=example%20string'
   //   search: '?queryParam1=true&queryParam2=example%20string',
-  //   isHashPath: true,
-  //   hashPathPrefix: ''
+  //   isHashPath: true
   // }
   //
   // Note: The location must be a fully qualified URL with a protocol like 'http(s)://'
-  AppRouter.parseUrl = function(location, pathType) {
+  utilities.parseUrl = function(location, pathType) {
     var nativeUrl = new URL(location);
 
     var url = {
       path: nativeUrl.pathname,
       hash: nativeUrl.hash,
       search: nativeUrl.search,
-      isHashPath: pathType === 'hash',
-      hashPathPrefix: ''
+      isHashPath: pathType === 'hash'
     };
 
     if (pathType !== 'regular') {
       // auto or hash
 
+      // check for a hash path
       if (url.hash.substring(0, 2) === '#/') {
         // hash path
         url.isHashPath = true;
@@ -242,7 +243,6 @@
       } else if (url.hash.substring(0, 3) === '#!/') {
         // hashbang path
         url.isHashPath = true;
-        url.hashPathPrefix = '!';
         url.path = url.hash.substring(2);
       } else if (url.isHashPath) {
         // still use the hash if pathType="hash"
@@ -252,27 +252,25 @@
           url.path = url.hash.substring(1);
         }
       }
-    }
 
-    if (url.isHashPath) {
-      // hash paths get the search from the hash
-      var searchIndex = url.path.indexOf('?');
-      if (searchIndex === -1) {
-        url.search = '';
-      } else {
-        url.search = url.path.substring(searchIndex);
-        url.path = url.path.substring(0, searchIndex);
+      // hash paths get the search from the hash if it exists
+      if (url.isHashPath) {
+        var searchIndex = url.path.indexOf('?');
+        if (searchIndex !== -1) {
+          url.search = url.path.substring(searchIndex);
+          url.path = url.path.substring(0, searchIndex);
+        }
       }
     }
 
     return url;
   };
 
-  // AppRouter.testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
+  // testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
   //
   // Example routePath: '/example/*'
   // Example urlPath = '/example/path'
-  AppRouter.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
+  utilities.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
     // this algorithm tries to fail or succeed as quickly as possible for the most common cases
 
     // handle trailing slashes (options: strict (default), ignore)
@@ -286,27 +284,9 @@
       }
     }
 
+    // test regular expressions
     if (isRegExp) {
-      // parse HTML attribute path="/^\/\w+\/\d+$/i" to a regular expression `new RegExp('^\/\w+\/\d+$', 'i')`
-      // note that 'i' is the only valid option. global 'g', multiline 'm', and sticky 'y' won't be valid matchers for a path.
-      if (routePath.charAt(0) !== '/') {
-        // must start with a slash
-        return false;
-      }
-      routePath = routePath.slice(1);
-      var options = '';
-      if (routePath.slice(-1) === '/') {
-        routePath = routePath.slice(0, -1);
-      }
-      else if (routePath.slice(-2) === '/i') {
-        routePath = routePath.slice(0, -2);
-        options = 'i';
-      }
-      else {
-        // must end with a slash followed by zero or more options
-        return false;
-      }
-      return new RegExp(routePath, options).test(urlPath);
+      return utilities.testRegExString(routePath, urlPath);
     }
 
     // if the urlPath is an exact match or '*' then the route is a match
@@ -345,8 +325,8 @@
     return true;
   };
 
-  // AppRouter.routeArguments(routePath, urlPath, search, isRegExp) - Gets the path variables and query parameter values from the URL
-  AppRouter.routeArguments = function(routePath, urlPath, search, isRegExp) {
+  // routeArguments(routePath, urlPath, search, isRegExp) - Gets the path variables and query parameter values from the URL
+  utilities.routeArguments = function(routePath, urlPath, search, isRegExp) {
     var args = {};
 
     // regular expressions can't have path variables
@@ -382,14 +362,14 @@
 
     // parse the arguments into unescaped strings, numbers, or booleans
     for (var arg in args) {
-      args[arg] = this.typecast(args[arg]);
+      args[arg] = utilities.typecast(args[arg]);
     }
 
     return args;
   };
 
-  // AppRouter.typecast(value) - Typecast the string value to an unescaped string, number, or boolean
-  AppRouter.typecast = function(value) {
+  // typecast(value) - Typecast the string value to an unescaped string, number, or boolean
+  utilities.typecast = function(value) {
     // bool
     if (value === 'true') {
       return true;
@@ -405,6 +385,31 @@
 
     // string
     return decodeURIComponent(value);
+  };
+
+  // testRegExString(pattern, value) - Parse HTML attribute path="/^\/\w+\/\d+$/i" to a regular
+  // expression `new RegExp('^\/\w+\/\d+$', 'i')` and test against it.
+  //
+  // note that 'i' is the only valid option. global 'g', multiline 'm', and sticky 'y' won't be valid matchers for a path.
+  utilities.testRegExString = function(pattern, value) {
+    if (pattern.charAt(0) !== '/') {
+      // must start with a slash
+      return false;
+    }
+    pattern = pattern.slice(1);
+    var options = '';
+    if (pattern.slice(-1) === '/') {
+      pattern = pattern.slice(0, -1);
+    }
+    else if (pattern.slice(-2) === '/i') {
+      pattern = pattern.slice(0, -2);
+      options = 'i';
+    }
+    else {
+      // must end with a slash followed by zero or more options
+      return false;
+    }
+    return new RegExp(pattern, options).test(value);
   };
 
   document.registerElement('app-router', {
