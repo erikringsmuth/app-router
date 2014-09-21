@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -24,7 +24,7 @@
     "package.json"
   ],
   "devDependencies": {
-    "platform": "Polymer/platform-dev#~0.4.0",
-    "polymer": "Polymer/polymer-dev#~0.4.0"
+    "platform": "Polymer/platform-dev#~0.4.1",
+    "polymer": "Polymer/polymer-dev#~0.4.1"
   }
 }
