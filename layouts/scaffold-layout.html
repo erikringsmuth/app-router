@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../bower_components/core-item/core-item.html">
 <link rel="import" href="../bower_components/core-icons/social-icons.html">
+<link rel="import" href="../bower_components/pushstate-anchor/pushstate-anchor.html">
 <link rel="import" href="../css/core-style.html">
 
 <polymer-element name="scaffold-layout" attributes="selected" noscript>
@@ -41,11 +42,11 @@
       <core-header-panel navigation flex mode="seamed">
         <core-toolbar>&lt;app-router&gt;</core-toolbar>
         <div>
-          <a active?="{{selected == 'home'}}" href="../#"><core-item icon="home" label="Home"></core-item></a>
-          <a active?="{{selected == 'api'}}" href="../#/api"><core-item icon="settings" label="API"></core-item></a>
-          <a active?="{{selected == 'databinding'}}" href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"><core-item icon="polymer" label="Data Binding"></core-item></a>
-          <a active?="{{selected == 'layouts'}}" href="../#/layouts"><core-item icon="view-quilt" label="Multiple Layouts"></core-item></a>
-          <a active?="{{selected == 'notes'}}" href="../#/notes"><core-item icon="info-outline" label="Notes"></core-item></a>
+          <a is="pushstate-anchor" active?="{{selected == 'home'}}" href="../#/"><core-item icon="home" label="Home"></core-item></a>
+          <a is="pushstate-anchor" active?="{{selected == 'api'}}" href="../#/api"><core-item icon="settings" label="API"></core-item></a>
+          <a is="pushstate-anchor" active?="{{selected == 'databinding'}}" href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"><core-item icon="polymer" label="Data Binding"></core-item></a>
+          <a is="pushstate-anchor" active?="{{selected == 'layouts'}}" href="../#/layouts"><core-item icon="view-quilt" label="Multiple Layouts"></core-item></a>
+          <a is="pushstate-anchor" active?="{{selected == 'notes'}}" href="../#/notes"><core-item icon="info-outline" label="Notes"></core-item></a>
           <a href="https://github.com/erikringsmuth/app-router-examples"><core-item icon="drive-document" label="Example Code"></core-item></a>
           <a href="https://github.com/erikringsmuth/app-router"><core-item icon="social:post-github" label="GitHub"></core-item></a>
         </div>

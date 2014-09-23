@@ -11,6 +11,7 @@
     "platform": "Polymer/platform#~0.4.1",
     "core-elements": "Polymer/core-elements#~0.4.0",
     "google-code-prettify": "~1.0.2",
-    "google-analytics-tracker": "~0.1.1"
+    "google-analytics-tracker": "~0.1.1",
+    "pushstate-anchor": "~0.2.0"
   }
 }
