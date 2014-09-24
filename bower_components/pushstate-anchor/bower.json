@@ -1,6 +1,6 @@
 {
   "name": "pushstate-anchor",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -18,5 +18,8 @@
     "tests",
     "gulpfile.js",
     "package.json"
-  ]
+  ],
+  "devDependencies": {
+    "platform-dev": "Polymer/platform-dev#~0.4.1"
+  }
 }

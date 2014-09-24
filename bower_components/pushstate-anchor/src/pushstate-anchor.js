@@ -13,11 +13,26 @@
 
     window.history.pushState(JSON.parse(this.getAttribute('state')), this.getAttribute('title'), this.getAttribute('href'));
 
-    window.dispatchEvent(new PopStateEvent('popstate', {
-      bubbles: false,
-      cancelable: false,
-      state: window.history.state
-    }));
+    try {
+      var popstateEvent = new PopStateEvent('popstate', {
+        bubbles: false,
+        cancelable: false,
+        state: window.history.state
+      });
+
+      if ('dispatchEvent_' in window) {
+        // FireFox polyfil
+        window.dispatchEvent_(popstateEvent);
+      } else {
+        // normal
+        window.dispatchEvent(popstateEvent);
+      }
+    } catch(error) {
+      // Internet Explorer
+      var evt = document.createEvent('CustomEvent');
+      evt.initCustomEvent('popstate', false, false, { state: window.history.state });
+      window.dispatchEvent(evt);
+    }
 
     event.preventDefault();
   }
