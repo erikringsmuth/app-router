@@ -72,6 +72,15 @@ This will call `pushState()` and dispatch a `popstate` event.
 
 Note: You need to make sure the server returns `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
 
+#### go(path, options)
+You can call the router from Javascript to navigate imperatively.
+
+```js
+document.querySelector('app-router').go('/home');
+// or
+document.querySelector('app-router').go('/home', {replace: true});
+```
+
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
 
@@ -147,15 +156,40 @@ Finally, you can in-line a `<template>` like this.
 
 #### regular expressions
 Include the `regex` attribute to match on a regular expression. The format is the same as a JavaScript regular expression.
+
 ```html
 <!-- matches a pattern like '/word/number' -->
 <app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"></app-route>
 ```
+
 Note: The regular expression must start with a `/` and end with a `/` optionally followed by `i`. Options global `g`, multiline `m`, and sticky `y` aren't valid when matching paths.
+
+#### redirects
+A route can redirect to another path.
+
+```html
+<app-router mode="pushstate">
+  <app-route path="/home" import="/pages/home-page.html"></app-route>
+  <app-route path="*" redirect="/home"></app-route>
+</app-router>
+```
+
+When you use `redirect` you should also set `mode="hash|pushstate"` on the `app-router`. `auto` (default) and `hash` will redirect to `#/home`. `pushstate` will redirect to `/home`.
 
 ## &lt;app-router&gt; options
 
-#### Trailing Slashes
+#### mode
+One set of routes will match regular paths `/` and hash paths `#/`. You can force a specific mode with `mode="auto|hash|pushstate"`.
+
+```html
+<app-router mode="auto|pushstate|hash">
+  <!-- app-routes -->
+</app-router>
+```
+
+When left in `auto` redirects and `go(path, options)` will use to hash paths.
+
+#### trailing slashes
 By default `/home` and `/home/` are treated as separate routes. You can configure the router to ignore trailing slashes with `trailingSlash="ignore"`.
 ```html
 <app-router trailingSlash="ignore">
@@ -168,6 +202,9 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
 
 You can download an example setup here https://github.com/erikringsmuth/app-router-examples to get running locally.
+
+## Breaking Changes
+Check the [change log](https://github.com/erikringsmuth/app-router/blob/master/changelog.md) for breaking changes in major versions.
 
 ## Build, Test, and Debug [![Build Status](https://travis-ci.org/erikringsmuth/app-router.png?branch=master)](https://travis-ci.org/erikringsmuth/app-router)
 Source files are under the `src` folder. The build process writes to the root directory. The easiest way to debug is to include the source script rather than the minified HTML import.
