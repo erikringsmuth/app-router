@@ -128,10 +128,10 @@ Lazy-load a custom element.
 <app-route path="/customer/:customerId" import="/pages/customer-page.html" [element="customer-page"]></app-route>
 ```
 
-Set the `element` attribute if the element name is different than the file name. This is useful when bundling (vulcanizing) custom elements.
+Set the `element` attribute if the element name is different than the file name.
 
 #### pre-loaded custom element
-Include the `element="element-name"` attribute on the route to use a pre-loaded custom element.
+Include the `element="element-name"` attribute on the route to use a pre-loaded custom element. This is how you use bundled (vulcanized) custom elements.
 
 ```html
 <head>
@@ -168,8 +168,6 @@ Include the `regex` attribute to match on a regular expression. The format is th
 <app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"></app-route>
 ```
 
-Note: The regular expression must start with a `/` and end with a `/` optionally followed by `i`. Options global `g`, multiline `m`, and sticky `y` aren't valid when matching paths.
-
 #### redirects
 A route can redirect to another path.
 
@@ -180,7 +178,7 @@ A route can redirect to another path.
 </app-router>
 ```
 
-When you use `redirect` you should also set `mode="hash|pushstate"` on the `app-router`. `auto` (default) and `hash` will redirect to `#/home`. `pushstate` will redirect to `/home`.
+When you use `redirect` you should also set `mode="hash|pushstate"` on the `app-router`.
 
 ## &lt;app-router&gt; options
 
@@ -193,7 +191,7 @@ One set of routes will match regular paths `/` and hash paths `#/`. You can forc
 </app-router>
 ```
 
-When left in `auto` redirects and `go(path, options)` will use to hash paths.
+When left in `auto` redirects and `go(path, options)` will use hash paths.
 
 #### trailing slashes
 By default `/home` and `/home/` are treated as separate routes. You can configure the router to ignore trailing slashes with `trailingSlash="ignore"`.
