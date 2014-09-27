@@ -79,6 +79,14 @@ document.querySelector('app-router').go('/home');
 document.querySelector('app-router').go('/home', {replace: true});
 ```
 
+If you use `go(path, options)` you should also set the mode to `hash` or `pushstate` on the router.
+
+```html
+<app-router mode="auto|pushstate|hash">
+  <!-- app-routes -->
+</app-router>
+```
+
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
 
