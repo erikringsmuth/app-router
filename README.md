@@ -186,12 +186,12 @@ When you use `redirect` you should also set `mode="hash|pushstate"` on the `app-
 One set of routes will match regular paths `/` and hash paths `#/`. You can force a specific mode with `mode="auto|hash|pushstate"`.
 
 ```html
-<app-router mode="auto|pushstate|hash">
-  <!-- app-routes -->
+<app-router mode="pushstate">
+  <!-- always ignore the hash and match on the path -->
 </app-router>
 ```
 
-When left in `auto` redirects and `go(path, options)` will use hash paths.
+When left in `auto`, redirects and `go(path, options)` will use hash paths.
 
 #### trailing slashes
 By default `/home` and `/home/` are treated as separate routes. You can configure the router to ignore trailing slashes with `trailingSlash="ignore"`.
