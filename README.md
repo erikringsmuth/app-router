@@ -70,8 +70,6 @@ You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-an
 
 This will call `pushState()` and dispatch a `popstate` event.
 
-Note: You need to make sure the server returns `index.html` when looking up the resource at `/home`. The simplest set up is to always return `index.html` and let the `app-router` handle the routing including a not found page.
-
 #### go(path, options)
 You can call the router from Javascript to navigate imperatively.
 
