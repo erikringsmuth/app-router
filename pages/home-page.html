@@ -68,7 +68,16 @@ http://www.example.com/order/123?sort=ascending
     <p>This will call <code-snippet>pushState()</code-snippet> and dispatch a <code-snippet>popstate</code-snippet> event.</p>
     <p>Note: You need to make sure the server returns <code-snippet>index.html</code-snippet> when looking up the resource at <code-snippet>/home</code-snippet>. The simplest set up is to always return <code-snippet>index.html</code-snippet> and let the <code-snippet>app-router</code-snippet> handle the routing including a not found page.</p>
 
+    <h4>go(path, options)</h4>
+    <p>You can call the router from Javascript to navigate imperatively.</p>
+<code-block>document.querySelector('app-router').go('/home');
+// or
+document.querySelector('app-router').go('/home', {replace: true});</code-block>
+
     <p>See the navigation examples here <a href="https://github.com/erikringsmuth/app-router-examples">app-router-examples</a>.</p>
+
+    <h2>Notes</h2>
+    <p>Check the <a href="https://github.com/erikringsmuth/app-router/blob/master/changelog.md">change log</a> for breaking changes in major versions.</p>
 
   </scaffold-layout>
 </template>
