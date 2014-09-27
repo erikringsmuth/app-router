@@ -128,7 +128,7 @@ Lazy-load a custom element.
 <app-route path="/customer/:customerId" import="/pages/customer-page.html" [element="customer-page"]></app-route>
 ```
 
-Set the `element` attribute if the element name is different than the file name.
+You only need to set the `element` attribute if the element's name is different than the file name.
 
 #### pre-loaded custom element
 Include the `element="element-name"` attribute on the route to use a pre-loaded custom element. This is how you use bundled (vulcanized) custom elements.
