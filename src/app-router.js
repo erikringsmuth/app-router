@@ -3,19 +3,19 @@
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
 
+  // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [shadow]></app-router>
+  var AppRouter = Object.create(HTMLElement.prototype);
+  AppRouter.util = utilities;
+
   // <app-route path="/path" [import="/page/cust-el.html"] [element="cust-el"] [template]></app-route>
   document.registerElement('app-route', {
     prototype: Object.create(HTMLElement.prototype)
   });
 
-  // <active-route></active-route> holds the active route's content when `shadow` is not enabled
+  // <active-route></active-route> holds the active route's content
   document.registerElement('active-route', {
     prototype: Object.create(HTMLElement.prototype)
   });
-
-  // <app-router [shadow] [trailingSlash="strict|ignore"] [init="auto|manual"] [pathType="auto|regular|hash"]></app-router>
-  var AppRouter = Object.create(HTMLElement.prototype);
-  AppRouter.util = utilities;
 
   // Initial set up when attached
   AppRouter.attachedCallback = function() {
@@ -37,13 +37,13 @@
       this.setAttribute('trailingSlash', 'strict');
     }
 
-    // pathType="auto|regular|hash"
-    if (!this.hasAttribute('pathType')) {
-      this.setAttribute('pathType', 'auto');
+    // mode="auto|hash|pushstate"
+    if (!this.hasAttribute('mode')) {
+      this.setAttribute('mode', 'auto');
     }
 
     // listen for URL change events
-    this.stateChangeHandler = this.go.bind(this);
+    this.stateChangeHandler = stateChange.bind(null, this);
     window.addEventListener('popstate', this.stateChangeHandler, false);
     if (isIE) {
       // IE bug. A hashchange is supposed to trigger a popstate event, making popstate the only event you
@@ -61,8 +61,8 @@
     // set a blank active route
     this.activeRoute = document.createElement('app-route');
 
-    // load the web component for the active route
-    this.go();
+    // load the web component for the current route
+    stateChange(this);
   };
 
   // clean up global event listeners
@@ -71,6 +71,24 @@
     if (isIE) {
       window.removeEventListener('hashchange', this.stateChangeHandler, false);
     }
+  };
+
+  // go(path, options) Navigate to the path
+  //
+  // options = {
+  //   replace: true
+  // }
+  AppRouter.go = function(path, options) {
+    if (this.getAttribute('mode') !== 'pushstate') {
+      // mode = auto or hash
+      path = '#' + path;
+    }
+    if (options && options.replace !== true) {
+      window.history.pushState(null, null, path);
+    } else {
+      window.history.replaceState(null, null, path);
+    }
+    stateChange(this);
   };
 
   // fire(type, detail, node) - Fire a new CustomEvent(type, detail) on the node
@@ -90,32 +108,37 @@
   }
 
   // Find the first <app-route> that matches the current URL and change the active route
-  AppRouter.go = function() {
-    var url = utilities.parseUrl(window.location.href, this.getAttribute('pathType'));
+  function stateChange(router) {
+    var url = utilities.parseUrl(window.location.href, router.getAttribute('mode'));
     var eventDetail = {
       path: url.path
     };
 
     // fire a state-change event on the app-router and return early if the user called event.preventDefault()
-    if (!fire('state-change', eventDetail, this)) {
+    if (!fire('state-change', eventDetail, router)) {
       return;
     }
 
     // find the first matching route
-    var route = this.firstElementChild;
+    var route = router.firstElementChild;
     while (route) {
-      if (route.tagName === 'APP-ROUTE' && utilities.testRoute(route.getAttribute('path'), url.path, this.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
-        activateRoute(this, route, url);
+      if (route.tagName === 'APP-ROUTE' && utilities.testRoute(route.getAttribute('path'), url.path, router.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
+        activateRoute(router, route, url);
         return;
       }
       route = route.nextSibling;
     }
 
-    fire('not-found', eventDetail, this);
-  };
+    fire('not-found', eventDetail, router);
+  }
 
   // Activate the route
   function activateRoute(router, route, url) {
+    if (route.hasAttribute('redirect')) {
+      router.go(route.getAttribute('redirect'), {replace: true});
+      return;
+    }
+
     var eventDetail = {
       path: url.path,
       route: route,
@@ -210,7 +233,7 @@
     fire('activate-route-end', eventDetail, eventDetail.route);
   }
 
-  // parseUrl(location, pathType) - Augment the native URL() constructor to get info about hash paths
+  // parseUrl(location, mode) - Augment the native URL() constructor to get info about hash paths
   //
   // Example parseUrl('http://domain.com/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string', 'auto')
   //
@@ -222,17 +245,17 @@
   // }
   //
   // Note: The location must be a fully qualified URL with a protocol like 'http(s)://'
-  utilities.parseUrl = function(location, pathType) {
+  utilities.parseUrl = function(location, mode) {
     var nativeUrl = new URL(location);
 
     var url = {
       path: nativeUrl.pathname,
       hash: nativeUrl.hash,
       search: nativeUrl.search,
-      isHashPath: pathType === 'hash'
+      isHashPath: mode === 'hash'
     };
 
-    if (pathType !== 'regular') {
+    if (mode !== 'pushstate') {
       // auto or hash
 
       // check for a hash path
@@ -245,7 +268,7 @@
         url.isHashPath = true;
         url.path = url.hash.substring(2);
       } else if (url.isHashPath) {
-        // still use the hash if pathType="hash"
+        // still use the hash if mode="hash"
         if (url.hash.length === 0) {
           url.path = '/';
         } else {

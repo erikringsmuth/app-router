@@ -1,7 +1,7 @@
-describe('parseUrl(location, pathType)', function() {
+describe('parseUrl(location, mode)', function() {
   var router = document.createElement('app-router');
 
-  it('should parse a regular path when pathType="auto"', function() {
+  it('should parse a regular path when mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/example/path', 'auto')).toEqual({
       path: '/example/path',
       hash: '',
@@ -10,7 +10,7 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should parse a regular path and search when pathType="auto"', function() {
+  it('should parse a regular path and search when mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/example/path?queryParam=true', 'auto')).toEqual({
       path: '/example/path',
       hash: '',
@@ -19,7 +19,7 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should use the regular path on a url with a hash not starting in #/ when pathType="auto"', function() {
+  it('should use the regular path on a url with a hash not starting in #/ when mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/example/path#hash', 'auto')).toEqual({
       path: '/example/path',
       hash: '#hash',
@@ -28,7 +28,7 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should parse a hash path when pathType="auto"', function() {
+  it('should parse a hash path when mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/#/example/path', 'auto')).toEqual({
       path: '/example/path',
       hash: '#/example/path',
@@ -46,7 +46,7 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should parse a hashbang path when pathType="auto"', function() {
+  it('should parse a hashbang path when mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/#!/example/path?queryParam=true', 'auto')).toEqual({
       path: '/example/path',
       hash: '#!/example/path?queryParam=true',
@@ -55,7 +55,7 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should use the hash path and hash search when there is both a regular path and a hash path and pathType="auto"', function() {
+  it('should use the hash path and hash search when there is both a regular path and a hash path and mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/other/path?queryParam2=false#/example/path?queryParam1=true', 'auto')).toEqual({
       path: '/example/path',
       hash: '#/example/path?queryParam1=true',
@@ -73,14 +73,14 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should use the real path when pathType="regular"', function() {
-    expect(router.util.parseUrl('http://domain.com/#/hash/path', 'regular')).toEqual({
+  it('should use the real path when mode="pushstate"', function() {
+    expect(router.util.parseUrl('http://domain.com/#/hash/path', 'pushstate')).toEqual({
       path: '/',
       hash: '#/hash/path',
       search: '',
       isHashPath: false
     });
-    expect(router.util.parseUrl('http://domain.com/regular/path#/hash/path', 'regular')).toEqual({
+    expect(router.util.parseUrl('http://domain.com/regular/path#/hash/path', 'pushstate')).toEqual({
       path: '/regular/path',
       hash: '#/hash/path',
       search: '',
@@ -88,7 +88,7 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should use the hash as the path when pathType="hash" even if it doesn\'t start with #/ or #!/', function() {
+  it('should use the hash as the path when mode="hash" even if it doesn\'t start with #/ or #!/', function() {
     expect(router.util.parseUrl('http://domain.com/regular/path#hash/path', 'hash')).toEqual({
       path: 'hash/path',
       hash: '#hash/path',
@@ -97,7 +97,7 @@ describe('parseUrl(location, pathType)', function() {
     });
   });
 
-  it('should not use the regular path when pathType="hash"', function() {
+  it('should not use the regular path when mode="hash"', function() {
     expect(router.util.parseUrl('http://domain.com/test/', 'hash')).toEqual({
       path: '/',
       hash: '',

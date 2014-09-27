@@ -23,6 +23,7 @@
       <li><a href="#/template">/template</a></li>
       <li><a href="#/inline-template">/inline-template</a></li>
       <li><a href="#/word/123">/regular-expression</a></li>
+      <li><a href="#/redirect">/redirect</a></li>
       <li><a href="#/canceled-event">/canceled-event</a></li>
     </ul>
 
@@ -43,6 +44,7 @@
           <h2>Regular Expression <code>/^\/\w+\/\d+$/i</code></h2>
         </template>
       </app-route>
+      <app-route path="/redirect" redirect="/custom-element"></app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
 
