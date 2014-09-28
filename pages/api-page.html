@@ -41,7 +41,7 @@
 &lt;app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"&gt;&lt;/app-route&gt;</code-block>
     <p>Note: The regular expression must start with a <code-snippet>/</code-snippet> and end with a <code-snippet>/</code-snippet> optionally followed by <code-snippet>i</code-snippet>. Options global <code-snippet>g</code-snippet>, multiline <code-snippet>m</code-snippet>, and sticky <code-snippet>y</code-snippet> aren't valid when matching paths.</p>
 
-    <h4>redirects</h4>
+    <h4>redirect</h4>
     <p>A route can redirect to another path.</p>
 <code-block>&lt;app-router mode="pushstate"&gt;
   &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
@@ -79,6 +79,12 @@
     # shadow-root &lt;!-- the active route's content will be inside the shadow root --&gt;
   &lt;/active-route&gt;
 &lt;/app-router&gt;</code-block>
+
+    <h4>go(path, options)</h4>
+    <p>You can call the router from Javascript to navigate imperatively.</p>
+<code-block>document.querySelector('app-router').go('/home');
+// or
+document.querySelector('app-router').go('/home', {replace: true});</code-block>
 
     <h4>init()</h4>
     <p>The router initializes itself when attached to the DOM. You can defer initialization by setting <code-snippet>init="manual"</code-snippet> and calling <code-snippet>init()</code-snippet> later.</p>
