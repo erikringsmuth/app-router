@@ -168,7 +168,7 @@ Include the `regex` attribute to match on a regular expression. The format is th
 <app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"></app-route>
 ```
 
-#### redirects
+#### redirect
 A route can redirect to another path.
 
 ```html
