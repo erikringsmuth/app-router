@@ -207,6 +207,8 @@ Check out the `app-router` in action at [erikringsmuth.github.io/app-router](htt
 
 You can download an example setup here https://github.com/erikringsmuth/app-router-examples to get running locally.
 
+Examples showing `app-router` and `flatiron-director` versus no router https://github.com/erikringsmuth/polymer-router-demos.
+
 ## Breaking Changes
 Check the [change log](https://github.com/erikringsmuth/app-router/blob/master/changelog.md) for breaking changes in major versions.
 
