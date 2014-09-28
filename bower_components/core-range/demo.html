@@ -15,6 +15,7 @@
     <script src="../platform/platform.js"></script>
     
     <link rel="import" href="core-range.html">
+    <link rel="import" href="../core-input/core-input.html">
     
     <style>
     
@@ -46,13 +47,17 @@
             -moz-box-sizing: border-box;
           }
           
+          core-input {
+            border: 1px solid #ccc;
+          }
+          
         </style>
         
-        <core-range min="0" max="200" value="{{value}}" ratio="{{ratio}}"></core-range>
+        <core-range min="0" max="200" step="0.5" value="{{value}}" ratio="{{ratio}}"></core-range>
         
         <div class="progress" style="width: {{ratio}}%;">{{ratio}}%</div><br>
         
-        value (0 - 200): <input value="{{value}}">
+        value (0 - 200): <core-input value="{{value}}"></core-input>
       
       </template>
       

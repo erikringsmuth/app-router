@@ -8,3 +8,11 @@ license that can be found in the LICENSE file.
   position: relative;
   display: inline-block;
 }
+
+#dropdown {
+  margin: 12px;
+  background: #fff;
+  color: #000;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}

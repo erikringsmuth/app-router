@@ -29,16 +29,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
  */
 -->
 <link href="../polymer/polymer.html" rel="import">
+<link href="../core-dropdown/core-dropdown.html" rel="import">
 <link href="../core-icon-button/core-icon-button.html" rel="import">
-<link href="../core-popup-menu/core-popup-menu.html" rel="import">
+<link href="../core-menu/core-menu.html" rel="import">
 
 <polymer-element name="core-menu-button" attributes="icon label src selected opened halign valign valueattr multi inlineMenu">
   <template>
     <link rel="stylesheet" href="core-menu-button.css">
     <core-icon-button id="button" on-tap="{{toggle}}" src="{{src}}" icon="{{icon}}" active="{{opened}}"><span>{{label}}</span></core-icon-button>
-    <core-popup-menu id="menu" relatedTarget="{{$.button}}" opened="{{opened}}" halign="{{halign}}" valign="{{valign}}" selected="{{selected}}" selectedItem="{{selectedItem}}" selectedClass="{{selectedClass}}" valueattr="{{valueattr}}" on-core-select="{{closeAction}}">
-      <content select="*"></content>
-    </core-popup-menu>
+    <core-dropdown id="dropdown" relatedTarget="{{$.button}}" opened="{{opened}}" halign="{{halign}}" valign="{{valign}}">
+      <core-menu selected="{{selected}}" selectedItem="{{selectedItem}}" selectedClass="{{selectedClass}}" valueattr="{{valueattr}}" on-core-activate="{{closeAction}}">
+        <content select="*"></content>
+      </core-menu>
+    </core-dropdown>
   </template>
   <script>
     Polymer('core-menu-button', {
@@ -81,14 +84,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          * @attribute halign
          * @type string
          */
-        halign: 'auto',
+        halign: 'left',
 
         /**
          * Display the overlay on top or below the button.
          * @attribute valign
          * @type string
          */
-        valign: 'auto'
+        valign: 'top'
 
       },
 

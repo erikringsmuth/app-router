@@ -1,5 +1,16 @@
 ## app-router change log
 
+#### v1.0.0
+Breaking changes
+
+- `pathType="auto|hash|regular"` has been replaced with `mode="auto|hash|pushstate"` for redirects, `router.go(path, options)`, and testing routes.
+
+New features
+
+- Added support for redirects with `<app-route path="..." redirect="/other/path"></app-route>`.
+- Added `router.go(path, options)`. Example: `document.querySelector('app-router').go('/home', {replace: true})`.
+- Note: If you're using redirects or `go()` you should specify the mode with `<app-router mode="pushstate|hash"></app-router>`. Leaving the mode as `auto` (the default) will change the hash, even if you wanted it to change the real path with pushstate.
+
 #### v0.9.0
 - Refactor `parseUrl()` to use the native `URL()` constructor and return additional information about the hash path.
 - Cleaned up `testRoute()` and `routeArguments()` with additional information from `parseUrl()`.

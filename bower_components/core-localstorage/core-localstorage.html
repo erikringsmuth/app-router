@@ -97,7 +97,7 @@ triggered only when value is a different instance.
         // be escaped, i.e. "null")
         // in this case we save any non-null current (default) value
         if (v === null) {
-          if (this.value !== null) {
+          if (this.value != null) {
             this.save();
           }
         } else {

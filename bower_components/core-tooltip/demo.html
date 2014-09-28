@@ -101,7 +101,7 @@
   <article onclick="this.classList.toggle('on');">
 
     <em>click the page to toggle all examples...</em>
-    
+
       <section class="small" layout horizontal center-center>
 
         <div class="example">
@@ -169,8 +169,31 @@
         </div>
 
       </section>
-    
+
+      <section layout horizontal center-center>
+
+        <div class="example">
+
+          <core-tooltip id="dynamic" show>
+            Tooltips are only shown (on hover) when a label is set<br> or a html rich snippet is given. &rarr;
+          </core-tooltip>
+          <button id="fillbutton">Fill tooltip</button>
+
+        </div>
+
+      </section>
+
   </article>
+
+<script>
+  document.querySelector('#fillbutton').addEventListener('click', function(e) {
+    e.stopPropagation();
+
+    var el = document.querySelector('#dynamic');
+    el.insertAdjacentHTML('beforeend', '<div tip><b>See</b>. Told ya so!</div>');
+
+  });
+</script>
 
 </body>
 </html>

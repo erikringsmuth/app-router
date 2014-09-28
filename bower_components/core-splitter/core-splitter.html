@@ -26,7 +26,7 @@ In the above example, dragging the splitter will resize the _left_ element.  And
 since the parent container is a flexbox and the _right_ element has
 `flex`, the _right_ element will be auto-resized.
 
-For horizontal splitter set `direction` to "up" or "down".
+For horizontal splitter set `direction` to `up` or `down`.
 
 Example:
 
@@ -56,7 +56,7 @@ Example:
   Polymer('core-splitter', {
 
     /**
-     * Possible values are "left", "right", "up" and "down".
+     * Possible values are `left`, `right`, `up` and `down`.
      *
      * @attribute direction
      * @type string
@@ -65,13 +65,14 @@ Example:
     direction: 'left',
 
     /**
-     * Minimum width to which the splitter target can be sized
+     * Minimum width to which the splitter target can be sized, e.g. 
+     * `minSize="100px"`
      *
      * @attribute minSize
-     * @type number
-     * @default 0
+     * @type string
+     * @default ''
      */
-    minSize: 0,
+    minSize: '',
 
     /**
      * Locks the split bar so it can't be dragged.
@@ -121,7 +122,7 @@ Example:
         old.style[old.__splitterMinSize] = '';
       }
       var min = this.target.__splitterMinSize = this.horizontal ? 'minHeight' : 'minWidth';
-      this.target.style[min] = this.minSize + 'px';
+      this.target.style[min] = this.minSize;
     },
 
     trackStart: function() {
