@@ -45,14 +45,14 @@
     "sampler-scaffold": "Polymer/sampler-scaffold#^0.4.0"
   },
   "homepage": "https://github.com/Polymer/core-elements",
-  "version": "0.4.1",
-  "_release": "0.4.1",
+  "version": "0.4.2",
+  "_release": "0.4.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.1",
-    "commit": "15a0fc5e1d1862f6717a52fc79eacf87bc8047a9"
+    "tag": "0.4.2",
+    "commit": "0f887b10bf958bd35d637aed1ce0c4fcd7467413"
   },
   "_source": "git://github.com/Polymer/core-elements.git",
-  "_target": "~0.4.1",
+  "_target": "~0.4.2",
   "_originalSource": "Polymer/core-elements"
 }

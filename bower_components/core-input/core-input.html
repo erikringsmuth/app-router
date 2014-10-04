@@ -95,7 +95,7 @@ Fired when the inputValue of this text input changes and passes validation.
     <link href="core-input.css" rel="stylesheet">
 
     <template if="{{multiline}}">
-      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" fit?="{{rows === 'fit'}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}"></textarea>
+      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}"></textarea>
     </template>
 
     <template if="{{!multiline}}">
@@ -343,7 +343,7 @@ Fired when the inputValue of this text input changes and passes validation.
           return;
         }
         var c = String.fromCharCode(e.charCode);
-        if (!c.match(/[\d-\.e]/)) {
+        if (e.charCode !== 0 && !c.match(/[\d-\.e]/)) {
           e.preventDefault();
         }
       },
@@ -379,47 +379,88 @@ Fired when the inputValue of this text input changes and passes validation.
         }
       },
 
+      /**
+       * Forwards to the internal input / textarea element.
+       *
+       * @method blur
+       */
       blur: function() {
-        // forward blur method to the internal input / textarea element
         this.$.input.blur();
       },
 
+      /**
+       * Forwards to the internal input / textarea element.
+       *
+       * @method click
+       */
       click: function() {
-        // forward click method to the internal input / textarea element
         this.$.input.click();
       },
 
+      /**
+       * Forwards to the internal input / textarea element.
+       *
+       * @method focus
+       */
       focus: function() {
-        // forward focus method to the internal input / textarea element
         this.$.input.focus();
       },
 
+      /**
+       * Forwards to the internal input / textarea element.
+       *
+       * @method select
+       */
       select: function() {
-        // forward select method to the internal input / textarea element
-        this.$.input.focus();
+        this.$.input.select();
       },
 
+      /**
+       * Forwards to the internal input / textarea element.
+       *
+       * @method setSelectionRange
+       * @param {number} selectionStart
+       * @param {number} selectionEnd
+       * @param {String} selectionDirection (optional)
+       */
       setSelectionRange: function(selectionStart, selectionEnd, selectionDirection) {
-        // forward setSelectionRange method to the internal input / textarea element
         this.$.input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
       },
 
+      /**
+       * Forwards to the internal input element, not implemented for multiline.
+       *
+       * @method setRangeText
+       * @param {String} replacement
+       * @param {number} start (optional)
+       * @param {number} end (optional)
+       * @param {String} selectMode (optional)
+       */
       setRangeText: function(replacement, start, end, selectMode) {
-        // forward setRangeText method to the internal input element
         if (!this.multiline) {
           this.$.input.setRangeText(replacement, start, end, selectMode);
         }
       },
 
+      /**
+       * Forwards to the internal input, not implemented for multiline.
+       *
+       * @method stepDown
+       * @param {number} n (optional)
+       */
       stepDown: function(n) {
-        // forward stepDown method to the internal input element
         if (!this.multiline) {
           this.$.input.stepDown(n);
         }
       },
 
+      /**
+       * Forwards to the internal input, not implemented for multiline.
+       *
+       * @method stepUp
+       * @param {number} n (optional)
+       */
       stepUp: function(n) {
-        // forward stepUp method to the internal input element
         if (!this.multiline) {
           this.$.input.stepUp(n);
         }
@@ -437,12 +478,24 @@ Fired when the inputValue of this text input changes and passes validation.
         return this.$.input.validationMessage;
       },
 
+      /**
+       * Forwards to the internal input / textarea element and updates state.
+       *
+       * @method checkValidity
+       * @return {boolean}
+       */
       checkValidity: function() {
         var r = this.$.input.checkValidity();
         this.updateValidity_();
         return r;
       },
 
+      /**
+       * Forwards to the internal input / textarea element and updates state.
+       *
+       * @method setCustomValidity
+       * @param {String} message
+       */
       setCustomValidity: function(message) {
         this.$.input.setCustomValidity(message);
         this.updateValidity_();

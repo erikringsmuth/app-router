@@ -12,7 +12,7 @@ if (window.top === window) {
     window.onerror = null;
     if (!failed) {
       var d = document.createElement('pre');
-      d.style.cssText = 'padding: 6px; background-color: lightgreen;';
+      d.style.cssText = 'padding: 6px; background-color: lightgreen; position: absolute; bottom:0; right:10px;';
       d.textContent = 'Passed';
       document.body.appendChild(d);
     }
@@ -20,7 +20,7 @@ if (window.top === window) {
   window.onerror = function(x) {
     failed = true;
     var d = document.createElement('pre');
-    d.style.cssText = 'padding: 6px; background-color: #FFE0E0;';
+    d.style.cssText = 'padding: 6px; background-color: #FFE0E0; position: absolute; bottom:0; right:10px;';
     d.textContent = 'FAILED: ' + x;
     document.body.appendChild(d);
   };
@@ -37,3 +37,57 @@ if (window.top === window) {
   };
 }
 
+window.asyncSeries = function(series, callback, forwardExceptions) {
+  series = series.slice();
+  var next = function(err) {
+    if (err) {
+      if (callback) {
+        callback(err);
+      }
+    } else {
+      var f = series.shift();
+      if (f) {
+        if (!forwardExceptions) {
+          f(next);
+        } else {
+          try {
+            f(next);
+          } catch(e) {
+            if (callback) {
+              callback(e);
+            }
+          }
+        }
+      } else {
+        if (callback) {
+          callback();
+        }
+      }
+    }
+  };
+  next();
+};
+
+window.waitFor = function(fn, next, intervalOrMutationEl, timeout, timeoutTime) {
+  timeoutTime = timeoutTime || Date.now() + (timeout || 1000);
+  intervalOrMutationEl = intervalOrMutationEl || 32;
+  try {
+    fn(); 
+  } catch (e) { 
+    if (Date.now() > timeoutTime) {
+      throw e;
+    } else {
+      if (isNaN(intervalOrMutationEl)) {
+        intervalOrMutationEl.onMutation(intervalOrMutationEl, function() {
+          waitFor(fn, next, intervalOrMutationEl, timeout, timeoutTime);
+        });
+      } else {
+        setTimeout(function() {
+          waitFor(fn, next, intervalOrMutationEl, timeout, timeoutTime);
+        }, intervalOrMutationEl);
+      }
+      return;
+    }
+  }
+  next();
+};
