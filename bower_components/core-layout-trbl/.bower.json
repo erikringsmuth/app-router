@@ -5,12 +5,12 @@
     "polymer": "Polymer/polymer#^0.4.0"
   },
   "homepage": "https://github.com/Polymer/core-layout-trbl",
-  "version": "0.4.1",
-  "_release": "0.4.1",
+  "version": "0.4.2",
+  "_release": "0.4.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.1",
-    "commit": "786d1af4703150ada3f625fadfdc34c2e62c784f"
+    "tag": "0.4.2",
+    "commit": "c07248b0dedcdb86d60adf209bb9deaa0a780593"
   },
   "_source": "git://github.com/Polymer/core-layout-trbl.git",
   "_target": "^0.4.0",

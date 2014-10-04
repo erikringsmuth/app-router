@@ -6,12 +6,12 @@
     "core-input": "Polymer/core-input#^0.4.0"
   },
   "homepage": "https://github.com/Polymer/core-range",
-  "version": "0.4.1",
-  "_release": "0.4.1",
+  "version": "0.4.2",
+  "_release": "0.4.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.1",
-    "commit": "1cf198a940f26026171f3d9d8c816e2091f63be1"
+    "tag": "0.4.2",
+    "commit": "8fbffbf35053236c767819f093182a5fcb5c0306"
   },
   "_source": "git://github.com/Polymer/core-range.git",
   "_target": "^0.4.0",

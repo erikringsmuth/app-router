@@ -30,15 +30,14 @@ Example:
 
 <link rel="import" href="../core-icon/core-icon.html">
 
-<link rel="stylesheet" href="core-item.css" shim-shadowdom>
-
 <polymer-element name="core-item" attributes="label icon src" horizontal center layout>
 <template>
-
-  <core-icon src="{{src}}" icon="{{icon}}" hidden?="{{!src && !icon}}"></core-icon>
+  <link rel="stylesheet" href="core-item.css">
+  <template if="{{icon || src}}">
+    <core-icon src="{{src}}" id="icon" icon="{{icon}}" hidden?="{{!src && !icon}}"></core-icon>
+  </template>
   <div id="label">{{label}}</div>
   <content></content>
-  
 </template>
 <script>
 

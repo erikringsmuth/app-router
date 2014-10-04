@@ -7,32 +7,33 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-html /deep/ core-item {
+:host {
   display: block;
   position: relative;
   min-height: 40px;
   white-space: nowrap;
 }
 
-html /deep/ core-item.font-scalable {
+:host(.font-scalable) {
   min-height: 2.5em;
 }
 
-html /deep/ core-item.core-selected {
+:host(.core-selected) {
   font-weight: bold;
 }
 
-html /deep/ core-item::shadow core-icon {
+#icon {
   margin: 0 16px 0 4px;
 }
 
-html /deep/ core-item.font-scalable::shadow core-icon {
+:host(.font-scalable) #icon {
   margin: 0 1em 0 0.25em;
   height: 1.5em;
   width: 1.5em;
 }
 
-html /deep/ core-item::shadow ::content > a {
+polyfill-next-selector { content: ':host > a'; }
+::content > a {
   position: absolute;
   top: 0;
   right: 0;

@@ -23,7 +23,7 @@ Example:
         </core-menu>
       </core-header-panel>
       <div tool>Title</div>
-      <div>Content goes here...</div>
+      <div>Main content goes here...</div>
     </core-scaffold>
 
 Use `mode` to control the header and scrolling behavior of `core-header-panel`
@@ -87,7 +87,7 @@ To have the content fits to the main area, use `fit` attribute.
 
     </div>
     
-    <core-header-panel main mode="{{mode}}">
+    <core-header-panel id="headerPanel" main mode="{{mode}}">
 
       <core-toolbar>
         <core-icon-button id="menuButton" icon="menu" on-tap="{{togglePanel}}"></core-icon-button>
@@ -104,6 +104,24 @@ To have the content fits to the main area, use `fit` attribute.
 <script>
 
   Polymer('core-scaffold', {
+    
+    /**
+     * Fired when the main content has been scrolled.  `event.detail.target` returns
+     * the scrollable element which you can use to access scroll info such as
+     * `scrollTop`.
+     *
+     *     <core-scaffold on-scroll="{{scrollHandler}}">
+     *       ...
+     *     </core-scaffold>
+     *
+     *
+     *     scrollHandler: function(event) {
+     *       var scroller = event.detail.target;
+     *       console.log(scroller.scrollTop);
+     *     }
+     *
+     * @event scroll
+     */
     
     publish: {
       /**
@@ -125,6 +143,15 @@ To have the content fits to the main area, use `fit` attribute.
        * @default 'seamed'
        */     
       mode: {value: 'seamed', reflect: true}
+    },
+    
+    ready: function() {
+      this._scrollHandler = this.scroll.bind(this);
+      this.$.headerPanel.addEventListener('scroll', this._scrollHandler);
+    },
+    
+    detached: function() {
+      this.$.headerPanel.removeEventListener('scroll', this._scrollHandler);
     },
 
     /**
@@ -149,6 +176,10 @@ To have the content fits to the main area, use `fit` attribute.
       */     
     closeDrawer: function() {
       this.$.drawerPanel.closeDrawer();
+    },
+    
+    scroll: function(e) {
+      this.fire('scroll', {target: e.detail.target}, this, false);
     }
     
   });

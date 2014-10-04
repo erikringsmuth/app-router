@@ -57,6 +57,12 @@ The `core-select` event signals selection change.
 
 <link rel="import" href="../core-selector/core-selector.html">
 
-<link rel="stylesheet" href="core-menu.css" shim-shadowdom>
+<polymer-element name="core-menu" extends="core-selector" noscript>
+<template>
 
-<polymer-element name="core-menu" extends="core-selector" noscript></polymer-element>
+  <link rel="stylesheet" href="core-menu.css">
+  
+  <shadow></shadow>
+  
+</template>
+</polymer-element>

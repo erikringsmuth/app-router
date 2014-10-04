@@ -18,7 +18,7 @@ The `core-ajax` element exposes `XMLHttpRequest` functionality.
         params='{"alt":"json", "q":"chrome"}'
         handleAs="json"
         on-core-response="{{handleResponse}}"></core-ajax>
- 
+
 With `auto` set to `true`, the element performs a request whenever
 its `url` or `params` properties are changed.
 
@@ -32,19 +32,19 @@ element.
 @homepage github.io
 -->
 <link rel="import" href="core-xhr.html">
-<polymer-element name="core-ajax" hidden attributes="url handleAs auto params response method headers body contentType withCredentials">
+<polymer-element name="core-ajax" hidden attributes="url handleAs auto params response error method headers body contentType withCredentials">
 <script>
 
   Polymer('core-ajax', {
     /**
      * Fired when a response is received.
-     * 
+     *
      * @event core-response
      */
 
     /**
      * Fired when an error is received.
-     * 
+     *
      * @event core-error
      */
 
@@ -56,7 +56,7 @@ element.
 
     /**
      * The URL target of the request.
-     * 
+     *
      * @attribute url
      * @type string
      * @default ''
@@ -66,13 +66,13 @@ element.
     /**
      * Specifies what data to store in the `response` property, and
      * to deliver as `event.response` in `response` events.
-     * 
+     *
      * One of:
-     * 
+     *
      *    `text`: uses `XHR.responseText`.
-     *    
+     *
      *    `xml`: uses `XHR.responseXML`.
-     *    
+     *
      *    `json`: uses `XHR.responseText` parsed as JSON.
      *
      *    `arraybuffer`: uses `XHR.response`.
@@ -80,7 +80,7 @@ element.
      *    `blob`: uses `XHR.response`.
      *
      *    `document`: uses `XHR.response`.
-     *  
+     *
      * @attribute handleAs
      * @type string
      * @default 'text'
@@ -98,7 +98,7 @@ element.
 
     /**
      * Parameters to send to the specified URL, as JSON.
-     *  
+     *
      * @attribute params
      * @type string (JSON)
      * @default ''
@@ -106,13 +106,24 @@ element.
     params: '',
 
     /**
-     * Returns the response object.
+     * The response for the most recently made request, or null if it hasn't
+     * completed yet or the request resulted in error.
      *
      * @attribute response
      * @type Object
      * @default null
      */
     response: null,
+
+    /**
+     * The error for the most recently made request, or null if it hasn't
+     * completed yet or the request resulted in success.
+     *
+     * @attribute error
+     * @type Object
+     * @default null
+     */
+    error: null,
 
     /**
      * The HTTP method to use such as 'GET', 'POST', 'PUT', or 'DELETE'.
@@ -129,13 +140,13 @@ element.
      *
      * Example:
      *
-     *     <core-ajax 
+     *     <core-ajax
      *         auto
      *         url="http://somesite.com"
      *         headers='{"X-Requested-With": "XMLHttpRequest"}'
      *         handleAs="json"
      *         on-core-response="{{handleResponse}}"></core-ajax>
-     *  
+     *
      * @attribute headers
      * @type Object
      * @default null
@@ -150,7 +161,7 @@ element.
      *     <core-ajax method="POST" auto url="http://somesite.com"
      *         body='{"foo":1, "bar":2}'>
      *     </core-ajax>
-     *  
+     *
      * @attribute body
      * @type Object
      * @default null
@@ -168,26 +179,26 @@ element.
 
     /**
      * Set the withCredentials flag on the request.
-     * 
+     *
      * @attribute withCredentials
      * @type boolean
      * @default false
      */
     withCredentials: false,
-    
+
     /**
      * Additional properties to send to core-xhr.
      *
      * Can be set to an object containing default properties
      * to send as arguments to the `core-xhr.request()` method
      * which implements the low-level communication.
-     * 
+     *
      * @property xhrArgs
      * @type Object
      * @default null
      */
     xhrArgs: null,
-     
+
     ready: function() {
       this.xhr = document.createElement('core-xhr');
     },
@@ -196,7 +207,7 @@ element.
       if (this.isSuccess(xhr)) {
         this.processResponse(xhr);
       } else {
-        this.error(xhr);
+        this.processError(xhr);
       }
       this.complete(xhr);
     },
@@ -208,12 +219,17 @@ element.
 
     processResponse: function(xhr) {
       var response = this.evalResponse(xhr);
-      this.response = response;
+      if (xhr === this.activeRequest) {
+        this.response = response;
+      }
       this.fire('core-response', {response: response, xhr: xhr});
     },
 
-    error: function(xhr) {
+    processError: function(xhr) {
       var response = xhr.status + ': ' + xhr.responseText;
+      if (xhr === this.activeRequest) {
+        this.error = response;
+      }
       this.fire('core-error', {response: response, xhr: xhr});
     },
 
@@ -277,8 +293,8 @@ element.
       this.autoGo();
     },
 
-    // TODO(sorvell): multiple side-effects could call autoGo 
-    // during one micro-task, use a job to have only one action 
+    // TODO(sorvell): multiple side-effects could call autoGo
+    // during one micro-task, use a job to have only one action
     // occur
     autoGo: function() {
       if (this.auto) {
@@ -317,7 +333,10 @@ element.
       args.callback = this.receive.bind(this);
       args.url = this.url;
       args.method = this.method;
-      return args.url && this.xhr.request(args);
+
+      this.response = this.error = null;
+      this.activeRequest = args.url && this.xhr.request(args);
+      return this.activeRequest;
     }
 
   });

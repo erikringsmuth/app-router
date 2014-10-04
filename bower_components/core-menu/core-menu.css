@@ -7,12 +7,12 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-html /deep/ core-menu {
+:host {
   display: block;
   margin: 12px;
 }
 
-polyfill-next-selector { content: 'core-menu > core-item'; }
-html /deep/ core-menu::shadow ::content > core-item {
+polyfill-next-selector { content: ':host > core-item'; }
+::content > core-item {
   cursor: default;
 }

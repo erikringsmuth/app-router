@@ -32,6 +32,26 @@ You can override the margin by doing:
       margin-left: 20px;
     }
 
+To style the item for the submenu, do something like this:
+
+    core-submenu::shadow > #submenuItem {
+      color: blue;
+    }
+    
+To style all the `core-item`s in the light DOM:
+
+    polyfill-next-selector { content: 'core-submenu > #submenu > core-item'; }
+    core-submenu > core-item {
+      color: red;
+    }
+    
+The above will style `Topic1` and `Topic2` to have font color red.
+
+    <core-submenu icon="settings" label="Topics">
+      <core-item label="Topic1"></core-item>
+      <core-item label="Topic2"></core-item>
+    </core-submenu>
+    
 @group Polymer Core Elements
 @element core-submenu
 @extends core-item
@@ -46,7 +66,7 @@ You can override the margin by doing:
 
   <link rel="stylesheet" href="core-submenu.css">
 
-  <core-item src="{{src}}" label="{{label}}" icon="{{icon}}" class="{{ {'core-selected' : active} | tokenList}}" on-tap="{{activate}}">
+  <core-item id="submenuItem" src="{{src}}" label="{{label}}" icon="{{icon}}" class="{{ {'core-selected' : active} | tokenList}}" on-tap="{{activate}}">
     <content select=".item-content"></content>
   </core-item>
 

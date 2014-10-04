@@ -72,7 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <template is="auto-binding">
 
-  <div layout vertical fit>
+  <div layout vertical fit on-core-select="{{selectAction}}" on-core-activate="{{activateAction}}">
 
     <div class="toolbar toolbar-1" layout horizontal center>
 
@@ -95,7 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <core-item>{{name}}</core-item>
         </template>
       </core-menu-button>
-      
+
       <core-menu-button icon="more-vert" halign="right">
         <template repeat="{{pastries}}">
           <core-item>{{}}</core-item>
@@ -127,7 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <core-item>{{name}}</core-item>
         </template>
       </core-menu-button>
-      
+
       <core-menu-button icon="more-vert" halign="right" valign="bottom">
         <template repeat="{{pastries}}">
           <core-item>{{}}</core-item>
@@ -401,6 +401,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'Pretzel',
       'Sfogliatelle'
     ];
+
+    scope.selectAction = function(e) {
+      console.log('core-select', e.target.selectedItem && e.target.selectedItem.textContent);
+    };
+
+    scope.activateAction = function(e) {
+      console.log('core-activate', e.target.selectedItem && e.target.selectedItem.textContent);
+    };
 
   </script>
 

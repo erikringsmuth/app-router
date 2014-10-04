@@ -8,12 +8,12 @@
     "core-toolbar": "Polymer/core-toolbar#^0.4.0"
   },
   "homepage": "https://github.com/Polymer/core-scaffold",
-  "version": "0.4.1",
-  "_release": "0.4.1",
+  "version": "0.4.2",
+  "_release": "0.4.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.1",
-    "commit": "5071b766f8f7be6bb767c2794a55cea6e71f566f"
+    "tag": "0.4.2",
+    "commit": "e13c15c04f3b6d7b2b8ae7b236f14155f173f587"
   },
   "_source": "git://github.com/Polymer/core-scaffold.git",
   "_target": "^0.4.0",

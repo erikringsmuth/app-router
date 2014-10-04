@@ -24,6 +24,20 @@ core-item {
  cursor: default; 
 }
 
+:host(.font-scalable) > core-item {
+  min-height: 2.5em;
+}
+
+:host(.font-scalable) > core-item::shadow core-icon {
+  margin: 0 1em 0 0.25em;
+  height: 1.5em;
+  width: 1.5em;
+}
+
 #submenu {
   margin: 0 0 0 44px;
+}
+
+:host(.font-scalable) > #submenu {
+  margin: 0 0 0 2.75em;
 }

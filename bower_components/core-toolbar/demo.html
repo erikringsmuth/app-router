@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <link rel="import" href="core-toolbar.html">
   <link rel="import" href="../core-icon-button/core-icon-button.html">
+  <link rel="import" href="../core-media-query/core-media-query.html">
 
   <style shim-shadowdom>
 
@@ -102,6 +103,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="middle indent">element (e.g. progress) fits at the bottom of the toolbar</div>
     <div class="bottom fit" style="height: 20px; background-color: #0f9d58;"></div>
   </core-toolbar>
+  
+  <core-media-query id="mediaQuery" query="max-width: 640px"></core-media-query>
+  
+  <script>
+  
+    document.querySelector('#mediaQuery').addEventListener('core-media-change',
+      function(e) {
+        document.body.classList.toggle('core-narrow', e.detail.matches);
+      });
+  
+  </script>
   
 </body>
 </html>

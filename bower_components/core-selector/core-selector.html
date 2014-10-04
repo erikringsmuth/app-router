@@ -66,7 +66,7 @@ Fired when an item element is tapped.
 <link rel="import" href="../core-selection/core-selection.html">
 
 <polymer-element name="core-selector"
-    attributes="selected multi valueattr selectedClass selectedProperty selectedAttribute selectedItem selectedModel selectedIndex notap target itemsSelector activateEvent">
+    attributes="selected multi valueattr selectedClass selectedProperty selectedAttribute selectedItem selectedModel selectedIndex notap excludedLocalNames target itemsSelector activateEvent">
 
   <template>
     <core-selection id="selection" multi="{{multi}}" on-core-select="{{selectionSelect}}"></core-selection>
@@ -160,6 +160,8 @@ Fired when an item element is tapped.
       /**
        * Returns the currently selected element. In multi-selection this returns
        * an array of selected elements.
+       * Note that you should not use this to set the selection. Instead use
+       * `selected`.
        * 
        * @attribute selectedItem
        * @type Object
@@ -170,6 +172,8 @@ Fired when an item element is tapped.
       /**
        * In single selection, this returns the model associated with the
        * selected element.
+       * Note that you should not use this to set the selection. Instead use 
+       * `selected`.
        * 
        * @attribute selectedModel
        * @type Object
@@ -179,12 +183,34 @@ Fired when an item element is tapped.
 
       /**
        * In single selection, this returns the selected index.
+       * Note that you should not use this to set the selection. Instead use
+       * `selected`.
        *
        * @attribute selectedIndex
        * @type number
        * @default -1
        */
       selectedIndex: -1,
+
+      /**
+       * Nodes with local name that are in the list will not be included 
+       * in the selection items.  In the following example, `items` returns four
+       * `core-item`'s and doesn't include `h3` and `hr`.
+       *
+       *     <core-selector excludedLocalNames="h3 hr">
+       *       <h3>Header</h3>
+       *       <core-item>Item1</core-item>
+       *       <core-item>Item2</core-item>
+       *       <hr>
+       *       <core-item>Item3</core-item>
+       *       <core-item>Item4</core-item>
+       *     </core-selector>
+       *
+       * @attribute excludedLocalNames
+       * @type string
+       * @default ''
+       */
+      excludedLocalNames: '',
 
       /**
        * The target element that contains items.  If this is not set 
@@ -198,7 +224,8 @@ Fired when an item element is tapped.
 
       /**
        * This can be used to query nodes from the target node to be used for 
-       * selection items.  Note this only works if the 'target' property is set.
+       * selection items.  Note this only works if `target` is set
+       * and is not `core-selector` itself.
        *
        * Example:
        *
@@ -236,8 +263,12 @@ Fired when an item element is tapped.
        */
       notap: false,
 
+      defaultExcludedLocalNames: 'template',
+
       ready: function() {
         this.activateListener = this.activateHandler.bind(this);
+        this.itemFilter = this.filterItem.bind(this);
+        this.excludedLocalNamesChanged();
         this.observer = new MutationObserver(this.updateSelected.bind(this));
         if (!this.target) {
           this.target = this;
@@ -256,9 +287,22 @@ Fired when an item element is tapped.
         var nodes = this.target !== this ? (this.itemsSelector ? 
             this.target.querySelectorAll(this.itemsSelector) : 
                 this.target.children) : this.$.items.getDistributedNodes();
-        return Array.prototype.filter.call(nodes || [], function(n) {
-          return n && n.localName !== 'template';
-        });
+        return Array.prototype.filter.call(nodes, this.itemFilter);
+      },
+
+      filterItem: function(node) {
+        return !this._excludedNames[node.localName];
+      },
+
+      excludedLocalNamesChanged: function() {
+        this._excludedNames = {};
+        var s = this.defaultExcludedLocalNames;
+        if (this.excludedLocalNames) {
+          s += ' ' + this.excludedLocalNames;
+        }
+        s.split(/\s+/g).forEach(function(n) {
+          this._excludedNames[n] = 1;
+        }, this);
       },
 
       targetChanged: function(old) {
@@ -434,6 +478,7 @@ Fired when an item element is tapped.
         var item = this.items[index];
         if (item) {
           this.selected = this.valueForNode(item) || index;
+          return item;
         }
       },
       
@@ -441,18 +486,24 @@ Fired when an item element is tapped.
        * Selects the previous item.  This should be used in single selection only.
        *
        * @method selectPrevious
+       * @param {boolean} wrap if true and it is already at the first item, wrap to the end
+       * @returns the previous item or undefined if there is none
        */
-      selectPrevious: function() {
-        this.selectIndex(this.selectedIndex - 1);
+      selectPrevious: function(wrap) {
+        var i = wrap && !this.selectedIndex ? this.items.length - 1 : this.selectedIndex - 1;
+        return this.selectIndex(i);
       },
       
       /**
        * Selects the next item.  This should be used in single selection only.
        *
        * @method selectNext
+       * @param {boolean} wrap if true and it is already at the last item, wrap to the front
+       * @returns the next item or undefined if there is none
        */
-      selectNext: function() {
-        this.selectIndex(this.selectedIndex + 1);
+      selectNext: function(wrap) {
+        var i = wrap && this.selectedIndex >= this.items.length - 1 ? 0 : this.selectedIndex + 1;
+        return this.selectIndex(i);
       }
       
     });
