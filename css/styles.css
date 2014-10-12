@@ -6,3 +6,6 @@ body {
 body /deep/ p {
   color: #555;
 }
+body /deep/ .top-spacing {
+  margin-top: 1.8em;
+}

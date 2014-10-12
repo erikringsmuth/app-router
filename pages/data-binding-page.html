@@ -3,23 +3,32 @@
 <link rel="import" href="../elements/code-block.html">
 <link rel="import" href="../elements/code-snippet.html">
 
-<polymer-element name="data-binding-page" attributes="pathArg1 queryParam1" noscript>
+<polymer-element name="data-binding-page" attributes="pathArg1 queryParam1">
   <template>
     <scaffold-layout selected="databinding">
       <div class="title">Data Binding Demo</div>
 
-      <p>Path variables and query parameters are automatically attached to the element's attributes. Change values in the address bar and see them change here.</p>
+      <p>Change values in the address bar and see them change here. Path variables and query parameters are automatically attached to the element's attributes.</p>
 
-      <ul>
-        <li><code-snippet>pathArg1 = {{pathArg1}}</code-snippet></li>
-        <li><code-snippet>queryParam1 = {{queryParam1}}</code-snippet></li>
-      </ul>
+      <h4 class="top-spacing">Route Args</h4>
 
-      <h3>Example Route and Page</h3>
+      <p>Path variables and query parameters attached to this page.</p>
 
-<code-block>&lt;app-router&gt;
-  &lt;app-route path="/demo/:pathArg1" import="pages/demo-page.html"&gt;&lt;/app-route&gt;
-&lt;/app-router&gt;</code-block>
+<code-block>{{routeArgs}}</code-block>
+
+      <h4 class="top-spacing">URL</h4>
+
+<code-block>{{url}}</code-block>
+
+      <h4 class="top-spacing">Route</h4>
+
+      <p>Path variables are defined on the <code-snippet>app-route</code-snippet>.</p>
+
+<code-block>&lt;app-route path="/demo/:pathArg1" import="pages/demo-page.html"&gt;&lt;/app-route&gt;</code-block>
+
+      <h4 class="top-spacing">Page</h4>
+
+      <p>Path variables and query parameters are defined on the custom element and used in the template.</p>
 
 <code-block>&lt;polymer-element name="demo-page" attributes="pathArg1 queryParam1" noscript&gt;
   &lt;template&gt;
@@ -28,8 +37,17 @@
   &lt;/template&gt;
 &lt;/polymer-element&gt;</code-block>
 
-      <p>Path variables are defined in the <code-snippet>app-route</code-snippet> and on the page's attributes. Query parameters are only defined on the page's attributes.</p>
-
     </scaffold-layout>
   </template>
+  <script>
+    Polymer({
+      attachedCallback: function() {
+        this.url = window.location.href;
+        this.routeArgs = JSON.stringify({
+          "pathArg1": this.pathArg1,
+          "queryParam1": this.queryParam1
+        }, null, 2);
+      }
+    });
+  </script>
 </polymer-element>

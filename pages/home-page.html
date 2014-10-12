@@ -6,15 +6,21 @@
 
 <template>
   <scaffold-layout selected="home">
+
     <div class="title">Home</div>
 
+
     <h2>Router for Web Components</h2>
+
     <p>Works with <a href="http://www.polymer-project.org/">Polymer</a>, <a href="http://www.x-tags.org/">X-Tag</a>, and natively with the <a href="https://github.com/Polymer/platform">platform</a> polyfill.</p>
     <p>Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Works with <code-snippet>hashchange</code-snippet> and HTML5 <code-snippet>pushState</code-snippet>.</p>
 
     <p><a href="https://github.com/erikringsmuth/app-router/archive/master.zip">Download</a> or run <code-snippet>bower install app-router --save</code-snippet></p>
 
-    <h2>Configuration</h2>
+
+    <h2 class="top-spacing">Configuration</h2>
+
+    <p>Define how URLs map to pages.</p>
 <code-block>&lt;!doctype html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -40,13 +46,52 @@
   &lt;/app-router&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code-block>
-    <p>Changing the URL will find the first <code-snippet>app-route</code-snippet> that matches, load the element or template, and replace the current view.</p>
 
-    <h2>Data Binding</h2>
+
+    <h2 class="top-spacing">Navigation</h2>
+<code-block>&lt;!-- hashchange --&gt;
+&lt;a href="/#/home"&gt;Home&lt;/a&gt;
+
+&lt;!-- pushState() --&gt;
+&lt;a is="pushstate-anchor" href="/home"&gt;Home&lt;/a&gt;
+
+&lt;!-- router.go(path, options) --&gt;
+&lt;script&gt;
+  document.querySelector('app-router').go('/home');
+&lt;/script&gt;</code-block>
+
+    <p>The router listens to <code-snippet>popstate</code-snippet> and <code-snippet>hashchange</code-snippet> events. Changing the URL will find the first <code-snippet>app-route</code-snippet> that matches, load the element or template, and replace the current view.</p>
+
+    <h4 class="top-spacing">hashchange</h4>
+
+    <p>Clicking <code-snippet>&lt;a href="/#/home"&gt;Home&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the first route that matches <code-snippet>/home</code-snippet>. You don't need to handle the event in your Javascript. Hash paths <code-snippet>/#/home</code-snippet> match routes without the hash <code-snippet>&lt;app-route path="/home"&gt;</code-snippet>.</p>
+
+    <h4 class="top-spacing">pushState</h4>
+
+    <p>You can use the <a href="https://github.com/erikringsmuth/pushstate-anchor">pushstate-anchor</a> or <a href="https://github.com/erikringsmuth/html5-history-anchor">html5-history-anchor</a> to extend <code-snippet>&lt;a&gt;</code-snippet> tags with the HTML5 history API.</p>
+
+<code-block>&lt;a is="pushstate-anchor" href="/home"&gt;Home&lt;/a&gt;</code-block>
+
+    <p>This will call <code-snippet>pushState()</code-snippet> and dispatch a <code-snippet>popstate</code-snippet> event.</p>
+
+    <p>Note: You need to make sure the server returns <code-snippet>index.html</code-snippet> when looking up the resource at <code-snippet>/home</code-snippet>. The simplest set up is to always return <code-snippet>index.html</code-snippet> and let the <code-snippet>app-router</code-snippet> handle the routing including a not found page.</p>
+
+    <h4 class="top-spacing">go(path, options)</h4>
+
+    <p>You can call the router from Javascript to navigate imperatively.</p>
+
+<code-block>document.querySelector('app-router').go('/home');
+// or
+document.querySelector('app-router').go('/home', {replace: true});</code-block>
+
+    <p>See the navigation examples here <a href="https://github.com/erikringsmuth/app-router-examples">app-router-examples</a>.</p>
+
+
+    <h2 class="top-spacing">Data Binding</h2>
     <p>Path variables and query parameters automatically attach to the element's attributes.</p>
 
 <code-block>&lt;!-- url --&gt;
-http://www.example.com/order/123?sort=ascending
+&lt;a is="pushstate-anchor" href="/order/123?sort=ascending"&gt;Order 123&lt;/a&gt;
 
 &lt;!-- route --&gt;
 &lt;app-route path="/order/:id" import="/pages/order-page.html"&gt;&lt;/app-route&gt;
@@ -56,27 +101,8 @@ http://www.example.com/order/123?sort=ascending
 
     <p>See it in action <a is="pushstate-anchor" href="#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!">here</a>.</p>
 
-    <h2>Navigation</h2>
-    <p>The router listens to <code-snippet>popstate</code-snippet> and <code-snippet>hashchange</code-snippet> events. Navigate by clicking links or changing the URL with DOM APIs like <code-snippet>history.pushState()</code-snippet> and <code-snippet>location.hash</code-snippet>.</p>
 
-    <h4>hashchange</h4>
-    <p>Clicking <code-snippet>&lt;a href="/#/home"&gt;Home&lt;/a&gt;</code-snippet> will fire a <code-snippet>hashchange</code-snippet> event and tell the router to load the first route that matches <code-snippet>/home</code-snippet>. You don't need to handle the event in your Javascript. Hash paths <code-snippet>/#/home</code-snippet> match routes without the hash <code-snippet>&lt;app-route path="/home"&gt;</code-snippet>.</p>
-
-    <h4>pushState</h4>
-    <p>You can use the <a href="https://github.com/erikringsmuth/pushstate-anchor">pushstate-anchor</a> or <a href="https://github.com/erikringsmuth/html5-history-anchor">html5-history-anchor</a> to extend <code-snippet>&lt;a&gt;</code-snippet> tags with the HTML5 history API.</p>
-<code-block>&lt;a is="pushstate-anchor" href="/home"&gt;Home&lt;/a&gt;</code-block>
-    <p>This will call <code-snippet>pushState()</code-snippet> and dispatch a <code-snippet>popstate</code-snippet> event.</p>
-    <p>Note: You need to make sure the server returns <code-snippet>index.html</code-snippet> when looking up the resource at <code-snippet>/home</code-snippet>. The simplest set up is to always return <code-snippet>index.html</code-snippet> and let the <code-snippet>app-router</code-snippet> handle the routing including a not found page.</p>
-
-    <h4>go(path, options)</h4>
-    <p>You can call the router from Javascript to navigate imperatively.</p>
-<code-block>document.querySelector('app-router').go('/home');
-// or
-document.querySelector('app-router').go('/home', {replace: true});</code-block>
-
-    <p>See the navigation examples here <a href="https://github.com/erikringsmuth/app-router-examples">app-router-examples</a>.</p>
-
-    <h2>Notes</h2>
+    <h2 class="top-spacing">Notes</h2>
     <p>Check the <a href="https://github.com/erikringsmuth/app-router/blob/master/changelog.md">change log</a> for breaking changes in major versions.</p>
 
     <p>Compare <code-snippet>app-router</code-snippet>, <code-snippet>flatiron-director</code-snippet>, and plain old HTML files <a href="https://github.com/erikringsmuth/polymer-router-demos">https://github.com/erikringsmuth/polymer-router-demos</a>.</p>

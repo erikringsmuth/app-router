@@ -9,12 +9,12 @@
 
     <h2>&lt;app-route&gt; options</h2>
 
-    <h4>import a custom element</h4>
+    <h4 class="top-spacing">import a custom element</h4>
     <p>Lazy-load a custom element.</p>
 <code-block>&lt;app-route path="/customer/:customerId" import="/pages/customer-page.html" [element="customer-page"]&gt;&lt;/app-route&gt;</code-block>
     <p>You only need to set the <code-snippet>element</code-snippet> attribute if the element's name is different than the file name.</p>
 
-    <h4>pre-loaded custom element</h4>
+    <h4 class="top-spacing">pre-loaded custom element</h4>
     <p>Include the <code-snippet>element="element-name"</code-snippet> attribute on the route to use a pre-loaded custom element. This is how you use bundled (vulcanized) custom elements.</p>
 <code-block>&lt;head&gt;
   &lt;link rel="import" href="/pages/page-bundle.html"&gt;
@@ -23,11 +23,11 @@
   &lt;app-route path="/customer/:customerId" element="customer-page"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
 
-    <h4>import template</h4>
+    <h4 class="top-spacing">import template</h4>
     <p>You can import a <code-snippet>&lt;template&gt;</code-snippet> instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the <code-snippet>template</code-snippet> attribute.</p>
 <code-block>&lt;app-route path="/example" import="/pages/template-page.html" template&gt;&lt;/app-route&gt;</code-block>
 
-    <h4>inline template</h4>
+    <h4 class="top-spacing">inline template</h4>
     <p>Finally, you can in-line a <code-snippet>&lt;template&gt;</code-snippet> like this.</p>
 <code-block>&lt;app-route path="/example"&gt;
   &lt;template&gt;
@@ -35,13 +35,13 @@
   &lt;/template&gt;
 &lt;/app-route&gt;</code-block>
 
-    <h4>regular expressions</h4>
+    <h4 class="top-spacing">regular expressions</h4>
     <p>Include the <code-snippet>regex</code-snippet> attribute to match on a regular expression. The format is the same as a JavaScript regular expression.</p>
 <code-block>&lt;!-- matches a pattern like '/word/number' --&gt;
 &lt;app-route path="/^\/\w+\/\d+$/i" regex import="/pages/regex-page.html"&gt;&lt;/app-route&gt;</code-block>
     <p>Note: The regular expression must start with a <code-snippet>/</code-snippet> and end with a <code-snippet>/</code-snippet> optionally followed by <code-snippet>i</code-snippet>. Options global <code-snippet>g</code-snippet>, multiline <code-snippet>m</code-snippet>, and sticky <code-snippet>y</code-snippet> aren't valid when matching paths.</p>
 
-    <h4>redirect</h4>
+    <h4 class="top-spacing">redirect</h4>
     <p>A route can redirect to another path.</p>
 <code-block>&lt;app-router mode="pushstate"&gt;
   &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
@@ -49,23 +49,23 @@
 &lt;/app-router&gt;</code-block>
     <p>When you use <code-snippet>redirect</code-snippet> you should also set <code-snippet>mode="hash|pushstate"</code-snippet> on the <code-snippet>app-router</code-snippet>. <code-snippet>auto</code-snippet> (default) and <code-snippet>hash</code-snippet> will redirect to <code-snippet>#/home</code-snippet>. <code-snippet>pushstate</code-snippet> will redirect to <code-snippet>/home</code-snippet>.</p>
 
-    <h2>&lt;app-router&gt; options</h2>
+    <h2 class="top-spacing">&lt;app-router&gt; options</h2>
 
-    <h4>mode</h4>
+    <h4 class="top-spacing">mode</h4>
     <p>One set of routes will match regular paths <code-snippet>/</code-snippet> and hash paths <code-snippet>#/</code-snippet>. You can force a specific mode with <code-snippet>mode="auto|hash|pushstate"</code-snippet>.</p>
 <code-block>&lt;app-router mode="pushstate"&gt;
   &lt;!-- always ignore the hash and match on the path --&gt;
 &lt;/app-router&gt;</code-block>
     <p>When left in <code-snippet>auto</code-snippet>, redirects and <code-snippet>go(path, options)</code-snippet> will use hash paths.</p>
 
-    <h4>trailing slashes</h4>
+    <h4 class="top-spacing">trailing slashes</h4>
     <p>By default <code-snippet>/home</code-snippet> and <code-snippet>/home/</code-snippet> are treated as separate routes. You can configure the router to ignore trailing slashes with <code-snippet>trailingSlash="ignore"</code-snippet>.</p>
 <code-block>&lt;app-router trailingSlash="ignore"&gt;
   &lt;!-- matches '/home' and '/home/' --&gt;
   &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
 
-    <h4>shadow DOM</h4>
+    <h4 class="top-spacing">shadow DOM</h4>
     <p>The router puts the active route's content in an <code-snippet>&lt;active-route&gt;&lt;/active-route&gt;</code-snippet> element.</p>
 <code-block>&lt;app-router&gt;
   &lt;!-- app-routes --&gt;
@@ -80,13 +80,13 @@
   &lt;/active-route&gt;
 &lt;/app-router&gt;</code-block>
 
-    <h4>go(path, options)</h4>
+    <h4 class="top-spacing">go(path, options)</h4>
     <p>You can call the router from Javascript to navigate imperatively.</p>
 <code-block>document.querySelector('app-router').go('/home');
 // or
 document.querySelector('app-router').go('/home', {replace: true});</code-block>
 
-    <h4>init()</h4>
+    <h4 class="top-spacing">init()</h4>
     <p>The router initializes itself when attached to the DOM. You can defer initialization by setting <code-snippet>init="manual"</code-snippet> and calling <code-snippet>init()</code-snippet> later.</p>
 <code-block>&lt;app-router init="manual"&gt;
   &lt;!-- app-routes --&gt;
@@ -97,7 +97,7 @@ document.querySelector('app-router').go('/home', {replace: true});</code-block>
   });
 &lt;/script&gt;</code-block>
 
-    <h2>lifecycle events</h2>
+    <h2 class="top-spacing">lifecycle events</h2>
     <p>Lifecycle events let you hook into different stages of the route process. If you're listening to events you should manually initialize the router to ensure your event listeners are attached before the first route loads. You can attach event listeners to the router or specific routes.</p>
 <code-block>&lt;app-router init="manual"&gt;
   &lt;!-- app-routes --&gt;
@@ -114,21 +114,21 @@ document.querySelector('app-router').go('/home', {replace: true});</code-block>
   });
 &lt;/script&gt;</code-block>
 
-    <h4>state-change (app-router)</h4>
+    <h4 class="top-spacing">state-change (app-router)</h4>
     <p><code-snippet>state-change</code-snippet> is the first event fired when the URL changes. This is triggered by a <code-snippet>hashchange</code-snippet>,  <code-snippet>popstate</code-snippet>, or full page load.</p>
 <code-block>// event.detail
 {
   path: '/new-path'
 }</code-block>
 
-    <h4>not-found (app-router)</h4>
+    <h4 class="top-spacing">not-found (app-router)</h4>
     <p><code-snippet>not-found</code-snippet> is fired after a <code-snippet>state-change</code-snippet> if no matching route is found.</p>
 <code-block>// event.detail
 {
   path: '/new-path'
 }</code-block>
 
-    <h4>activate-route-start (app-router, app-route)</h4>
+    <h4 class="top-spacing">activate-route-start (app-router, app-route)</h4>
     <p><code-snippet>activate-route-start</code-snippet> is fired on both the router and the matching route before the new route is loaded.</p>
 <code-block>// event.detail
 {
@@ -137,7 +137,7 @@ document.querySelector('app-router').go('/home', {replace: true});</code-block>
   oldRoute: oldRoute
 }</code-block>
 
-    <h4>activate-route-end (app-router, app-route)</h4>
+    <h4 class="top-spacing">activate-route-end (app-router, app-route)</h4>
     <p><code-snippet>activate-route-end</code-snippet> is fired on both the router and the matching route after the route has been changed.</p>
 <code-block>// event.detail
 {
