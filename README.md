@@ -41,6 +41,8 @@ Define how URLs map to pages.
 
 ## Navigation
 
+Click links or call `router.go()`.
+
 ```html
 <!-- hashchange -->
 <a href="/#/home">Home</a>
