@@ -90,7 +90,7 @@ Path variables and query parameters automatically attach to the element's attrib
 
 ``` html
 <!-- url -->
-http://www.example.com/order/123?sort=ascending
+<a is="pushstate-anchor" href="/order/123?sort=ascending">Order 123</a>
 
 <!-- route -->
 <app-route path="/order/:id" import="/pages/order-page.html"></app-route>
