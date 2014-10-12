@@ -1,13 +1,15 @@
 ## Router for Web Components
-> Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively with the [platform](https://github.com/Polymer/platform) polyfill.
+> Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Works with `hashchange` and HTML5 `pushState`.
 
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
 
-Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Works with `hashchange` and HTML5 `pushState`.
-
 [Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
 
+Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively with the [platform](https://github.com/Polymer/platform) polyfill.
+
 ## Configuration
+
+Define how URLs map to pages.
 
 ```html
 <!doctype html>
@@ -37,26 +39,22 @@ Manage page state. Lazy-load content. Data-bind path variables and query paramet
 </html>
 ```
 
-Changing the URL will find the first `app-route` that matches, load the element or template, and replace the current view.
+## Navigation
 
-## Data Binding
-Path variables and query parameters automatically attach to the element's attributes.
+```html
+<!-- hashchange -->
+<a href="/#/home">Home</a>
 
-``` html
-<!-- url -->
-http://www.example.com/order/123?sort=ascending
+<!-- pushState() -->
+<a is="pushstate-anchor" href="/home">Home</a>
 
-<!-- route -->
-<app-route path="/order/:id" import="/pages/order-page.html"></app-route>
-
-<!-- will bind 123 to the page's `id` attribute and "ascending" to the `sort` attribute -->
-<order-page id="123" sort="ascending"></order-page>
+<!-- router.go(path, options) -->
+<script>
+  document.querySelector('app-router').go('/home');
+</script>
 ```
 
-See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
-
-## Navigation
-The router listens to `popstate` and `hashchange` events. Navigate by clicking links or changing the URL with DOM APIs like `history.pushState()` and `location.hash`.
+The router listens to `popstate` and `hashchange` events. Changing the URL will find the first `app-route` that matches, load the element or template, and replace the current view.
 
 #### hashchange
 Clicking `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript. Hash paths `/#/home` match routes without the hash `<app-route path="/home">`.
@@ -86,6 +84,22 @@ If you use `go(path, options)` you should also set the mode to `hash` or `pushst
   <!-- app-routes -->
 </app-router>
 ```
+
+## Data Binding
+Path variables and query parameters automatically attach to the element's attributes.
+
+``` html
+<!-- url -->
+http://www.example.com/order/123?sort=ascending
+
+<!-- route -->
+<app-route path="/order/:id" import="/pages/order-page.html"></app-route>
+
+<!-- will bind 123 to the page's `id` attribute and "ascending" to the `sort` attribute -->
+<order-page id="123" sort="ascending"></order-page>
+```
+
+See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
