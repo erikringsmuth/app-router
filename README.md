@@ -1,11 +1,9 @@
 ## Router for Web Components
-> Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Works with `hashchange` and HTML5 `pushState`.
-
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
 
-[Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
+Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Works with `hashchange` and HTML5 `pushState`. Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively with the [platform](https://github.com/Polymer/platform) polyfill.
 
-Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively with the [platform](https://github.com/Polymer/platform) polyfill.
+[Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
 
 ## Configuration
 
