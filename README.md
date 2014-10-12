@@ -1,7 +1,7 @@
 ## Router for Web Components
 > Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively with the [platform](https://github.com/Polymer/platform) polyfill.
 >
-> [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router)
+> [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router/)
 
 Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Supports `hashchange` and HTML5 `pushState`.
 
