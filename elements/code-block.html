@@ -8,6 +8,7 @@
     <pre id="code" class="prettify"><content></content></pre>
   </template>
   <script>
+    /* global prettyPrintOne */
     Polymer({
       domReady: function() {
         this.$.code.innerHTML = prettyPrintOne(this.innerHTML.replace(/</g, '&lt;').replace(/>/g, '&gt;'));

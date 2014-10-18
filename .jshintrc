@@ -2,13 +2,9 @@
   "indent": 2,
   "undef": true,
   "unused": true,
-  "trailing": true,
   "quotmark": true,
   "globals": {
-    "describe": true,
-    "it": true,
-    "expect": true
+    "Polymer": true
   },
-  "smarttabs": true,
   "browser": true
 }

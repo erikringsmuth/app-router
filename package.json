@@ -5,8 +5,8 @@
     "url": "https://github.com/erikringsmuth/app-router.git"
   },
   "devDependencies": {
-    "gulp": "^3.8.6",
-    "gulp-jshint": "^1.8.0",
-    "jshint-stylish": "^0.4.0"
+    "gulp": "^3.8.8",
+    "gulp-jshint": "^1.8.5",
+    "jshint-stylish": "^1.0.0"
   }
 }

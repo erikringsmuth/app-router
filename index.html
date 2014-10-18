@@ -7,11 +7,25 @@
     <title>app-router</title>
     <script src="bower_components/platform/platform.js"></script>
     <link rel="stylesheet" href="css/styles.css" shim-shadowdom>
+    <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="bower_components/app-router/app-router.html">
     <link rel="import" href="bower_components/google-analytics-tracker/google-analytics-tracker.html">
+    <!-- pre-load the most used elements -->
+    <link rel="import" href="layouts/scaffold-layout.html">
+    <link rel="import" href="pages/home-page.html">
+    <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/core-item/core-item.html">
+    <link rel="import" href="bower_components/core-icons/social-icons.html">
+    <link rel="import" href="bower_components/pushstate-anchor/pushstate-anchor.html">
+    <link rel="import" href="css/core-style.html">
+    <link rel="import" href="elements/code-block-import.html">
+    <link rel="import" href="elements/code-block.html">
+    <link rel="import" href="elements/code-snippet.html">
   </head>
   <body unresolved>
-    <app-router>
+    <app-router mode="hash" trailingSlash="strict">
       <app-route path="/^\/(app-router\/)?$/i" regex import="pages/home-page.html" template></app-route>
       <app-route path="/api" import="pages/api-page.html" template></app-route>
       <app-route path="/databinding/:pathArg1" import="pages/data-binding-page.html"></app-route>
