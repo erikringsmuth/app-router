@@ -1,5 +1,5 @@
 ## Router for Web Components
-> Works natively, with [Polymer](http://www.polymer-project.org/), and [X-Tag](http://www.x-tags.org/).
+> Works natively and with libraries like [Polymer](http://www.polymer-project.org/) and [X-Tag](http://www.x-tags.org/).
 >
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router/)
 
