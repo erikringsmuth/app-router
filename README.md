@@ -1,9 +1,9 @@
 ## Router for Web Components
-> Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively with the [platform](https://github.com/Polymer/platform) polyfill.
+> Works natively, with [Polymer](http://www.polymer-project.org/), and [X-Tag](http://www.x-tags.org/).
 >
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router/)
 
-Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Supports `hashchange` and HTML5 `pushState`.
+Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Navigate with `hashchange` and HTML5 `pushState`. Animate transitions using `core-animated-pages`.
 
 [Download](https://github.com/erikringsmuth/app-router/archive/master.zip) or run `bower install app-router --save`.
 
@@ -217,6 +217,63 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
   <app-route path="/home" import="/pages/home-page.html"></app-route>
 </app-router>
 ```
+
+## core-animated-pages
+Animate transitions using [core-animated-pages](https://www.polymer-project.org/docs/elements/core-elements.html#core-animated-pages). You have to load Polymer and `<core-animated-pages>` to use this feature.
+
+Include the `core-animated-pages` attribute on the `<app-router>` and define the `transitions` you want to use.
+```html
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/core-animated-pages/core-animated-pages.html">
+
+<app-router core-animated-pages transitions="hero-transition cross-fade">
+  <app-route path="/home" import="/pages/home-page.html"></app-route>
+  <app-route path="/demo" import="/pages/demo-page.html"></app-route>
+</app-router>
+```
+
+Then include the transition attributes on the content you want to animate. This example uses the `cross-fade` transition.
+
+#### home-page.html
+
+```html
+<polymer-element name="home-page" noscript>
+  <template>
+    <core-toolbar cross-fade>Home</core-toolbar>
+    <p>Home page!</p>
+  </template>
+</polymer-element>
+```
+
+#### demo-page.html
+
+```html
+<polymer-element name="demo-page" noscript>
+  <template>
+    <core-toolbar cross-fade>Demo</core-toolbar>
+    <p>Demo page!</p>
+  </template>
+</polymer-element>
+```
+
+The `<app-router>` acts as the `<core-animated-pages>` and each `<app-route>` is a page. Each route's content is loaded inside the `<app-route>` like this.
+
+```html
+<app-router core-animated-pages transitions="hero-transition cross-fade">
+  <app-route path="/home" import="/pages/home-page.html">
+    <home-page>
+      #shadow-root
+      <core-toolbar cross-fade>Home</core-toolbar>
+      <p>Home page!</p>
+    </home-page>
+  </app-route>
+  <app-route path="/demo" import="/pages/demo-page.html">
+    <!-- empty until you navigate to /demo -->
+  </app-route>
+</app-router>
+```
+
+When you navigate from `/home` to `/demo` there will temporarily be both a `<home-page>` and `<demo-page>` in the DOM while the transition is animated. Once the transition is complete, `<core-animated-pages>` fires a `core-animated-pages-transition-end` event and the `<home-page>` is removed from the DOM.
 
 ## Demo Site & Example Setup
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).

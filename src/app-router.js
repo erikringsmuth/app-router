@@ -38,10 +38,7 @@
       router.setAttribute('mode', 'auto');
     }
 
-    // support core-animated-pages. requires Polymer and core-animated-pages to be loaded.
-    // ex: <app-router core-animated-pages transitions="hero-transition cross-fade">
-    // is equivalent to <core-animated-pages transitions="hero-transition cross-fade">
-    // where each <app-route> is a page.
+    // <app-router core-animated-pages transitions="hero-transition cross-fade">
     if (router.hasAttribute('core-animated-pages')) {
       // use shadow DOM to wrap the <app-route> elements in a <core-animated-pages> element
       // <app-router>

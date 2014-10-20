@@ -3,10 +3,12 @@
 #### v2.0.0
 TODO
 - test in every browser with and without the `core-animated-pages` attribute
+- document new features, remove info about old features
 - `gulp`
 - tag version
-- update app-router-examples
-- update polymer-router-demos
+- update and add transitions to app-router-examples
+- update and add transitions to polymer-router-demos
+- update and add transitions to gh-pages
 
 New features
 
