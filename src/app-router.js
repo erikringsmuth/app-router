@@ -286,8 +286,10 @@
 
   // Call when the previousRoute has finished the transition animation out
   function transitionAnimationEnd(previousRoute) {
-    previousRoute.transitionAnimationInProgress = false;
-    removeRouteContent(previousRoute);
+    if (previousRoute) {
+      previousRoute.transitionAnimationInProgress = false;
+      removeRouteContent(previousRoute);
+    }
   }
 
   // Remove the route's content (but not the <template> if it exists)
