@@ -1,22 +1,13 @@
 ## app-router change log
 
 #### v2.0.0
-TODO
-- test in every browser with and without the `core-animated-pages` attribute
-- document new features, remove info about old features
-- `gulp`
-- tag version
-- update and add transitions to app-router-examples
-- update and add transitions to polymer-router-demos
-- update and add transitions to gh-pages
-
 New features
 
-- Added support for `<core-animated-pages>`. For example, set up the router like `<app-router core-animated-pages transitions="hero-transition cross-fade">` then include the `hero` and `cross-fade` attributes on the elements you want transitioned.
+- Added support for `<core-animated-pages>`. Example: set up the router like `<app-router core-animated-pages transitions="hero-transition cross-fade">` then include the `hero` and `cross-fade` attributes on the elements you want transitioned.
 
 Breaking changes
 
-- Previously the active route's content was under an `<active-route>` element. This changed to support `<core-animated-pages>`. Now the content for the route is under it's `<app-route>` element.
+- Previously the active route's content was under an `<active-route>` element. Now the content for the route is under it's `<app-route>` element. This changed to support `<core-animated-pages>`.
 - The `<active-route>` element and `router.activeRouteContent` have been removed.
 - Removed the `shadow` attribute from the `<app-router>`. This was applied to the `<active-route>` element which no longer exists.
 
