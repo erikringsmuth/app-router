@@ -1,5 +1,5 @@
 ## Router for Web Components
-> Works natively and with libraries like [Polymer](http://www.polymer-project.org/) and [X-Tag](http://www.x-tags.org/).
+> Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively.
 >
 > [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router/)
 
@@ -219,6 +219,9 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 ```
 
 ## core-animated-pages
+
+> Experimental! The browser may slow to a crawl depending on which animations you use.
+
 Animate transitions using [core-animated-pages](https://www.polymer-project.org/docs/elements/core-elements.html#core-animated-pages). You have to load Polymer and `<core-animated-pages>` to use this feature.
 
 Include the `core-animated-pages` attribute on the `<app-router>` and define the `transitions` you want to use.
@@ -256,20 +259,27 @@ Then include the transition attributes on the content you want to animate. This 
 </polymer-element>
 ```
 
-The `<app-router>` acts as the `<core-animated-pages>` and each `<app-route>` is a page. Each route's content is loaded inside the `<app-route>` like this.
+The toolbar will fade out on the home page and fade in on the demo page.
+
+### How it works
+The `<app-router>` contains a `<core-animated-pages>` in it's shadow DOM. Each `<app-route>` is a page. When you navigate to a route it's content is loaded inside the `<app-route>` element. The previous example looks like this when it's wired up.
 
 ```html
 <app-router core-animated-pages transitions="hero-transition cross-fade">
-  <app-route path="/home" import="/pages/home-page.html">
-    <home-page>
-      #shadow-root
-      <core-toolbar cross-fade>Home</core-toolbar>
-      <p>Home page!</p>
-    </home-page>
-  </app-route>
-  <app-route path="/demo" import="/pages/demo-page.html">
-    <!-- empty until you navigate to /demo -->
-  </app-route>
+  #shadow-root
+  <core-animated-pages transitions="hero-transition cross-fade">
+    <!-- light DOM -->
+    <app-route path="/home" import="/pages/home-page.html">
+      <home-page>
+        #shadow-root
+        <core-toolbar cross-fade>Home</core-toolbar>
+        <p>Home page!</p>
+      </home-page>
+    </app-route>
+    <app-route path="/demo" import="/pages/demo-page.html">
+      <!-- empty until you navigate to /demo -->
+    </app-route>
+  </core-animated-pages>
 </app-router>
 ```
 

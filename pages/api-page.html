@@ -65,21 +65,6 @@
   &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
 
-    <h4 class="top-spacing">shadow DOM</h4>
-    <p>The router puts the active route's content in an <code-snippet>&lt;active-route&gt;&lt;/active-route&gt;</code-snippet> element.</p>
-<code-block>&lt;app-router&gt;
-  &lt;!-- app-routes --&gt;
-  &lt;active-route&gt;&lt;!-- active route content --&gt;&lt;/active-route&gt;
-&lt;/app-router&gt;</code-block>
-
-    <p>If you want the active route's content isolated in a shadow tree you can add the <code-snippet>shadow</code-snippet> attribute like this.</p>
-<code-block>&lt;app-router shadow&gt;
-  &lt;!-- app-routes --&gt;
-  &lt;active-route&gt;
-    # shadow-root &lt;!-- the active route's content will be inside the shadow root --&gt;
-  &lt;/active-route&gt;
-&lt;/app-router&gt;</code-block>
-
     <h4 class="top-spacing">go(path, options)</h4>
     <p>You can call the router from Javascript to navigate imperatively.</p>
 <code-block>document.querySelector('app-router').go('/home');

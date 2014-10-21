@@ -1,5 +1,6 @@
 {
   "name": "app-router",
+  "version": "2.0.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -26,13 +27,13 @@
     "platform": "Polymer/platform-dev#~0.4.1",
     "polymer": "Polymer/polymer-dev#~0.4.1"
   },
-  "_release": "cd5f5851ea",
+  "_release": "2.0.0",
   "_resolution": {
-    "type": "branch",
-    "branch": "core-animated-pages",
-    "commit": "cd5f5851eac4182e9c2ead207e802bc943bca421"
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "f18a0b05c5576994db51a307a2141b0f9ebce634"
   },
   "_source": "git://github.com/erikringsmuth/app-router.git",
-  "_target": "core-animated-pages",
-  "_originalSource": "erikringsmuth/app-router"
+  "_target": "~2.0.0",
+  "_originalSource": "app-router"
 }
