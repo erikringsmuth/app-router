@@ -12,11 +12,6 @@
     prototype: Object.create(HTMLElement.prototype)
   });
 
-  // <active-route></active-route> holds the active route's content
-  document.registerElement('active-route', {
-    prototype: Object.create(HTMLElement.prototype)
-  });
-
   // Initial set up when attached
   AppRouter.attachedCallback = function() {
     // init="auto|manual"
@@ -27,42 +22,70 @@
 
   // Initialize the router
   AppRouter.init = function() {
-    if (this.isInitialized) {
+    var router = this;
+    if (router.isInitialized) {
       return;
     }
-    this.isInitialized = true;
+    router.isInitialized = true;
 
     // trailingSlash="strict|ignore"
-    if (!this.hasAttribute('trailingSlash')) {
-      this.setAttribute('trailingSlash', 'strict');
+    if (!router.hasAttribute('trailingSlash')) {
+      router.setAttribute('trailingSlash', 'strict');
     }
 
     // mode="auto|hash|pushstate"
-    if (!this.hasAttribute('mode')) {
-      this.setAttribute('mode', 'auto');
+    if (!router.hasAttribute('mode')) {
+      router.setAttribute('mode', 'auto');
+    }
+
+    // <app-router core-animated-pages transitions="hero-transition cross-fade">
+    if (router.hasAttribute('core-animated-pages')) {
+      // use shadow DOM to wrap the <app-route> elements in a <core-animated-pages> element
+      // <app-router>
+      //   # shadowRoot
+      //   <core-animated-pages>
+      //     # content in the light DOM
+      //     <app-route element="home-page">
+      //       <home-page>
+      //       </home-page>
+      //     </app-route>
+      //   </core-animated-pages>
+      // </app-router>
+      router.createShadowRoot();
+      router.coreAnimatedPages = document.createElement('core-animated-pages');
+      router.coreAnimatedPages.appendChild(document.createElement('content'));
+
+      // don't know why it needs to be static, but absolute doesn't display the page
+      router.coreAnimatedPages.style.position = 'static';
+
+      // toggle the selected page using selected="path" instead of selected="integer"
+      router.coreAnimatedPages.setAttribute('valueattr', 'path');
+
+      // pass the transitions attribute from <app-router core-animated-pages transitions="hero-transition cross-fade">
+      // to <core-animated-pages transitions="hero-transition cross-fade">
+      router.coreAnimatedPages.setAttribute('transitions', router.getAttribute('transitions'));
+
+      // set the shadow DOM's content
+      router.shadowRoot.appendChild(router.coreAnimatedPages);
+
+      // when a transition finishes, remove the previous route's content. there is a temporary overlap where both
+      // the new and old route's content is in the DOM to animate the transition.
+      router.coreAnimatedPages.addEventListener('core-animated-pages-transition-end', function() {
+        transitionAnimationEnd(router.previousRoute);
+      });
     }
 
     // listen for URL change events
-    this.stateChangeHandler = stateChange.bind(null, this);
-    window.addEventListener('popstate', this.stateChangeHandler, false);
+    router.stateChangeHandler = stateChange.bind(null, router);
+    window.addEventListener('popstate', router.stateChangeHandler, false);
     if (isIE) {
       // IE bug. A hashchange is supposed to trigger a popstate event, making popstate the only event you
       // need to listen to. That's not the case in IE so we make another event listener for it.
-      window.addEventListener('hashchange', this.stateChangeHandler, false);
+      window.addEventListener('hashchange', router.stateChangeHandler, false);
     }
-
-    // set up an <active-route> element for the active route's content
-    this.activeRouteContent = document.createElement('active-route');
-    this.appendChild(this.activeRouteContent);
-    if (this.hasAttribute('shadow')) {
-      this.activeRouteContent = this.activeRouteContent.createShadowRoot();
-    }
-
-    // set a blank active route
-    this.activeRoute = document.createElement('app-route');
 
     // load the web component for the current route
-    stateChange(this);
+    stateChange(router);
   };
 
   // clean up global event listeners
@@ -151,9 +174,20 @@
       return;
     }
 
-    router.activeRoute.removeAttribute('active');
-    route.setAttribute('active', 'active');
+    // update the references to the activeRoute and previousRoute
+    if (router.previousRoute) {
+      router.previousRoute.removeAttribute('active');
+
+      // if you switch between routes quickly you may go to a new route before the previous route's transition animation
+      // has completed. if that's the case we need to remove the previous route's content before we replace the reference
+      // to the previous route.
+      if (router.previousRoute.transitionAnimationInProgress) {
+        transitionAnimationEnd(router.previousRoute);
+      }
+    }
+    router.previousRoute = router.activeRoute;
     router.activeRoute = route;
+    router.activeRoute.setAttribute('active', 'active');
 
     // import custom element or template
     if (route.hasAttribute('import')) {
@@ -225,12 +259,51 @@
 
   // Replace the active route's content with the new element
   function activeElement(router, element, eventDetail) {
-    while (router.activeRouteContent.firstChild) {
-      router.activeRouteContent.removeChild(router.activeRouteContent.firstChild);
+    // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
+    // otherwise we can remove the old route's content right away.
+    if (!router.hasAttribute('core-animated-pages')) {
+      removeRouteContent(router.previousRoute);
     }
-    router.activeRouteContent.appendChild(element);
+
+    // add the new content
+    router.activeRoute.appendChild(element);
+
+    // animate the transition if core-animated-pages are being used
+    if (router.hasAttribute('core-animated-pages')) {
+      router.coreAnimatedPages.selected = router.activeRoute.getAttribute('path');
+
+      // we already wired up transitionAnimationEnd() in init()
+
+      // use to check if the previous route has finished animating before being removed
+      if (router.previousRoute) {
+        router.previousRoute.transitionAnimationInProgress = true;
+      }
+    }
+
     fire('activate-route-end', eventDetail, router);
     fire('activate-route-end', eventDetail, eventDetail.route);
+  }
+
+  // Call when the previousRoute has finished the transition animation out
+  function transitionAnimationEnd(previousRoute) {
+    if (previousRoute) {
+      previousRoute.transitionAnimationInProgress = false;
+      removeRouteContent(previousRoute);
+    }
+  }
+
+  // Remove the route's content (but not the <template> if it exists)
+  function removeRouteContent(route) {
+    if (route) {
+      var node = route.firstChild;
+      while (node) {
+        var nodeToRemove = node;
+        node = node.nextSibling;
+        if (nodeToRemove.tagName !== 'TEMPLATE') {
+          route.removeChild(nodeToRemove);
+        }
+      }
+    }
   }
 
   // parseUrl(location, mode) - Augment the native URL() constructor to get info about hash paths

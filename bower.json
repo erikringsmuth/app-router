@@ -6,7 +6,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "app-router": "~1.0.0",
+    "app-router": "erikringsmuth/app-router#core-animated-pages",
     "polymer": "Polymer/polymer#~0.4.2",
     "platform": "Polymer/platform#~0.4.2",
     "core-elements": "Polymer/core-elements#~0.4.2",

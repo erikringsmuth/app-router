@@ -1,0 +1,71 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../layouts/scaffold-layout.html">
+<link rel="import" href="../elements/code-block.html">
+<link rel="import" href="../elements/code-snippet.html">
+
+<template>
+  <scaffold-layout selected="core-animated-pages">
+
+    <div class="title">core-animated-pages</div>
+
+    <h3>Experimental! The browser may slow to a crawl depending on which animations you use.</h3>
+
+    <p>Animate transitions using core-animated-pages. You have to load Polymer and <code-snippet>&lt;core-animated-pages&gt;</code-snippet> to use this feature.</p>
+
+    <p>Include the <code-snippet>core-animated-pages</code-snippet> attribute on the <code-snippet>&lt;app-router&gt;</code-snippet> and define the <code-snippet>transitions</code-snippet> you want to use.</p>
+
+<code-block>&lt;link rel="import" href="/bower_components/polymer/polymer.html"&gt;
+&lt;link rel="import" href="/bower_components/core-animated-pages/core-animated-pages.html"&gt;
+
+&lt;app-router core-animated-pages transitions="hero-transition cross-fade"&gt;
+  &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
+  &lt;app-route path="/demo" import="/pages/demo-page.html"&gt;&lt;/app-route&gt;
+&lt;/app-router&gt;</code-block>
+
+    <p>Then include the transition attributes on the content you want to animate. This example uses the <code-snippet>cross-fade</code-snippet> transition.</p>
+
+    <h4>home-page.html</h4>
+
+<code-block>&lt;polymer-element name="home-page" noscript&gt;
+  &lt;template&gt;
+    &lt;core-toolbar cross-fade&gt;Home&lt;/core-toolbar&gt;
+    &lt;p&gt;Home page!&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/polymer-element&gt;</code-block>
+
+    <h4>demo-page.html</h4>
+
+<code-block>&lt;polymer-element name="demo-page" noscript&gt;
+  &lt;template&gt;
+    &lt;core-toolbar cross-fade&gt;Demo&lt;/core-toolbar&gt;
+    &lt;p&gt;Demo page!&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/polymer-element&gt;</code-block>
+
+    <p>The toolbar will fade out on the home page and fade in on the demo page.</p>
+
+    <h2>How it works</h2>
+
+    <p>The <code-snippet>&lt;app-router&gt;</code-snippet> contains a <code-snippet>&lt;core-animated-pages&gt;</code-snippet> in it's shadow DOM. Each <code-snippet>&lt;app-route&gt;</code-snippet> is a page. When you navigate to a route it's content is loaded inside the <code-snippet>&lt;app-route&gt;</code-snippet> element. The previous example looks like this when it's wired up.</p>
+
+<code-block>&lt;app-router core-animated-pages transitions="hero-transition cross-fade"&gt;
+  #shadow-root
+  &lt;core-animated-pages transitions="hero-transition cross-fade"&gt;
+    &lt;!-- light DOM --&gt;
+    &lt;app-route path="/home" import="/pages/home-page.html"&gt;
+      &lt;home-page&gt;
+        #shadow-root
+        &lt;core-toolbar cross-fade&gt;Home&lt;/core-toolbar&gt;
+        &lt;p&gt;Home page!&lt;/p&gt;
+      &lt;/home-page&gt;
+    &lt;/app-route&gt;
+    &lt;app-route path="/demo" import="/pages/demo-page.html"&gt;
+      &lt;!-- empty until you navigate to /demo --&gt;
+    &lt;/app-route&gt;
+  &lt;/core-animated-pages&gt;
+&lt;/app-router&gt;</code-block>
+
+    <p>When you navigate from <code-snippet>/home</code-snippet> to <code-snippet>/demo</code-snippet> there will temporarily be both a <code-snippet>&lt;home-page&gt;</code-snippet> and <code-snippet>&lt;demo-page&gt;</code-snippet> in the DOM while the transition is animated. Once the transition is complete, <code-snippet>&lt;core-animated-pages&gt;</code-snippet> fires a <code-snippet>core-animated-pages-transition-end</code-snippet> event and the <code-snippet>&lt;home-page&gt;</code-snippet> is removed from the DOM.</p>
+
+  </scaffold-layout>
+</template>
