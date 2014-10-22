@@ -174,16 +174,14 @@
       return;
     }
 
-    // update the references to the activeRoute and previousRoute
-    if (router.previousRoute) {
-      router.previousRoute.removeAttribute('active');
-
-      // if you switch between routes quickly you may go to a new route before the previous route's transition animation
-      // has completed. if that's the case we need to remove the previous route's content before we replace the reference
-      // to the previous route.
-      if (router.previousRoute.transitionAnimationInProgress) {
-        transitionAnimationEnd(router.previousRoute);
-      }
+    // update the references to the activeRoute and previousRoute. if you switch between routes quickly you may go to a
+    // new route before the previous route's transition animation has completed. if that's the case we need to remove
+    // the previous route's content before we replace the reference to the previous route.
+    if (router.previousRoute && router.previousRoute.transitionAnimationInProgress) {
+      transitionAnimationEnd(router.previousRoute);
+    }
+    if (router.activeRoute) {
+      router.activeRoute.removeAttribute('active');
     }
     router.previousRoute = router.activeRoute;
     router.activeRoute = route;
