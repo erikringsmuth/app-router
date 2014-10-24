@@ -197,7 +197,17 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
-      activeElement(router, document.importNode(route.firstElementChild.content, true), eventDetail);
+      activeElement(router, stampTemplate(route.firstElementChild), eventDetail);
+    }
+  }
+
+  // Create an instance of the template
+  function stampTemplate(template) {
+    if ('createInstance' in template) {
+      // the Polymer way (see issue https://github.com/erikringsmuth/app-router/issues/19)
+      return template.createInstance();
+    } else {
+      return document.importNode(template.content, true);
     }
   }
 
@@ -235,7 +245,7 @@
     if (route.hasAttribute('active')) {
       if (route.hasAttribute('template')) {
         // template
-        activeElement(router, document.importNode(importLink.import.querySelector('template').content, true), eventDetail);
+        activeElement(router, stampTemplate(importLink.import.querySelector('template')), eventDetail);
       } else {
         // custom element
         activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, url, eventDetail);

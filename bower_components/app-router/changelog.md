@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### v2.0.1
+- Fixing bug where multiple `<app-route>`s had an `active` attribute.
+
 #### v2.0.0
 New features
 

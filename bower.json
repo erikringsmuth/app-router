@@ -6,7 +6,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "app-router": "~2.0.1",
+    "app-router": "~2.0.2",
     "polymer": "Polymer/polymer#~0.4.2",
     "platform": "Polymer/platform#~0.4.2",
     "core-elements": "Polymer/core-elements#~0.4.2",
