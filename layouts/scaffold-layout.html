@@ -11,7 +11,7 @@
   <template>
     <core-style ref="layout"></core-style>
     <style>
-      :host /deep/ core-toolbar {
+      core-toolbar {
         background-color: #2f83d0;
         color: #fff;
         border-bottom: 1px solid #ddd;
@@ -22,22 +22,22 @@
       :host /deep/ core-header-panel[main] {
         background-color: #fff;
       }
-      :host /deep/ core-header-panel[navigation] {
+      core-header-panel {
         background-color: #fff;
       }
-      :host /deep/ core-header-panel[navigation] core-item {
+      core-header-panel core-item {
         padding: 2px 12px;
         line-height: 40px;
       }
-      :host /deep/ core-header-panel[navigation] core-item:not(:first-of-type) {
+      core-header-panel core-item:not(:first-of-type) {
         border-top: 1px solid #f5f5f5;
       }
-      :host /deep/ core-header-panel[navigation] core-item:hover,
-      :host /deep/ core-header-panel[navigation] core-item:focus {
+      core-header-panel core-item:hover,
+      core-header-panel core-item:focus {
         background-color: #fcfcfc;
         color: #222;
       }
-      :host /deep/ core-header-panel[navigation] core-item[active] {
+      core-header-panel core-item[active] {
         border-right: 6px solid #f5f5f5;
       }
     </style>
