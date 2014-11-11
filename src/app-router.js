@@ -275,6 +275,9 @@
 
     // add the new content
     router.activeRoute.appendChild(element);
+    eventDetail.content = element;
+    fire('activate-route-content-loaded', eventDetail, router);
+    fire('activate-route-content-loaded', eventDetail, router.activeRoute);
 
     // animate the transition if core-animated-pages are being used
     if (router.hasAttribute('core-animated-pages')) {
