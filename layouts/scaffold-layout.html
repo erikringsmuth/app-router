@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../bower_components/core-item/core-item.html">
 <link rel="import" href="../bower_components/core-icons/social-icons.html">
+<link rel="import" href="../bower_components/core-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/pushstate-anchor/pushstate-anchor.html">
 <link rel="import" href="../css/core-style.html">
 
@@ -48,7 +49,8 @@
           <core-item icon="home" label="Home" active?="{{selected == 'home'}}"><a is="pushstate-anchor" href="../#/"></a></core-item>
           <core-item icon="settings" label="API" active?="{{selected == 'api'}}"><a is="pushstate-anchor" href="../#/api"></a></core-item>
           <core-item icon="polymer" label="Data Binding" active?="{{selected == 'databinding'}}"><a is="pushstate-anchor" href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!"></a></core-item>
-          <core-item icon="view-quilt" label="Layouts" active?="{{selected == 'layouts'}}"><a is="pushstate-anchor" href="../#/layouts"></a></core-item>
+          <core-item icon="hardware:phonelink" label="Layouts" active?="{{selected == 'layouts'}}"><a is="pushstate-anchor" href="../#/layouts"></a></core-item>
+          <core-item icon="hardware:mouse" label="Lifecycle Events" active?="{{selected == 'events'}}"><a is="pushstate-anchor" href="../#/events"></a></core-item>
           <core-item icon="swap-horiz" label="core-animated-pages" active?="{{selected == 'core-animated-pages'}}"><a is="pushstate-anchor" href="../#/core-animated-pages"></a></core-item>
           <core-item icon="info-outline" label="Notes" active?="{{selected == 'notes'}}"><a is="pushstate-anchor" href="../#/notes"></a></core-item>
           <core-item icon="drive-document" label="Example Code"><a href="https://github.com/erikringsmuth/app-router-examples"></a></core-item>

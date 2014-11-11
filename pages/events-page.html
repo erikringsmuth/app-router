@@ -1,0 +1,95 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../layouts/scaffold-layout.html">
+<link rel="import" href="../elements/code-block.html">
+<link rel="import" href="../elements/code-snippet.html">
+
+<polymer-element name="events-page" noscript>
+  <template>
+    <scaffold-layout selected="events">
+      <div class="title">Lifecycle Events</div>
+
+      <h2>lifecycle events</h2>
+
+      <p>Lifecycle events let you hook into different stages of the route process. If you're listening to events you should manually initialize the router to ensure your event listeners are attached before the first route loads. You can attach event listeners to the router or specific routes.</p>
+<code-block>&lt;app-router init="manual"&gt;
+  &lt;!-- app-routes --&gt;
+&lt;/app-router&gt;
+&lt;script&gt;
+  window.addEventListener('WebComponentsReady', function() {
+    var router = document.querySelector('app-router');
+    router.addEventListener('state-change', function(event) {
+      event.type; // 'state-change'
+      event.detail.path; // parsed URL path
+      event.preventDefault(); // cancel the new route
+    });
+    router.init();
+  });
+&lt;/script&gt;</code-block>
+
+      <h4 class="top-spacing">state-change (attach to app-router)</h4>
+      <p><code-snippet>state-change</code-snippet> is the first event fired when the URL changes. This is triggered by a <code-snippet>hashchange</code-snippet>,  <code-snippet>popstate</code-snippet>, or full page load.</p>
+<code-block>// event.detail
+{
+  path: '/new-path'
+}</code-block>
+
+      <h4 class="top-spacing">not-found (attach to app-router)</h4>
+      <p><code-snippet>not-found</code-snippet> is fired after a <code-snippet>state-change</code-snippet> if no matching route is found.</p>
+<code-block>// event.detail
+{
+  path: '/new-path'
+}</code-block>
+
+      <h4 class="top-spacing">activate-route-start (attach to app-router or app-route)</h4>
+      <p><code-snippet>activate-route-start</code-snippet> is fired on both the router and the matching route before the new route is loaded.</p>
+<code-block>// event.detail
+{
+  path: '/new-path',
+  route: newRoute,
+  oldRoute: oldRoute
+}</code-block>
+
+      <h4 class="top-spacing">activate-route-end (attach to app-router or app-route)</h4>
+      <p><code-snippet>activate-route-end</code-snippet> is fired on both the router and the matching route after the route has been changed.</p>
+<code-block>// event.detail
+{
+  path: '/new-path',
+  route: newRoute,
+  oldRoute: oldRoute
+}</code-block>
+
+      <h2 class="top-spacing">Polymer event mapping</h2>
+      <p>If you're using Polymer you can use <a href="https://www.polymer-project.org/docs/polymer/polymer.html#declarative-event-mapping">declarative event mapping</a>. This example shows how to redirect to a login page if the user hasn't signed in.</p>
+<code-block>&lt;polymer-element name="demo-app" attributes="sessionId"&gt;
+  &lt;template&gt;
+    &lt;app-router id="router" init="manual" on-state-change="{{'\{{stateChange}\}'}}"&gt;
+      &lt;app-route path="/" import="/pages/home-page.html" on-activate-route-start="{{'\{{homePage}\}'}}"&gt;&lt;/app-route&gt;
+      &lt;app-route path="/login" import="/pages/login-page.html"&gt;&lt;/app-route&gt;
+      &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
+    &lt;/app-router&gt;
+  &lt;/template&gt;
+  &lt;script&gt;
+    Polymer('demo-app', {
+      ready: function() {
+        this.$.router.init();
+      },
+      stateChange: function(event) {
+        // redirect to the login page if not signed in
+        if (!this.sessionId && event.detail.path !== '/login') {
+          event.preventDefault();
+          this.$.router.go('/login');
+        }
+      },
+      homePage: function(event) {
+        // this is only called when you navigate to the home page
+        console.log(event.detail.path);
+      }
+    });
+  &lt;/script&gt;
+&lt;/polymer-element&gt;
+
+&lt;demo-app&gt;&lt;/demo-app&gt;</code-block>
+
+    </scaffold-layout>
+  </template>
+</polymer-element>

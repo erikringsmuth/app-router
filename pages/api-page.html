@@ -82,54 +82,5 @@ document.querySelector('app-router').go('/home', {replace: true});</code-block>
   });
 &lt;/script&gt;</code-block>
 
-    <h2 class="top-spacing">lifecycle events</h2>
-    <p>Lifecycle events let you hook into different stages of the route process. If you're listening to events you should manually initialize the router to ensure your event listeners are attached before the first route loads. You can attach event listeners to the router or specific routes.</p>
-<code-block>&lt;app-router init="manual"&gt;
-  &lt;!-- app-routes --&gt;
-&lt;/app-router&gt;
-&lt;script&gt;
-  window.addEventListener('WebComponentsReady', function() {
-    var router = document.querySelector('app-router');
-    router.addEventListener('state-change', function(event) {
-      event.type; // 'state-change'
-      event.detail.path; // parsed URL path
-      event.preventDefault(); // cancel the new route
-    });
-    router.init();
-  });
-&lt;/script&gt;</code-block>
-
-    <h4 class="top-spacing">state-change (app-router)</h4>
-    <p><code-snippet>state-change</code-snippet> is the first event fired when the URL changes. This is triggered by a <code-snippet>hashchange</code-snippet>,  <code-snippet>popstate</code-snippet>, or full page load.</p>
-<code-block>// event.detail
-{
-  path: '/new-path'
-}</code-block>
-
-    <h4 class="top-spacing">not-found (app-router)</h4>
-    <p><code-snippet>not-found</code-snippet> is fired after a <code-snippet>state-change</code-snippet> if no matching route is found.</p>
-<code-block>// event.detail
-{
-  path: '/new-path'
-}</code-block>
-
-    <h4 class="top-spacing">activate-route-start (app-router, app-route)</h4>
-    <p><code-snippet>activate-route-start</code-snippet> is fired on both the router and the matching route before the new route is loaded.</p>
-<code-block>// event.detail
-{
-  path: '/new-path',
-  route: newRoute,
-  oldRoute: oldRoute
-}</code-block>
-
-    <h4 class="top-spacing">activate-route-end (app-router, app-route)</h4>
-    <p><code-snippet>activate-route-end</code-snippet> is fired on both the router and the matching route after the route has been changed.</p>
-<code-block>// event.detail
-{
-  path: '/new-path',
-  route: newRoute,
-  oldRoute: oldRoute
-}</code-block>
-
   </scaffold-layout>
 </template>
