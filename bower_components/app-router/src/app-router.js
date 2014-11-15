@@ -327,14 +327,24 @@
   //
   // Note: The location must be a fully qualified URL with a protocol like 'http(s)://'
   utilities.parseUrl = function(location, mode) {
-    var nativeUrl = new URL(location);
-
     var url = {
-      path: nativeUrl.pathname,
-      hash: nativeUrl.hash,
-      search: nativeUrl.search,
       isHashPath: mode === 'hash'
     };
+
+    if (typeof URL === 'function') {
+      // browsers that support `new URL()`
+      var nativeUrl = new URL(location);
+      url.path = nativeUrl.pathname;
+      url.hash = nativeUrl.hash;
+      url.search = nativeUrl.search;
+    } else {
+      // IE
+      var anchor = document.createElement('a');
+      anchor.href = location;
+      url.path = '/' + anchor.pathname; // IE doesn't prefix the path with a slash
+      url.hash = anchor.hash;
+      url.search = anchor.search;
+    }
 
     if (mode !== 'pushstate') {
       // auto or hash

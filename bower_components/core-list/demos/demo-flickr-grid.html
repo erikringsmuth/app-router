@@ -1,0 +1,152 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../core-list.html">
+  <link rel="import" href="../../core-ajax/core-ajax.html">
+  <link rel="import" href="../../core-toolbar/core-toolbar.html">
+  <link rel="import" href="../../core-scroll-header-panel/core-scroll-header-panel.html">
+  <link rel="import" href="../../core-icon/core-icon.html">
+  <link rel="import" href="../../core-icons/core-icons.html">
+  <link rel="import" href="../../core-icon-button/core-icon-button.html">
+  <link rel="import" href="../../paper-shadow/paper-shadow.html">
+  <link rel="import" href="../../paper-spinner/paper-spinner.html">
+  <link rel="import" href="../../core-image/core-image.html">
+  <link rel="import" href="../../core-scroll-threshold/core-scroll-threshold.html">
+  <style>
+    html {
+      margin: 0;
+      height: 100%;
+      position: relative;
+    }
+    body {
+      margin: 0;
+      height: 100%;
+      overflow: auto;
+      position: relative;
+
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<list-test fit></list-test>
+
+<polymer-element name="list-test" layout vertical>
+<template>
+  <style>
+    .item {
+      box-sizing: border-box;
+      padding: 8px;
+    }
+    .photo {
+      background-size: cover;
+      height: 200px;
+      width: 200px;
+      box-sizing: border-box;
+      background-color: lightgray;
+    }
+    .toolbar {
+      background: #E91E63;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      color: white;
+    }
+    .title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px 8px 8px 8px;
+      color: white;
+      background: rgba(0,0,0,0.3);
+    }
+    .pad {
+      padding: 16px;
+      align-items: center;
+    }
+    .pad-left {
+      padding-left: 8px;
+    }
+
+  </style>
+
+  <core-toolbar class="toolbar">Flickr Photos</core-toolbar>
+  <core-scroll-threshold id="threshold" scrollTarget="{{$.scroller}}" 
+    lowerThreshold="1000" on-lower-trigger="{{loadMore}}">
+  </core-scroll-threshold>
+  <div id="scroller" style="overflow:auto;" flex>
+    <core-list id="list" data="{{data}}" scrollTarget="{{$.scroller}}" grid width="216">
+      <template>
+        <div class="item">
+          <core-image class="photo" sizing="cover" load?="{{!!model}}" src="https://farm{{model.farm}}.staticflickr.com/{{model.server}}/{{model.id}}_{{model.secret}}_m.jpg" preload relative>
+            <div class="title">{{index}} {{model.title}}</div>
+          </core-image>
+        </div>
+      </template>
+    </core-list>
+    <div class="pad" hidden?="{{!$.threshold.lowerTriggered}}" layout horizontal center-justified>
+      <paper-spinner active></paper-spinner>
+      <div class="pad-left">Loading...</div>
+    </div>
+  </div>
+</template>
+<script>
+(function() {
+
+  Polymer('list-test', {
+    ready: function() {
+      window.list = this.$.list;
+      this.data = [];
+      this.page = 1;
+      this.searchText = 'Japan';
+      this.apiKey = 'c304f1096a06486d3c1e7ab271bf7f3f';
+      this.perPage = 100;
+      this.load(1);
+    },
+    loadMore: function() {
+      this.load();
+    },
+    load: function(moreCount) {
+      if (this.page > 0) {
+        var ajax = document.createElement('core-ajax');
+        ajax.url = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + 
+          this.apiKey + '&safe_search=1&sort=interestingness-desc&text=' + 
+          encodeURIComponent(this.searchText) + '&page=' + this.page + "&format=json&per_page=" + this.perPage;
+        ajax.addEventListener('core-response', function(e) {
+          // setTimeout(function() {
+            var data = this.data;
+            var resp = JSON.parse(e.detail.response.match('jsonFlickrApi\\((.*)\\)')[1]);
+            if (resp.stat == 'ok') {
+              resp.photos.photo.forEach(function(o) { data.push(o); });
+              this.page = (resp.photos.page != resp.photos.pages) ? resp.photos.page + 1 : 0;
+              this.$.threshold.clearLower(!!this.page);
+              if (moreCount) {
+                this.load(--moreCount);
+              }
+            }
+          // }.bind(this), 2000);
+        }.bind(this));
+        ajax.go();
+      }
+    }
+  });
+})();  
+</script>
+</polymer-element>
+
+</body>
+</html>

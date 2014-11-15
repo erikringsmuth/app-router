@@ -2,22 +2,27 @@
   "name": "core-menu-button",
   "private": false,
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.4.0",
-    "core-dropdown": "Polymer/core-dropdown#^0.4.0",
-    "core-icon-button": "Polymer/core-icon-button#^0.4.0",
-    "core-item": "Polymer/core-item#^0.4.0",
-    "core-menu": "Polymer/core-menu#^0.4.0",
-    "core-toolbar": "Polymer/core-toolbar#^0.4.0"
+    "polymer": "Polymer/polymer#^0.5.0",
+    "core-a11y-keys": "Polymer/core-a11y-keys#^0.5.0",
+    "core-collapse": "Polymer/core-collapse#^0.5.0",
+    "core-dropdown": "Polymer/core-dropdown#^0.5.0",
+    "core-icons": "Polymer/core-icons#^0.5.0",
+    "core-icon-button": "Polymer/core-icon-button#^0.5.0",
+    "core-item": "Polymer/core-item#^0.5.0",
+    "core-menu": "Polymer/core-menu#^0.5.0"
   },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.1.4"
+  },
+  "version": "0.5.1",
   "homepage": "https://github.com/Polymer/core-menu-button",
-  "version": "0.4.2",
-  "_release": "0.4.2",
+  "_release": "0.5.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.2",
-    "commit": "44bcf50b69f849c8fe6c85262bcfcc36b2c72715"
+    "tag": "0.5.1",
+    "commit": "c2324384e4a6442d02b442fe6080c7363a04ea50"
   },
   "_source": "git://github.com/Polymer/core-menu-button.git",
-  "_target": "^0.4.0",
+  "_target": "^0.5.0",
   "_originalSource": "Polymer/core-menu-button"
 }

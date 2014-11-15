@@ -10,9 +10,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
   <head>
 
-    <title></title>
+    <title>marked-element demo</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="../platform/platform.js"></script>
+    <script src="../webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="marked-element.html">
   </head>
 
@@ -30,11 +30,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 Example:
 
     <div>
-      <polymer-overlay></polymer-overlay>
-      <h2>Dialog</h2>
-      <input placeholder="say something..." autofocus>
-      <div>I agree with this wholeheartedly.</div>
-      <button overlay-toggle>OK</button>
+      <core-overlay>
+        <h2>Dialog</h2>
+        <input placeholder="say something..." autofocus>
+        <div>I agree with this wholeheartedly.</div>
+        <button core-overlay-toggle>OK</button>
+      </core-overlay>
     </div>
 
 _Nifty_ features.
@@ -45,7 +46,7 @@ _Nifty_ features.
     <h3>Text via Attribute</h3>
     <hr>
 
-    <marked-element text="    <div>div</div>"></marked-js>
+    <marked-element text="    <div>div</div>"></marked-element>
 
   </body>
 </html>

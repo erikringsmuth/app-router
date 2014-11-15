@@ -9,101 +9,76 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!--
 
-`core-dropdown-menu` is a control where the user can choose from an array of options in a drop-down
-menu. The currently selected option is displayed in the control.
+`core-dropdown-menu` works together with `core-dropdown` and `core-selector` to
+implement a drop-down menu. The currently selected item is displayed in the
+control. If no item is selected, the `label` is displayed instead.
+
+The child element with the class `dropdown` will be used as the drop-down
+menu. It should be a `core-dropdown` or other overlay element. You should
+also provide a `core-selector` or other selector element, such as `core-menu`,
+in the drop-down.
 
 Example:
 
-    <core-dropdown-menu selected="Financier" valueattr="label">
-        <core-item label="Croissant"></core-item>
-        <core-item label="Donut"></core-item>
-        <core-item label="Financier"></core-item>
-        <core-item label="Madeleine"></core-item>
+    <core-dropdown-menu label="Choose a pastry">
+        <core-dropdown class="dropdown">
+            <core-selector>
+              <core-item label="Croissant"></core-item>
+              <core-item label="Donut"></core-item>
+              <core-item label="Financier"></core-item>
+              <core-item label="Madeleine"></core-item>
+            </core-selector>
+        </core-dropdown>
     </core-dropdown-menu>
-
-This example renders a drop-down menu with 4 options, with the option `Financier` pre-selected.
-
-Theming
--------
-
-Style the drop-down menu with the `core-dropdown-menu::shadow #dropdown` selector.
-
-Example:
-
-    core-dropdown-menu::shadow #dropdown {
-        border: 1px solid #ccc;
-        max-height: 12px;
-    }
-
-To modify the drop-down's margins, use the same selector. The default margin is 12px.
-
-    core-dropdown-menu::shadow #dropdown {
-        margin: 24px;
-    }
 
 @group Polymer Core Elements
 @element core-dropdown-menu
-@status beta
+@extends core-dropdown-base
+@status unstable
 @homepage github.io
 -->
 
-<!--
-Fired when an item's selection state is changed. This event is fired both
-when an item is selected or deselected. The `isSelected` detail property
-contains the selection state.
-
-@event core-select
-@param {Object} detail
-  @param {boolean} detail.isSelected true for selection and false for deselection
-  @param {Object} detail.item the item element
--->
-
-<!--
-Fired when an item element is tapped.
-
-@event core-activate
-@param {Object} detail
-  @param {Object} detail.item the item element
--->
-
 <link href="../polymer/polymer.html" rel="import">
+<link href="../core-a11y-keys/core-a11y-keys.html" rel="import">
+<link href="../core-dropdown/core-dropdown-base.html" rel="import">
+<link href="../core-focusable/core-focusable.html" rel="import">
 <link href="../core-icon/core-icon.html" rel="import">
 <link href="../core-icons/core-icons.html" rel="import">
-<link href="../core-item/core-item.html" rel="import">
-<link href="../core-menu/core-menu.html" rel="import">
-<link href="../core-dropdown/core-dropdown.html" rel="import">
 
-<polymer-element name="core-dropdown-menu">
+<polymer-element name="core-dropdown-menu" extends="core-dropdown-base" relative layout inline horizontal center tabindex="0">
 <template>
 
-  <link href="core-dropdown-menu.css" rel="stylesheet">
+  <style>
+    :host {
+      background-color: #fff;
+    }
 
-  <div id="control" layout horizontal center on-tap="{{toggle}}">
-    <core-item flex src="{{selectedItem.src}}" icon="{{selectedItem.icon}}" label="{{selectedItem ? (selectedItem.label || selected) : label}}"></core-item>
-    <core-icon id="arrow" icon="{{opened ? 'arrow-drop-up' : 'arrow-drop-down'}}"></core-icon>
-  </div>
+    :host([disabled]) {
+      color: #a8a8a8;
+    }
 
-  <core-dropdown id="dropdown" relatedTarget="{{$.control}}" opened="{{opened}}" halign="{{halign}}" valign="{{valign}}">
-    <core-menu selected="{{selected}}" valueattr="{{valueattr}}" selectedItem="{{selectedItem}}" on-core-activate="{{activateAction}}">
-      <content></content>
-    </core-menu>
-  </core-dropdown>
+    #label {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  </style>
+
+  <core-a11y-keys target="{{}}" keys="enter space" on-keys-pressed="{{toggleOverlay}}"></core-a11y-keys>
+
+  <div flex auto id="label">{{selectedItemLabel || label}}</div>
+  <core-icon id="arrow" icon="{{opened ? openedIcon : closedIcon}}"></core-icon>
+
+  <content></content>
 
 </template>
 <script>
 
-  Polymer({
+(function() {
+
+  var p = {
 
     publish: {
-
-      /**
-       * True if the menu is open.
-       *
-       * @attribute opened
-       * @type boolean
-       * @default false
-       */
-      opened: false,
 
       /**
        * A label for the control. The label is displayed if no item is selected.
@@ -115,92 +90,52 @@ Fired when an item element is tapped.
       label: 'Select an item',
 
       /**
-       * The currently selected element. By default this is the index of the item element.
-       * If you want a specific attribute value of the element to be used instead of the
-       * index, set `valueattr` to that attribute name.
+       * The icon to display when the drop-down is opened.
        *
-       * @attribute selected
-       * @type Object
-       * @default null
-       */
-      selected: null,
-
-      /**
-       * Specifies the attribute to be used for "selected" attribute.
-       *
-       * @attribute valueattr
+       * @attribute openedIcon
        * @type string
-       * @default 'name'
+       * @default 'arrow-drop-up'
        */
-      valueattr: 'name',
+      openedIcon: 'arrow-drop-up',
 
       /**
-       * Specifies the CSS class to be used to add to the selected element.
-       * 
-       * @attribute selectedClass
+       * The icon to display when the drop-down is closed.
+       *
+       * @attribute closedIcon
        * @type string
-       * @default 'core-selected'
+       * @default 'arrow-drop-down'
        */
-      selectedClass: 'core-selected',
-
-      /**
-       * Specifies the property to be used to set on the selected element
-       * to indicate its active state.
-       *
-       * @attribute selectedProperty
-       * @type string
-       * @default ''
-       */
-      selectedProperty: '',
-
-      /**
-       * Specifies the attribute to set on the selected element to indicate
-       * its active state.
-       *
-       * @attribute selectedAttribute
-       * @type string
-       * @default 'active'
-       */
-      selectedAttribute: 'selected',
-
-      /**
-       * The currently selected element.
-       *
-       * @attribute selectedItem
-       * @type Object
-       * @default null
-       */
-      selectedItem: null,
-
-      /**
-       * Horizontally align the overlay with the control.
-       *
-       * @attribute halign
-       * @type "left" | "right"
-       * @default "left"
-       */
-      halign: 'left',
-
-      /**
-       * Vertically align the dropdown menu with the control.
-       *
-       * @attribute valign
-       * @type "top" | "bottom"
-       * @default "bottom"
-       */
-      valign: 'top'
+      closedIcon: 'arrow-drop-down'
 
     },
 
-    activateAction: function() {
+    selectedItemLabel: '',
+
+    overlayListeners: {
+      'core-overlay-open': 'openAction',
+      'core-activate': 'activateAction',
+      'core-select': 'selectAction'
+    },
+
+    activateAction: function(e) {
       this.opened = false;
     },
 
-    toggle: function() {
-      this.opened = !this.opened;
+    selectAction: function(e) {
+      var detail = e.detail;
+      if (detail.isSelected) {
+        this.selectedItemLabel = detail.item.label || detail.item.textContent;
+      } else {
+        this.selectedItemLabel = '';
+      }
     }
 
-  });
+  };
+
+  Polymer.mixin2(p, Polymer.CoreFocusable);
+  Polymer(p);
+
+})();
 
 </script>
 </polymer-element>

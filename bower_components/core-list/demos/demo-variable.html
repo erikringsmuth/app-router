@@ -1,0 +1,132 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../core-list.html">
+  <link rel="import" href="../../core-ajax/core-ajax.html">
+  <style>
+    html, body {
+      margin: 0;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    list-test {
+      display: block;
+      height: 100%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body fit>
+
+<list-test></list-test>
+
+<polymer-element name="list-test" layout vertical center-center relative>
+<template>
+  <style>
+    .item {
+      box-sizing: border-box;
+      padding: 10px;
+      overflow: hidden;
+      color: black;
+      border-bottom: 1px solid gray;
+    }
+    .item > img {
+      height: 50px;
+      width: 50px;
+    }
+    .selected {
+      background: yellow;
+    }
+    .body {
+      font-size: 12px;
+    }
+    .text {
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 15px;
+      background: lightgray;
+    }
+    .divider {
+      background: black;
+      color: white;
+      padding: 5px;
+      font-size: 3em;
+    }
+    .super-scroll {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      bottom: 16px;
+      background: orange;
+      color: white;
+      border-radius: 8px;
+    }
+    .super-scroll {
+      padding: 5px 10px;
+    }    
+
+  </style>
+
+  <core-ajax url="demo-data-grouped-short.json" response="{{data}}" auto></core-ajax>
+
+  <core-list id="list" data="{{data.data || data}}" groups="{{data.groups}}" fit>
+    <template>
+      <div class="divider" divider>
+        {{groupModel.letter}}
+      </div>
+      <div class="item {{selected ? 'selected' : ''}}">
+        <img id="image" src="{{model.image}}">
+        <span>Index: {{index}}, </span>
+        <span>Group: {{groupIndex}}, </span>
+        <span>Index in group: {{groupItemIndex}}</span>
+        <br>
+        <span id="select" selectedIndex="{{model.selectValue}}">Selected Index: {{model.selectValue}}</span> | 
+        <span id="checkbox" checked="{{model.checked}}">Checked: {{model.checked}} </span> | 
+        <span id="input" value="{{model.name}}">Input: {{model.name}}</span>
+        <div class="text" id="text">{{model.text}}</div>
+      </div>
+    </template>
+  </core-list>
+
+  <div class="super-scroll" layout vertical center>
+    <template repeat="{{group, idx in data.groups}}">
+      <div flex layout vertical center-justified on-down="{{overLetter}}" on-track="{{overLetter}}">{{group.letter}}</div>
+    </template>
+  </div>
+
+</template>
+<script>
+(function() {
+
+  Polymer('list-test', {
+    ready: function() {
+      window.list = this.$.list;
+    },
+    overLetter: function(e) {
+      var target = PolymerGestures.targetFinding.findTarget({clientX: e.clientX, clientY: e.clientY});
+      var idx = target && target.templateInstance && target.templateInstance.model && target.templateInstance.model.idx;
+      if (idx != null) {
+        list.scrollToGroup(idx);
+      }
+    }
+  });
+})();  
+</script>
+</polymer-element>
+
+</body>
+</html>

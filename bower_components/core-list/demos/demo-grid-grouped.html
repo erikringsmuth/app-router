@@ -1,0 +1,127 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../core-list.html">
+  <link rel="import" href="../../core-ajax/core-ajax.html">
+  <link rel="import" href="../../core-image/core-image.html">
+  <style>
+    html, body {
+      margin: 0;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    list-test {
+      display: block;
+      height: 100%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body fit>
+
+<list-test></list-test>
+
+<polymer-element name="list-test">
+<template>
+  <style>
+    .item {
+      box-sizing: border-box;
+      padding: 10px;
+      overflow: hidden;
+      color: black;
+    }
+    .item > core-image {
+      height: 150px;
+      width: 150px;
+      background-color: lightgray;
+    }
+    .item.selected {
+      background:yellow;
+    }
+    .divider {
+      padding-top: 40px;
+      font-size: 4em;
+    }
+
+  </style>
+
+  <core-list id="list" data="{{data}}" groups="{{groups}}" fit grid width="172">
+    <template>
+      <div class="divider" divider>
+        {{groupModel.label}}
+        <span style="font-size:0.5em">{{groupModel.length}} items</span>
+      </div>
+      <div class="item {{selected ? 'selected' : ''}}">
+        <core-image id="image" src="{{model.image}}" preload></core-image>
+        <div>{{model.caption}}</div>
+        <div>Group: {{groupIndex}}, Item: {{groupItemIndex}}</div>
+      </div>
+    </template>
+  </core-list>
+</template>
+<script>
+(function() {
+
+  Polymer('list-test', {
+    ready: function() {
+      window.list = this.$.list;
+      var flat = false;  // Switch to test flat vs. nested
+      var nestedData = flat ? null : [];
+      var data = [];
+      var groups = [];
+      var gidx = 0;
+      var gitem = 0;
+      var gmax = 3;
+      var count = 1000;
+      for (var i=0; i<count; i++) {
+        data.push({
+          image: 'http://placehold.it/150x150/' + Math.floor(Math.random()*0xFFFFFF).toString(16) + '/ffffff&text=Index%20' + i,
+          caption: 'Caption ' + i
+        });
+        var group = groups[gidx];
+        if (!group) {
+          if (nestedData) {
+            group = groups[gidx] = {label: 'Group ' + gidx, length: 0};
+          } else {
+            group = groups[gidx] = {
+              length: 0,
+              data: {label: 'Group ' + gidx}
+            };
+          }
+          gmax += 4;
+          gmax %= 30;
+        }
+        if (++group.length >= gmax || i == count-1) {
+          gidx++;
+          if (nestedData) {
+            nestedData.push(data);
+            data = [];
+          } else {
+            group.data.length = group.length;
+          }
+        }
+      }
+      this.data = nestedData || data;
+      this.groups = groups;
+    }
+  });
+})();  
+</script>
+</polymer-element>
+
+</body>
+</html>

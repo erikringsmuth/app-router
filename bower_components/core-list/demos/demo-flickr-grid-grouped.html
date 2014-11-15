@@ -1,0 +1,165 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../core-list.html">
+  <link rel="import" href="../../core-ajax/core-ajax.html">
+  <link rel="import" href="../../core-toolbar/core-toolbar.html">
+  <link rel="import" href="../../core-scroll-header-panel/core-scroll-header-panel.html">
+  <link rel="import" href="../../core-icon/core-icon.html">
+  <link rel="import" href="../../core-icons/core-icons.html">
+  <link rel="import" href="../../core-icon-button/core-icon-button.html">
+  <link rel="import" href="../../paper-shadow/paper-shadow.html">
+  <link rel="import" href="../../paper-spinner/paper-spinner.html">
+  <link rel="import" href="../../core-image/core-image.html">
+  <link rel="import" href="../../core-scroll-threshold/core-scroll-threshold.html">
+  <style>
+    html {
+      margin: 0;
+      height: 100%;
+      position: relative;
+    }
+    body {
+      margin: 0;
+      height: 100%;
+      overflow: auto;
+      position: relative;
+
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<list-test fit></list-test>
+
+<polymer-element name="list-test" layout vertical>
+<template>
+  <style>
+    .item {
+      box-sizing: border-box;
+      padding: 1px;
+      height: 202px;
+    }
+    .photo {
+      height: 200px;
+      width: 200px;
+      box-sizing: border-box;
+      background-color: lightgray;
+      background-size: cover;
+      position: relative;
+    }
+    .toolbar {
+      background: #E91E63;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      color: white;
+    }
+    .divider {
+      font-size: 20px;
+      color: gray;
+      padding: 24px 8px 8px 8px;
+    }
+    .title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px 8px 8px 8px;
+      color: white;
+      background: rgba(0,0,0,0.3);
+    }
+    .pad {
+      padding: 16px;
+      align-items: center;
+    }
+    .pad-left {
+      padding-left: 8px;
+    }
+  </style>
+
+  <core-toolbar class="toolbar">
+    <div>Flickr Photos</div>
+    <core-image id="img"></core-image>
+  </core-toolbar>
+  <core-scroll-threshold id="threshold" scrollTarget="{{$.scroller}}" 
+    lowerThreshold="1500" on-lower-trigger="{{loadMore}}">
+  </core-scroll-threshold>
+  <div id="scroller" style="overflow:auto;" flex>
+    <!-- <div style="font-size:4em; text-align:center;">Flickr photos of the world!</div> -->
+    <core-list id="list" data="{{data}}" groups="{{groups}}" grid width="202" flex scrollTarget="{{$.scroller}}">
+      <template>
+        <div class="divider" divider>{{groupModel.name}}</div>
+        <div class="item">
+          <core-image class="photo {{selected?'selected':''}}" sizing="cover" load?="{{!!model}}" src="https://farm{{model.farm}}.staticflickr.com/{{model.server}}/{{model.id}}_{{model.secret}}_m.jpg" preload relative>
+            <div class="title">{{index}} {{model.title}}</div>
+          </core-image>
+        </div>
+      </template>
+    </core-list>
+    <div class="pad" hidden?="{{!$.threshold.lowerTriggered}}" layout horizontal center-justified>
+      <paper-spinner active></paper-spinner>
+      <div class="pad-left">Loading...</div>
+    </div>
+  </div>
+</template>
+<script>
+(function() {
+
+  Polymer('list-test', {
+    ready: function() {
+      window.list = this.$.list;
+      this.data = [];
+      this.groups = [];
+      this.apiKey = 'c304f1096a06486d3c1e7ab271bf7f3f';
+      this.load(4);
+    },
+    load: function(moreCount) {
+      if (this.countries.length) {
+        var country = this.countries.shift();
+        var ajax = document.createElement('core-ajax');
+        var count = Math.floor(50 + Math.random() * 20);
+        ajax.url = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + 
+          this.apiKey + '&safe_search=1&sort=interestingness-desc&text=' + 
+          encodeURIComponent(country) + '&format=json&per_page=' + count;
+        ajax.addEventListener('core-response', function(e) {
+          // setTimeout(function() {
+            var resp = JSON.parse(e.detail.response.match('jsonFlickrApi\\((.*)\\)')[1]);
+            if (resp.stat == 'ok') {
+              // resp.photos.photo.forEach(function(p) { this.data.push(p); }.bind(this));
+              // this.groups.push({length: resp.photos.photo.length, data: {name: country}});
+              this.data.push(resp.photos.photo);
+              this.groups.push({name: country});
+              this.$.threshold.clearLower(true);
+              if (moreCount) {
+                this.load(--moreCount);
+              }
+            }
+          // }.bind(this), moreCount != null ? 0 : 2000);
+        }.bind(this));
+        ajax.go();
+      }
+    },
+    loadMore: function() {
+      this.load(2);
+    },
+    countries: ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Chad", "Chile", "China", "Christmas Island", "Colombia", "Comoros", "Congo", "Cook Islands", "Costa Rica", "Ivory Coast", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "France, Metropolitan", "French Guiana", "French Polynesia", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guinea", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "North Korea", "South Korea", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russian Federation", "Rwanda", "Sandwich Isls.", "Saint Lucia", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Viet Nam", "Virgin Islands", "Western Sahara", "Yemen", "Yugoslavia", "Zaire", "Zambia", "Zimbabwe"]
+  });
+})();  
+</script>
+</polymer-element>
+
+</body>
+</html>

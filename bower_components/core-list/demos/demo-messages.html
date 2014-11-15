@@ -1,0 +1,214 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../core-list.html">
+  <link rel="import" href="../../core-ajax/core-ajax.html">
+  <link rel="import" href="../../core-icon/core-icon.html">
+  <link rel="import" href="../../core-icon-button/core-icon-button.html">
+  <link rel="import" href="../../core-icons/core-icons.html">
+  <link rel="import" href="../../core-toolbar/core-toolbar.html">
+  <link rel="import" href="../../paper-shadow/paper-shadow.html">
+  <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../../paper-fab/paper-fab.html">
+  <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
+  <link rel="import" href="../../paper-dropdown/paper-dropdown.html">
+  <link rel="import" href="../../core-menu/core-menu.html">
+  <link rel="import" href="../../paper-item/paper-item.html">
+  <link rel="import" href="../../paper-input/paper-input.html">
+  <link rel="import" href="../../core-overlay/core-overlay.html">
+  <style>
+    html, body {
+      margin: 0;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: sans-serif;
+    }
+    
+    list-test {
+      display: block;
+      height: 100%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body fit>
+
+<list-test></list-test>
+
+<polymer-element name="list-test" layout vertical relative>
+<template>
+  <style>
+    .item {
+      padding: 16px;
+    }
+    .item.selected{
+      background-color: #eee;
+    }
+    .toolbar {
+      background: #E91E63;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      color: white;
+    }
+    .avatar {
+      height: 40px;
+      width: 40px;
+      border-radius: 20px;
+      box-sizing: border-box;
+      border: 1px solid #DDD;
+      background-color: #DDD;
+    }
+    .pad {
+      padding: 0 16px;
+    }
+    .primary {
+      font-size: 16px;
+    }
+    .secondary {
+      font-size: 14px;
+    }
+    .dim {
+      color: gray;
+    }
+    .clamp {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .divider {
+      font-size: 14px;
+      font-weight: bold;
+      color: gray;
+      padding: 24px 16px 8px 16px;
+    }
+    .border {
+      margin-left: 72px;
+      border-bottom: 1px solid #DDD;
+    }
+    .fab {
+      background: yellow;
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+    }
+    #searchOverlay {
+      position: absolute;
+      top:0;
+    }
+    #searchInput /deep/ input {
+      color: white;
+    }
+    #searchInput /deep/ .unfocused-underline {
+      background: transparent;
+    }
+    .menu {
+      color: black;
+    }
+
+  </style>
+
+  <core-ajax url="demo-data-500.json" response="{{data}}" auto></core-ajax>
+
+  <core-toolbar class="toolbar">
+    <paper-menu-button>
+      <paper-icon-button icon="menu" noink></paper-icon-button>
+      <paper-dropdown class="dropdown">
+        <core-menu class="menu" on-core-activate="{{jumpToGroup}}">
+          <template repeat="{{group, index in groups}}">
+            <paper-item label="{{group.data.label}}"></paper-item>
+          </template>
+        </core-menu>
+      </paper-dropdown>
+    </paper-menu-button>
+    <div flex>Inbox</div>
+    <core-icon-button id="searchButton" icon="search" on-tap="{{toggleSearch}}"></core-icon-button>
+    <core-icon-button icon="check-circle"></core-icon-button>
+  </core-toolbar>
+  <core-overlay id="searchOverlay" transition="core-transition-right" on-core-overlay-open="{{searchOpened}}">
+    <core-toolbar class="toolbar" layout horizontal>
+      <core-icon icon="search"></core-icon>
+      <paper-input id="searchInput" flex on-input="{{updateFilter}}"></paper-input>
+      <core-icon-button icon="cancel" on-tap="{{toggleSearch}}"></core-icon-button>
+    </core-toolbar>
+  </core-overlay>
+  <core-list id="list" data="{{filteredData}}" groups="{{filteredGroups}}" flex>
+    <template>
+      <div class="divider" divider>{{groupModel.label}}</div>
+      <div>
+        <div class="item {{selected?'selected':''}}" layout horizontal>
+          <img class="avatar" src="{{model.image}}">
+          <div class="pad" flex layout vertical>
+            <div class="primary">{{index}} {{model.name}}</div>
+            <div class="secondary">{{model.shortText}}</div>
+            <div class="secondary dim Xclamp">{{model.longText}}</div>
+          </div>
+          <core-icon icon="{{model.boolean ? 'star' : 'star-outline'}}"></core-icon>
+        </div>
+        <div class="border"></div>
+      </div>
+    </template>
+  </core-list>
+  <paper-fab class="fab" icon="add"></paper-fab>
+</template>
+<script>
+(function() {
+
+  Polymer('list-test', {
+    ready: function() {
+      CoreStyle.g.paperInput.focusedColor = 'white';
+      window.list = this.$.list;
+      this.groups = [
+        {length: 3, data: {label: 'Today'}},
+        {length: 15, data: {label: 'Yesterday'}},
+        {length: 30, data: {label: 'Last Week'}},
+        {length: 150, data: {label: 'Last Month'}},
+        {length: 150, data: {label: 'Last Quarter'}},
+        {length: 152, data: {label: 'Last Year'}}
+      ];
+      this.filteredGroups = this.groups;
+    },
+    dataChanged: function() {
+      this.filteredData = this.data;
+    },
+    jumpToGroup: function(e) {
+      var idx = e.detail.item.templateInstance.model.index;
+      this.$.list.scrollToGroup(idx);
+    },
+    toggleSearch: function(e) {
+      this.$.searchOverlay.toggle();
+    },
+    searchOpened: function() {
+      this.$.searchInput.focus();
+    },
+    updateFilter: function(e) {
+      if (this.filterThrottle) {
+        clearTimeout(this.filterThrottle);
+      }
+      this.filterThrottle = setTimeout(function() {
+        var value = this.$.searchInput.inputValue;
+        this.filteredGroups = value ? null : this.groups;
+        this.filteredData = this.data.filter(function(o) {
+          return new RegExp(value, 'i').test(o.name);
+        }.bind(this));
+      }.bind(this), 500);
+    }
+  });
+})();  
+</script>
+</polymer-element>
+
+</body>
+</html>

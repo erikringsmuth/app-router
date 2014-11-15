@@ -8,97 +8,140 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
-@group Paper Elements
 
-`paper-item` is a list-item object for use in menus. It may contain and icon and/or
-a text label.
+Material Design: <a href="http://www.google.com/design/spec/components/menus.html">Menus</a>
+
+`paper-item` is a simple item object for use in menus. When the user touches the item, a ripple
+effect emanates from the point of contact. If used in a `core-selector`, the selected item will
+be highlighted.
 
 Example:
 
     <core-menu>
-        <paper-item icon="refresh" label="Refresh"></paper-item>
-        <paper-item label="Help"></paper-item>
-        <paper-item label="Sign Out"></paper-item>
+        <paper-item>Cut</paper-item>
+        <paper-item>Copy</paper-item>
+        <paper-item>Paste</paper-item>
     </core-menu>
 
-To use as a link, put an `<a>` element in the item.
+Links
+-----
+
+To use as a link, put an `<a>` element in the item. You may also use the `noink` attribute to
+prevent the ripple from "freezing" during a page navigation.
 
 Example:
 
-    <paper-item icon="home" label="Home">
-        <a href="http://www.polymer-project.org"></a>
+    <paper-item noink>
+        <a href="http://www.polymer-project.org" layout horizontal center>Polymer</a>
     </paper-item>
 
-@class paper-item
+@group Paper Elements
+@element paper-item
+@extends paper-button-base
+@status unstable
 -->
 
 <link href="../polymer/polymer.html" rel="import">
-<link href="../core-icon/core-icon.html" rel="import">
+<link href="../paper-button/paper-button-base.html" rel="import">
 <link href="../paper-ripple/paper-ripple.html" rel="import">
 
-<link href="paper-item.css" rel="stylesheet" shim-shadowdom>
-
-<polymer-element name="paper-item" attributes="label iconSrc icon" center horizontal layout>
+<polymer-element name="paper-item" extends="paper-button-base">
 
   <template>
 
-    <paper-ripple id="ripple"></paper-ripple>
+    <style>
 
-    <core-icon id="icon" hidden?="{{!iconSrc && !icon}}" src="{{iconSrc}}" icon="{{icon}}"></core-icon>
-    <div id="label">{{label}}</div>
-    <content></content>
+      :host {
+        display: block;
+        position: relative;
+        font-size: 16px;
+        box-sizing: border-box;
+        min-width: 7em;
+        outline: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        z-index: 0;
+      }
+
+      :host([disabled]) {
+        color: #a8a8a8;
+        cursor: auto;
+        pointer-events: none;
+      }
+
+      :host(.core-selected) {
+        background-color: #eaeaea;
+      }
+
+      #ripple {
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .button-content {
+        height: 100%;
+        padding: 0.9em 1em;
+      }
+
+      polyfill-next-selector { content: '.button-content > a'; }
+      ::content > a {
+        height: 100%;
+        /* flex */
+        -ms-flex: 1 1 0.000000001px;
+        -webkit-flex: 1;
+        flex: 1;
+        -webkit-flex-basis: 0.000000001px;
+        flex-basis: 0.000000001px;
+      }
+
+    </style>
+
+    <!-- this div is needed to position the ripple behind text content -->
+    <div class="button-content" relative layout horizontal center>
+      <content></content>
+    </div>
+
   </template>
 
   <script>
-    Polymer('paper-item', {
+    Polymer({
 
       publish: {
 
         /**
-         * The label for the item.
+         * If true, the button will be styled with a shadow.
          *
-         * @attribute label
-         * @type string
-         * @default ''
+         * @attribute raised
+         * @type boolean
+         * @default false
          */
-        label: '',
+        raised: false,
 
         /**
-         * (optional) The URL of an image for an icon to use in the button.
-         * Should not use `icon` property if you are using this property.
+         * By default the ripple emanates from where the user touched the button.
+         * Set this to true to always center the ripple.
          *
-         * @attribute iconSrc
-         * @type string
-         * @default ''
+         * @attribute recenteringTouch
+         * @type boolean
+         * @default false
          */
-        iconSrc: '',
+        recenteringTouch: false,
 
         /**
-         * (optional) Specifies the icon name or index in the set of icons
-         * available in the icon set. If using this property, load the icon
-         * set separately where the icon is used. Should not use `src`
-         * if you are using this property.
+         * By default the ripple expands to fill the button. Set this to false to
+         * constrain the ripple to a circle within the button.
          *
-         * @attribute icon
-         * @type string
-         * @default ''
+         * @attribute fill
+         * @type boolean
+         * @default true
          */
-        icon: ''
+        fill: true
 
-      },
-
-      eventDelegates: {
-        'down': 'downAction',
-        'up': 'upAction'
-      },
-
-      downAction: function(e) {
-        this.$.ripple.downAction(e);
-      },
-
-      upAction: function(e) {
-        this.$.ripple.upAction(e);
       }
+
     });
   </script>
 </polymer-element>

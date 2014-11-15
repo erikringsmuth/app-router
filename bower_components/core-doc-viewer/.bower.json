@@ -2,26 +2,26 @@
   "name": "core-doc-viewer",
   "private": true,
   "dependencies": {
-    "core-ajax": "Polymer/core-ajax#^0.4.0",
-    "core-menu": "Polymer/core-menu#^0.4.0",
-    "core-item": "Polymer/core-item#^0.4.0",
-    "core-toolbar": "Polymer/core-toolbar#^0.4.0",
-    "core-icons": "Polymer/core-icons#^0.4.0",
-    "core-icon-button": "Polymer/core-icon-button#^0.4.0",
-    "core-header-panel": "Polymer/core-header-panel#^0.4.0",
-    "context-free-parser": "Polymer/context-free-parser#^0.4.0",
-    "marked-element": "PolymerLabs/marked-element#^0.4.0",
-    "prettify-element": "Polymer/prettify-element#^0.4.0"
+    "core-ajax": "Polymer/core-ajax#^0.5.0",
+    "core-menu": "Polymer/core-menu#^0.5.0",
+    "core-item": "Polymer/core-item#^0.5.0",
+    "core-toolbar": "Polymer/core-toolbar#^0.5.0",
+    "core-icons": "Polymer/core-icons#^0.5.0",
+    "core-icon-button": "Polymer/core-icon-button#^0.5.0",
+    "core-header-panel": "Polymer/core-header-panel#^0.5.0",
+    "context-free-parser": "Polymer/context-free-parser#^0.5.0",
+    "marked-element": "PolymerLabs/marked-element#^0.5.0",
+    "prettify-element": "Polymer/prettify-element#^0.5.0"
   },
+  "version": "0.5.1",
   "homepage": "https://github.com/Polymer/core-doc-viewer",
-  "version": "0.4.2",
-  "_release": "0.4.2",
+  "_release": "0.5.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.2",
-    "commit": "820d2b3334f6657fb93a9067ab77100a14784291"
+    "tag": "0.5.1",
+    "commit": "4c30c0104ef13b0b45cb3c75729223ec5eb5a9db"
   },
   "_source": "git://github.com/Polymer/core-doc-viewer.git",
-  "_target": "^0.4.0",
+  "_target": "^0.5.0",
   "_originalSource": "Polymer/core-doc-viewer"
 }

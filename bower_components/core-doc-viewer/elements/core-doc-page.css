@@ -12,6 +12,14 @@
   display: block;
 }
 
+#info > * {
+  margin-right: 20px;
+}
+
+core-icon {
+  margin-right: 5px;
+}
+
 .main {
   padding: 0 72px;
   max-width: 832px;

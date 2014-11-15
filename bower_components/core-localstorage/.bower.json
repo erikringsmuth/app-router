@@ -2,20 +2,20 @@
   "name": "core-localstorage",
   "private": true,
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.4.0"
+    "polymer": "Polymer/polymer#^0.5.0"
   },
   "devDependencies": {
-    "polymer-test-tools": "Polymer/polymer-test-tools#master"
+    "web-component-tester": "Polymer/web-component-tester#^1.1.0"
   },
+  "version": "0.5.1",
   "homepage": "https://github.com/Polymer/core-localstorage",
-  "version": "0.4.2",
-  "_release": "0.4.2",
+  "_release": "0.5.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.2",
-    "commit": "6fac56821f8c66a43f9f0998323031566d27220e"
+    "tag": "0.5.1",
+    "commit": "920e68ed90fa2d664d995a1d70acd6be0ddcd6c7"
   },
   "_source": "git://github.com/Polymer/core-localstorage.git",
-  "_target": "^0.4.0",
+  "_target": "^0.5.0",
   "_originalSource": "Polymer/core-localstorage"
 }

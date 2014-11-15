@@ -2,20 +2,20 @@
   "name": "core-animated-pages",
   "private": true,
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.4.0",
-    "core-selector": "Polymer/core-selector#^0.4.0",
-    "core-style": "Polymer/core-style#^0.4.0",
-    "core-transition": "Polymer/core-transition#^0.4.0"
+    "polymer": "Polymer/polymer#^0.5.0",
+    "core-selector": "Polymer/core-selector#^0.5.0",
+    "core-style": "Polymer/core-style#^0.5.0",
+    "core-transition": "Polymer/core-transition#^0.5.0"
   },
+  "version": "0.5.1",
   "homepage": "https://github.com/Polymer/core-animated-pages",
-  "version": "0.4.2",
-  "_release": "0.4.2",
+  "_release": "0.5.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.2",
-    "commit": "224eb03b59d249ee6829946233546c1dd9d264b0"
+    "tag": "0.5.1",
+    "commit": "ea600ff41cfc770b4203eaa641a72ada1c1ba154"
   },
   "_source": "git://github.com/Polymer/core-animated-pages.git",
-  "_target": "^0.4.0",
+  "_target": "^0.5.0",
   "_originalSource": "Polymer/core-animated-pages"
 }

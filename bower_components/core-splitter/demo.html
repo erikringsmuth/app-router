@@ -12,19 +12,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <title>core-splitter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   
-  <script src="../platform/platform.js"></script>
+  <script src="../webcomponentsjs/webcomponents.js"></script>
   
   <link rel="import" href="core-splitter.html">
   
   <style>
   
-    body {
-      margin: 24px;
-    }
-    
     .container {
-      width: 400px;
-      height: 200px;
+      height: 240px;
       border: 4px solid #aaa;
     }
     
@@ -40,8 +35,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   
 </head>
 <body unresolved>
+
   <div class="container" horizontal layout>
-    <div>left</div>
+    <div>left (min: 128px)</div>
     <core-splitter direction="left" minSize="128px"></core-splitter>
     <div flex>right</div>
   </div>

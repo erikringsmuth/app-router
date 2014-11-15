@@ -1,0 +1,106 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>core-dropdown-menu basic tests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link href="../../core-dropdown/core-dropdown.html" rel="import">
+  <link href="../../core-item/core-item.html" rel="import">
+  <link href="../../core-menu/core-menu.html" rel="import">
+
+  <link href="../core-dropdown-menu.html" rel="import">
+
+  <style>
+    core-collapse {
+      border: 1px solid black;
+    }
+  </style>
+
+</head>
+<body>
+
+  <core-dropdown-menu id="dropdown1" label="Your favorite dessert">
+    <core-dropdown class="dropdown">
+      <core-menu id="menu1">
+        <core-item foo="c">Cupcake</core-item>
+        <core-item foo="d">Donut</core-item>
+        <core-item foo="e">Eclair</core-item>
+        <core-item foo="f">Froyo</core-item>
+        <core-item foo="g">Gingerbread</core-item>
+        <core-item foo="h">Honeycomb</core-item>
+        <core-item foo="i">Ice cream sandwich</core-item>
+        <core-item foo="j">Jellybean</core-item>
+        <core-item foo="k">Kit Kat</core-item>
+        <core-item foo="l">Lollipop</core-item>
+      </core-menu>
+    </core-dropdown>
+  </core-dropdown-menu>
+
+  <script>
+
+    function flushLayoutAndRender(callback) {
+      flush(function() {
+        document.body.offsetTop;
+        requestAnimationFrame(function() {
+          callback();
+        });
+      });
+    }
+
+    var d1 = document.getElementById('dropdown1');
+    var m1 = document.getElementById('menu1');
+
+    test('shows the label when nothing selected', function(done) {
+      m1.selected = null;
+      flushLayoutAndRender(function() {
+        assert.strictEqual(d1.$.label.textContent, d1.label);
+        done();
+      });
+    });
+
+    test('shows the selected item', function(done) {
+      m1.selected = 2;
+      flushLayoutAndRender(function() {
+        assert.strictEqual(d1.$.label.textContent, m1.selectedItem.textContent);
+        done();
+      });
+    });
+
+    test('can clear the selected item', function(done) {
+      m1.selected = 2;
+      flushLayoutAndRender(function() {
+        assert.strictEqual(d1.$.label.textContent, m1.selectedItem.textContent);
+
+        m1.selected = null;
+        flushLayoutAndRender(function() {
+          assert.strictEqual(d1.$.label.textContent, d1.label);
+          done();
+        });
+      });
+    });
+
+    test('use the valueattr attribute', function(done) {
+      m1.valueattr = "foo";
+      m1.selected = "l";
+      flushLayoutAndRender(function() {
+        assert.strictEqual(d1.$.label.textContent, m1.selectedItem.textContent);
+        done();
+      });
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,3 +1,6 @@
+DEPRECATED
+==========
+
 core-tests
 ==========
 

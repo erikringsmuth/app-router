@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../core-list.html">
+  <link rel="import" href="../../core-ajax/core-ajax.html">
+  <style>
+    html, body {
+      margin: 0;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+    }
+    
+    list-test {
+      display: block;
+      height: 100%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body fit>
+
+<list-test></list-test>
+
+<polymer-element name="list-test" layout vertical center-center relative>
+<template>
+  <style>
+    .item {
+      box-sizing: border-box;
+      padding: 10px;
+      overflow: hidden;
+    }    
+    .body {
+      font-size: 12px;
+    }
+    core-list {
+      height: 30%;
+      width: 50%;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+    .item > img {
+      height: 50px;
+      width: 50px;
+    }
+    .marker {
+      position:absolute;
+      box-sizing: border-box;
+      border: 1px dotted gray;
+      color: gray;
+      z-index:-1;
+      text-align: right;
+    }
+    .marker.viewport {
+      border: 1px dashed red;
+    }
+    .marker.upper {
+      border: 4px solid green;
+    }
+    .marker.lower {
+      border: 4px solid red;
+    }
+    .marker.page {
+      border: 1px dashed blue;
+    }
+    .divider {
+      background: black;
+      color: white;
+      padding: 5px;
+      font-size: 3em;
+    }
+
+  </style>
+
+  <core-ajax url="demo-data-grouped-short.json" response="{{data}}" auto></core-ajax>
+
+  <div fit layout vertical center-center style="transform: scale({{scale}})">
+    <div style="position: absolute; top:{{$.list.offsetTop}}px; left:{{$.list.offsetLeft}}px; width:{{$.list.offsetWidth}}px; height:{{$.list.offsetHeight}}px">
+      <div class="marker viewport" style="top:{{-$.list.scrollTop}}px; height:{{$.list.$.viewport.offsetHeight}}px; width:{{$.list.$.viewport.offsetWidth}}px;"></div>
+      <div class="marker upper" style="top:{{$.list._upperBound-$.list.scrollTop}}px; height: 0; width:{{$.list.$.viewport.offsetWidth}}px;"></div>
+      <div class="marker lower" style="top:{{$.list._lowerBound-$.list.scrollTop}}px; height: 0; width:{{$.list.$.viewport.offsetWidth}}px;"></div>
+      <template repeat="{{$.list._physicalItems}}">
+        <div class="marker" style="top:{{_translateY-parentNode.scrollTop}}px; left:{{offsetLeft}}px; width:{{offsetWidth}}px; height:{{offsetHeight}}px" hidden?="{{hidden}}">
+          Group: {{templateInstance.model.groupIndex}}
+          Index: {{templateInstance.model.index}}
+          Phys: {{templateInstance.model.physicalIndex}}
+        </div>
+      </template>
+    </div>
+
+    <core-list id="list" data="{{data.data || data}}" groups="{{data.groups}}" runwayFactor="3">
+      <template>
+        <div class="divider" divider hidden>
+          {{groupModel.letter}}
+        </div>
+        <div class="item" style="xbackground-color: {{model.color}};">
+          <img src="{{model.image}}">
+          <span>Index: {{index}}</span>
+          <br>
+          <select selectedIndex="{{model.selectValue}}"><option>a</option><option>b</option><option>c</option></select>
+          <input type="checkbox" checked="{{model.checked}}">
+          <input value="{{model.name}}">
+          <div>{{model.text}}</div>
+        </div>
+      </template>
+    </core-list>
+  </div>
+
+  <div style="position: absolute; top: 10px; right: 10px; width: 200px;">
+    <div style="width: 1000px;">
+      _virtualCount: {{$.list._virtualCount}} <br>
+      _physicalCount: {{$.list._physicalCount}} <br>
+      _nestedGroups: {{$.list._nestedGroups}} <br>
+      <br>
+      _virtualStart: {{$.list._virtualStart}} <br>
+      _groupStart: {{$.list._groupStart}} <br>
+      _groupStartIndex: {{$.list._groupStartIndex}} <br>
+      <br>
+      _physicalSize: {{$.list._physicalSize}} <br>
+      _physicalAverage: {{$.list._physicalAverage}} <br>
+      _viewportSize: {{$.list._viewportSize}} <br>
+      <br>
+      _upperBound: {{$.list._upperBound}} <br>
+      _lowerBound: {{$.list._lowerBound}} <br>
+      <br>
+      _scrollTop: {{$.list._scrollTop}} <br>
+      _physicalOffset: {{$.list._physicalOffset}} <br>
+    </div>
+    <br>
+    Scale: <input type="number" value="{{scale}}" max="1" min="0.1" step="0.1">
+  </div>
+
+</template>
+<script>
+(function() {
+
+  var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+
+  Polymer('list-test', {
+    scale: 0.7,
+    ready: function() {
+      window.list = this.$.list;
+    }
+  });
+})();  
+</script>
+</polymer-element>
+
+</body>
+</html>

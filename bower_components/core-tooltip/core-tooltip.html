@@ -60,12 +60,13 @@ You can customize this attribute with the `tipAttribute` attribute:
 
 @group Polymer Core Elements
 @element core-tooltip
-@extends paper-focusable
+@extends core-focusable
+@mixins Polymer.CoreFocusable
 @homepage http://www.polymer-project.org/components/core-tooltip/index.html
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-focusable/paper-focusable.html">
+<link rel="import" href="../core-focusable/core-focusable.html">
 
 <!-- TODO: would be nice to inherit from label to get .htmlFor, and .control,
            but the latter is readonly. -->
@@ -73,7 +74,7 @@ You can customize this attribute with the `tipAttribute` attribute:
 <!-- TODO: detect mobile and apply the .large class, instead of manual
            control. -->
 <!-- TODO: possibly reuse core-overlay. -->
-<polymer-element name="core-tooltip" extends="paper-focusable" attributes="noarrow position label show tipAttribute" role="tooltip">
+<polymer-element name="core-tooltip" attributes="noarrow position label show tipAttribute" role="tooltip" tabindex="0">
 <template>
 
   <link rel="stylesheet" href="core-tooltip.css">
@@ -86,114 +87,120 @@ You can customize this attribute with the `tipAttribute` attribute:
 
 </template>
 <script>
+(function() {
 
-  Polymer({
-
-    /**
-     * A simple string label for the tooltip to display. To display a rich
-     * HTML tooltip instead, omit `label` and include the `tip` attribute
-     * on a child node of `core-tooltip`.
-     *
-     * @attribute label
-     * @type string
-     * @default null
-     */
-    label: null,
-
-    computed: {
-      // Indicates whether the tooltip has a set label propety or
-      // an element with the `tip` attribute.
-      hasTooltipContent: 'label || !!tipElement'
-    },
-
-    publish: {
-      /**
-       * Forces the tooltip to display. If `disabled` is set, this property is ignored.
-       *
-       * @attribute show
-       * @type boolean
-       * @default false
-       */
-      show: {value: false, reflect: true},
+  var proto = {
 
       /**
-       * Positions the tooltip to the top, right, bottom, left of its content.
+       * A simple string label for the tooltip to display. To display a rich
+       * HTML tooltip instead, omit `label` and include the `tip` attribute
+       * on a child node of `core-tooltip`.
        *
-       * @attribute position
+       * @attribute label
        * @type string
-       * @default 'bottom'
+       * @default null
        */
-      position: {value: 'bottom', reflect: true},
+      label: null,
+
+      computed: {
+        // Indicates whether the tooltip has a set label propety or
+        // an element with the `tip` attribute.
+        hasTooltipContent: 'label || !!tipElement'
+      },
+
+      publish: {
+        /**
+         * Forces the tooltip to display. If `disabled` is set, this property is ignored.
+         *
+         * @attribute show
+         * @type boolean
+         * @default false
+         */
+        show: {value: false, reflect: true},
+
+        /**
+         * Positions the tooltip to the top, right, bottom, left of its content.
+         *
+         * @attribute position
+         * @type string
+         * @default 'bottom'
+         */
+        position: {value: 'bottom', reflect: true},
+
+        /**
+         * If true, the tooltip an arrow pointing towards the content.
+         *
+         * @attribute noarrow
+         * @type boolean
+         * @default false
+         */
+        noarrow: {value: false, reflect: true}
+      },
 
       /**
-       * If true, the tooltip an arrow pointing towards the content.
+       * Customizes the attribute used to specify which content
+       * is the rich HTML tooltip.
        *
-       * @attribute noarrow
-       * @type boolean
-       * @default false
+       * @attribute tipAttribute
+       * @type string
+       * @default 'tip'
        */
-      noarrow: {value: false, reflect: true}
-    },
+      tipAttribute: 'tip',
 
-    /**
-     * Customizes the attribute used to specify which content
-     * is the rich HTML tooltip.
-     *
-     * @attribute tipAttribute
-     * @type string
-     * @default 'tip'
-     */
-    tipAttribute: 'tip',
+      attached: function() {
+        this.updatedChildren();
+      },
 
-    attached: function() {
-      this.updatedChildren();
-    },
+      updatedChildren: function () {
+        this.tipElement = null;
 
-    updatedChildren: function () {
-      this.tipElement = null;
+        for (var i = 0, el; el = this.$.c.getDistributedNodes()[i]; ++i) {
+          if (el.hasAttribute && el.hasAttribute('tip')) {
+            this.tipElement = el;
+            break;
+          }
+        }
 
-      for (var i = 0, el; el = this.$.c.getDistributedNodes()[i]; ++i) {
-        if (el.hasAttribute && el.hasAttribute('tip')) {
-          this.tipElement = el;
-          break;
+        // Job ensures we're not double calling setPosition() on DOM attach.
+        this.job('positionJob', this.setPosition);
+
+        // Monitor children to re-position tooltip when light dom changes.
+        this.onMutation(this, this.updatedChildren);
+      },
+
+      labelChanged: function(oldVal, newVal) {
+        this.job('positionJob', this.setPosition);
+      },
+
+      positionChanged: function(oldVal, newVal) {
+        this.job('positionJob', this.setPosition);
+      },
+
+      setPosition: function() {
+        var controlWidth = this.clientWidth;
+        var controlHeight = this.clientHeight;
+        var toolTipWidth = this.$.tooltip.clientWidth;
+        var toolTipHeight = this.$.tooltip.clientHeight;
+
+        switch (this.position) {
+          case 'top':
+          case 'bottom':
+            this.$.tooltip.style.left = (controlWidth - toolTipWidth) / 2 + 'px';
+            this.$.tooltip.style.top = null;
+            break;
+          case 'left':
+          case 'right':
+            this.$.tooltip.style.left = null;
+            this.$.tooltip.style.top = (controlHeight - toolTipHeight) / 2 + 'px';
+            break;
         }
       }
 
-      // Job ensures we're not double calling setPosition() on DOM attach.
-      this.job('positionJob', this.setPosition);
+    };
 
-      // Monitor children to re-position tooltip when light dom changes.
-      this.onMutation(this, this.updatedChildren);
-    },
-
-    labelChanged: function(oldVal, newVal) {
-      this.job('positionJob', this.setPosition);
-    },
-
-    positionChanged: function(oldVal, newVal) {
-      this.job('positionJob', this.setPosition);
-    },
-
-    setPosition: function() {
-      var controlWidth = this.clientWidth;
-      var controlHeight = this.clientHeight;
-      var toolTipWidth = this.$.tooltip.clientWidth;
-      var toolTipHeight = this.$.tooltip.clientHeight;
-
-      switch (this.position) {
-        case 'top':
-        case 'bottom':
-          this.$.tooltip.style.left = (controlWidth - toolTipWidth) / 2 + 'px';
-          this.$.tooltip.style.top = null;
-          break;
-        case 'left':
-        case 'right':
-          this.$.tooltip.style.left = null;
-          this.$.tooltip.style.top = (controlHeight - toolTipHeight) / 2 + 'px';
-          break;
-      }
-    }
-  });
+    Polymer.mixin2(proto, Polymer.CoreFocusable);
+    Polymer(proto);
+  })();
 
 </script>
 </polymer-element>

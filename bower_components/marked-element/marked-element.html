@@ -34,8 +34,10 @@ Element wrapper for the `marked` (http://marked.org/) library.
       }
     },
 
-    textChanged: function () {
-      this.innerHTML = marked(this.text);
+    textChanged: function (oldVal, newVal) {
+      if (newVal) {
+        this.innerHTML = marked(this.text);
+      }
     },
 
     highlight: function(code, lang) {

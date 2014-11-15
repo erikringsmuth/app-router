@@ -38,8 +38,9 @@ Displays formatted source documentation scraped from input urls.
 
         <h1>{{data.name}}</h1>
 
-        <p>
-          <core-icon icon="home"></core-icon>&nbsp;<a href="{{data | homepageFilter}}">Home Page</a>
+        <p id="info" layout horizontal center>
+          <span layout horizontal center><core-icon icon="home"></core-icon><a href="{{data | homepageFilter}}">Home Page</a></span>
+          <span layout horizontal center hidden?="{{!data.version}}"><core-icon icon="info-outline"></core-icon>Version: {{data.version}}</span>
         </p>
 
         <template if="{{data.extends}}">

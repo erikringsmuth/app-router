@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### v2.0.2
+- Fixing [issue 19](https://github.com/erikringsmuth/app-router/issues/19) using best effort approach. Use `template.createInstance()` if Polymer is loaded, otherwise use `document.importNode()`.
+
 #### v2.0.1
 - Fixing bug where multiple `<app-route>`s had an `active` attribute.
 

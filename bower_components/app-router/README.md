@@ -1,7 +1,7 @@
 ## Router for Web Components
 > Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively.
 >
-> [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router/)
+> [erikringsmuth.github.io/app-router](https://erikringsmuth.github.io/app-router/)
 
 Manage page state. Lazy-load content. Data-bind path variables and query parameters. Use multiple layouts. Navigate with `hashchange` and HTML5 `pushState`. Animate transitions using `core-animated-pages`.
 
@@ -101,7 +101,7 @@ Path variables and query parameters automatically attach to the element's attrib
 <order-page id="123" sort="ascending"></order-page>
 ```
 
-See it in action [here](http://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
+See it in action [here](https://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
 ## Multiple Layouts
 Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
@@ -286,7 +286,7 @@ The `<app-router>` contains a `<core-animated-pages>` in it's shadow DOM. Each `
 When you navigate from `/home` to `/demo` there will temporarily be both a `<home-page>` and `<demo-page>` in the DOM while the transition is animated. Once the transition is complete, `<core-animated-pages>` fires a `core-animated-pages-transition-end` event and the `<home-page>` is removed from the DOM.
 
 ## Demo Site & Example Setup
-Check out the `app-router` in action at [erikringsmuth.github.io/app-router](http://erikringsmuth.github.io/app-router).
+Check out the `app-router` in action at [erikringsmuth.github.io/app-router](https://erikringsmuth.github.io/app-router).
 
 You can download an example setup here https://github.com/erikringsmuth/app-router-examples to get running locally.
 
