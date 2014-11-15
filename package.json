@@ -8,15 +8,15 @@
     "test": "node node_modules/gulp/bin/gulp.js ci"
   },
   "devDependencies": {
-    "gulp": "^3.8.8",
+    "gulp": "^3.8.10",
     "gulp-inline": "0.0.5",
-    "gulp-jshint": "^1.8.0",
+    "gulp-jshint": "^1.9.0",
     "gulp-karma": "0.0.4",
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^0.3.1",
-    "jasmine": "^2.0.1",
+    "jasmine": "^2.1.0",
     "jshint-stylish": "^0.4.0",
-    "karma": "~0.12.23",
+    "karma": "~0.12.25",
     "karma-chrome-launcher": "^0.1.4",
     "karma-jasmine": "^0.1.5"
   }
