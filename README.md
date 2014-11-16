@@ -103,38 +103,6 @@ Path variables and query parameters automatically attach to the element's attrib
 
 See it in action [here](https://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
 
-## Multiple Layouts
-Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
-
-This is a simple example showing a page and it's layout.
-
-#### home-page.html
-
-```html
-<link rel="import" href="/layouts/simple-layout.html">
-<polymer-element name="home-page" noscript>
-  <template>
-    <simple-layout>
-      <div class="title">Home</div>
-      <p>The home page!</p>
-    </simple-layout>
-  </template>
-</polymer-element>
-```
-
-#### simple-layout.html
-
-```html
-<polymer-element name="simple-layout" noscript>
-  <template>
-    <core-toolbar>
-      <content select=".title"><!-- content with class 'title' --></content>
-    </core-toolbar>
-    <content><!-- all other content --></content>
-  </template>
-</polymer-element>
-```
-
 ## &lt;app-route&gt; options
 
 #### import a custom element
