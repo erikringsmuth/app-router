@@ -3,34 +3,56 @@
 <link rel="import" href="../elements/code-block.html">
 <link rel="import" href="../elements/code-snippet.html">
 
-<template>
-  <scaffold-layout selected="layouts">
-    <div class="title">Multiple Layouts</div>
 
-    <p>Each page chooses which layout to use. This allows multiple layouts in the same app. Use the <code-snippet>&lt;content&gt;</code-snippet> tags as insertion points to insert the page into the layout.</p>
+<polymer-element name="layout-info-page" noscript>
+  <template>
+    <scaffold-layout selected="layouts">
+      <div class="title">Layouts</div>
 
-    <p>This is a simple example showing a page and it's layout.</p>
+      <p>Each page defines its layout. You can do the same thing as a nested router with a flat set of routes.</p>
 
-    <h4>home-page.html</h4>
-<code-block>&lt;link rel="import" href="/layouts/simple-layout.html"&gt;
+      <p>A nested router uses callbacks to load the layout, then the content, then update the layout's selected tab, title, etc. With the <code-snippet>app-router</code-snippet> you route directly to the page and the page configures the layout.</p>
+
+      <h4>home-page.html</h4>
+<code-block>&lt;link rel="import" href="/layouts/layout-el.html"&gt;
+
 &lt;polymer-element name="home-page" noscript&gt;
   &lt;template&gt;
-    &lt;simple-layout&gt;
-      &lt;div class="title"&gt;Home&lt;/div&gt;
-      &lt;p&gt;The home page!&lt;/p&gt;
-    &lt;/simple-layout&gt;
+
+    &lt;layout-el selected="home"&gt;
+      &lt;div class="title"&gt;Home Page&lt;/div&gt;
+      &lt;p&gt;The home page content!&lt;/p&gt;
+    &lt;/layout-el&gt;
+
   &lt;/template&gt;
 &lt;/polymer-element&gt;</code-block>
 
-    <h4>simple-layout.html</h4>
-<code-block>&lt;polymer-element name="simple-layout" noscript&gt;
+      <h4>layout-el.html</h4>
+<code-block>&lt;polymer-element name="layout-el" attributes="selected" noscript&gt;
   &lt;template&gt;
+
     &lt;core-toolbar&gt;
-      &lt;content select=".title"&gt;&lt;!-- content with class 'title' --&gt;&lt;/content&gt;
+      &lt;content select=".title"&gt;&lt;!-- this will display "Home Page" --&gt;&lt;/content&gt;
+      &lt;core-item label="Home" active?="{{'\{{selected == \'home\'}\}'}}"&gt;&lt;/core-item&gt;
+      &lt;core-item label="Demo" active?="{{'\{{selected == \'demo\'}\}'}}"&gt;&lt;/core-item&gt;
     &lt;/core-toolbar&gt;
-    &lt;content&gt;&lt;!-- all other content --&gt;&lt;/content&gt;
+
+    &lt;content&gt;&lt;!-- your main content shows up here --&gt;&lt;/content&gt;
+
   &lt;/template&gt;
 &lt;/polymer-element&gt;</code-block>
 
-  </scaffold-layout>
-</template>
+      <p>The home page is doing a few things here.</p>
+
+      <ul>
+        <li>Using a custom element <code-snippet>layout-el</code-snippet> as the layout.</li>
+        <li>Selecting the active tab using the layout's <code-snippet>selected</code-snippet> attribute.</li>
+        <li>Setting the title using the <code-snippet>&lt;content class=".title"&gt;</code-snippet> tag.</li>
+        <li>Using the plain <code-snippet>&lt;content&gt;</code-snippet> tag to select the rest of the content as the main content.</li>
+      </ul>
+
+      <p>You aren't limited to this structure either. You could load the layout first and put the <code-snippet>app-router</code-snippet> inside where the main content goes then route the main content only. You could even go as far as using multiple <code-snippet>app-router</code-snippet>s to route smaller chunks of the page.</p>
+
+    </scaffold-layout>
+  </template>
+</polymer-element>

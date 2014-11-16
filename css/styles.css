@@ -4,7 +4,8 @@ body {
   color: #353535;
   margin: 0px;
 }
-body /deep/ p {
+body /deep/ p,
+body /deep/ li {
   color: #555;
 }
 body /deep/ .top-spacing {
