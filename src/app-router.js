@@ -341,7 +341,10 @@
       // IE
       var anchor = document.createElement('a');
       anchor.href = location;
-      url.path = '/' + anchor.pathname; // IE doesn't prefix the path with a slash
+      url.path = anchor.pathname;
+      if (url.path.charAt(0) !== '/') {
+        url.path = '/' + url.path;
+      }
       url.hash = anchor.hash;
       url.search = anchor.search;
     }
