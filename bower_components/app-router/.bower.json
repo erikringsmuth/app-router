@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -27,13 +27,13 @@
     "polymer": "~0.5.1",
     "webcomponentsjs": "~0.5.1"
   },
-  "_release": "2.0.3",
+  "_release": "2.0.4",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.3",
-    "commit": "08c6f628bb198901c6ad1528157fb2eb44a52a5f"
+    "tag": "v2.0.4",
+    "commit": "f1aa9ac6ce574de3d67f98103ec6e16e44b3145b"
   },
   "_source": "git://github.com/erikringsmuth/app-router.git",
-  "_target": "~2.0.3",
+  "_target": "~2.0.4",
   "_originalSource": "app-router"
 }
