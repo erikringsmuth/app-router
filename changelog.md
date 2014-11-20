@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### v2.0.4
+- The move from `platform.js` to `webcomponents.js` removed the `URL()` constructor polyfill. The v2.0.3 fix created a bug in Safari when parsing the URL. This fixes Safari.
+
 #### v2.0.3
 - The move from `platform.js` to `webcomponents.js` removed the `URL()` constructor polyfill https://github.com/Polymer/webcomponentsjs/issues/53. IE doesn't support the `URL()` constructor yet so this fix is adding URL parse support for IE.
 
