@@ -148,6 +148,7 @@ You can in-line a `<template>` like this.
 Finally, it's possible to encapsulate the router in a Polymer element, and bind global values template app pages.
 ```html
 <link rel="import" href="app-router.html">
+<link rel="import" href="auth-provider.html">
 <link rel="import" href="app-login.html">
 <polymer-element name="app-main" >
   <template>
