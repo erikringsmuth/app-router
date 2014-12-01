@@ -134,7 +134,7 @@ You can import a `<template>` instead of a custom element. This doesn't have dat
 ```
 
 #### inline template
-Finally, you can in-line a `<template>` like this.
+You can in-line a `<template>` like this.
 
 ```html
 <app-route path="/example">
@@ -142,6 +142,34 @@ Finally, you can in-line a `<template>` like this.
     <p>Inline template FTW!</p>
   </template>
 </app-route>
+```
+
+#### inline polymer template
+Finally, it's possible to encapsulate the router in a Polymer element, and bind global values template app pages.
+```html
+<link rel="import" href="app-router.html">
+<link rel="import" href="app-login.html">
+<polymer-element name="app-main" >
+  <template>
+    <auth-provider id="auth"></auth-provider>
+    <app-router>
+      <app-route path="/login" >
+        <template>
+          <app-login auth="{{auth}}" ></app-login>
+          <!-- app-login accepts the auth attribute 
+             and can make use of its variables/functions -->
+        </template>
+      </app-route>
+    </app-router>
+  </template>
+  <script>
+    Polymer({
+      ready:function() {
+        this.auth = this.$.auth;
+      }
+    });
+  </script>
+</polymer-element>
 ```
 
 #### regular expressions

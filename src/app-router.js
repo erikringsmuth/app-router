@@ -205,7 +205,7 @@
   function stampTemplate(template) {
     if ('createInstance' in template) {
       // the Polymer way (see issue https://github.com/erikringsmuth/app-router/issues/19)
-      return template.createInstance();
+      return template.createInstance(template.templateInstance.model, template.bindingDelegate);
     } else {
       return document.importNode(template.content, true);
     }
