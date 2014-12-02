@@ -197,13 +197,19 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
-      activeElement(router, stampTemplate(route.firstElementChild), eventDetail);
+      activeElement(router, stampTemplate(route.firstElementChild, route, url), eventDetail);
     }
   }
 
   // Create an instance of the template
-  function stampTemplate(template) {
+  function stampTemplate(template, route, url) {
     if ('createInstance' in template) {
+      var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+      for (var arg in routeArgs) {
+        if (routeArgs.hasOwnProperty(arg)) {
+          template.templateInstance.model[arg] = routeArgs[arg];
+        }
+      }
       // the Polymer way (see issue https://github.com/erikringsmuth/app-router/issues/19)
       return template.createInstance(template.templateInstance.model, template.bindingDelegate);
     } else {
@@ -245,7 +251,7 @@
     if (route.hasAttribute('active')) {
       if (route.hasAttribute('template')) {
         // template
-        activeElement(router, stampTemplate(importLink.import.querySelector('template')), eventDetail);
+        activeElement(router, stampTemplate(importLink.import.querySelector('template'), route, url), eventDetail);
       } else {
         // custom element
         activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, url, eventDetail);

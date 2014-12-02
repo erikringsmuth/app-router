@@ -150,6 +150,7 @@ Finally, it's possible to encapsulate the router in a Polymer element, and bind 
 <link rel="import" href="app-router.html">
 <link rel="import" href="auth-provider.html">
 <link rel="import" href="app-login.html">
+<link rel="import" href="app-user.html">
 <polymer-element name="app-main" >
   <template>
     <auth-provider id="auth"></auth-provider>
@@ -157,6 +158,13 @@ Finally, it's possible to encapsulate the router in a Polymer element, and bind 
       <app-route path="/login" >
         <template>
           <app-login auth="{{auth}}" ></app-login>
+          <!-- app-login accepts the auth attribute 
+             and can make use of its variables/functions -->
+        </template>
+      </app-route>
+	  <app-route path="/user/:uid" >
+        <template>
+          <app-user auth="{{auth}}" uid="{{uid}}"></app-user>
           <!-- app-login accepts the auth attribute 
              and can make use of its variables/functions -->
         </template>
