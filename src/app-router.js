@@ -247,9 +247,10 @@
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
     var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-    for (var arg in routeArgs) {
-      if (routeArgs.hasOwnProperty(arg)) {
-        customElement[arg] = routeArgs[arg];
+    var model = utilities.merge(routeArgs, templateBindings(router));
+    for (var property in model) {
+      if (model.hasOwnProperty(property)) {
+        customElement[property] = model[property];
       }
     }
     activeElement(router, customElement, eventDetail);
@@ -258,18 +259,11 @@
   // Create an instance of the template
   function activeTemplate(router, template, route, url, eventDetail) {
     var templateInstance;
-    // template.createInstance(model) binds a model to a template and also fixes https://github.com/erikringsmuth/app-router/issues/19
     if ('createInstance' in template) {
-      var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-
-      // if the app-router is in a Polymer element, shalow clone the element's model
-      if (router.templateInstance) {
-        for (var property in router.templateInstance.model) {
-          if (router.templateInstance.model.hasOwnProperty(property) && !model.hasOwnProperty(property)) {
-            model[property] = router.templateInstance.model[property];
-          }
-        }
-      }
+      // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
+      // https://github.com/erikringsmuth/app-router/issues/19
+      var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+      var model = utilities.merge(routeArgs, templateBindings(router));
       templateInstance = template.createInstance(model);
     } else {
       templateInstance = document.importNode(template.content, true);
@@ -324,6 +318,18 @@
         }
       }
     }
+  }
+
+  // If the app-router is inside a Polymer element, return an object with the element's published attributes
+  function templateBindings(router) {
+    var model = {};
+    if ('templateInstance' in router) {
+      for (var i = 0; i < router.templateInstance.model._publishNames.length; i++) {
+        var prop = router.templateInstance.model._publishNames[i];
+        model[prop] = router.templateInstance.model[prop];
+      }
+    }
+    return model;
   }
 
   // parseUrl(location, mode) - Augment the native URL() constructor to get info about hash paths
@@ -496,6 +502,22 @@
 
     return args;
   };
+
+  // merge(a, b) - Merge two objects into a new object using shallow copy. The first object's properties take priority.
+  utilities.merge = function(a, b) {
+    var c = {};
+    for (var b1 in b) {
+      if (b.hasOwnProperty(b1)) {
+        c[b1] = b[b1];
+      }
+    }
+    for (var a1 in a) {
+      if (a.hasOwnProperty(a1)) {
+        c[a1] = a[a1];
+      }
+    }
+    return c;
+  }
 
   // typecast(value) - Typecast the string value to an unescaped string, number, or boolean
   utilities.typecast = function(value) {
