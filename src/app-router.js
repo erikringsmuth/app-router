@@ -247,7 +247,7 @@
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
     var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-    var model = utilities.merge(routeArgs, templateBindings(router));
+    var model = utilities.merge(routeArgs, parentScopeAttributes(router, route));
     for (var property in model) {
       if (model.hasOwnProperty(property)) {
         customElement[property] = model[property];
@@ -263,7 +263,7 @@
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
       var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-      var model = utilities.merge(routeArgs, templateBindings(router));
+      var model = utilities.merge(routeArgs, parentScopeAttributes(router, route));
       templateInstance = template.createInstance(model);
     } else {
       templateInstance = document.importNode(template.content, true);
@@ -321,12 +321,12 @@
   }
 
   // If the app-router is inside a Polymer element, return an object with the element's published attributes
-  function templateBindings(router) {
+  function parentScopeAttributes(router, route) {
     var model = {};
-    if ('templateInstance' in router) {
-      for (var i = 0; i < router.templateInstance.model._publishNames.length; i++) {
-        var prop = router.templateInstance.model._publishNames[i];
-        model[prop] = router.templateInstance.model[prop];
+    if (route.hasAttribute('parentScopeAttributes') && 'templateInstance' in router) {
+      attrs = route.getAttribute('parentScopeAttributes').split(' ');
+      for (var i = 0; i < attrs.length; i++) {
+        model[attrs[i]] = router.templateInstance.model[attrs[i]];
       }
     }
     return model;
