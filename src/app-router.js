@@ -197,23 +197,7 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
-      activeElement(router, stampTemplate(route.firstElementChild, route, url), eventDetail);
-    }
-  }
-
-  // Create an instance of the template
-  function stampTemplate(template, route, url) {
-    if ('createInstance' in template) {
-      var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-      for (var arg in routeArgs) {
-        if (routeArgs.hasOwnProperty(arg)) {
-          template.templateInstance.model[arg] = routeArgs[arg];
-        }
-      }
-      // the Polymer way (see issue https://github.com/erikringsmuth/app-router/issues/19)
-      return template.createInstance(template.templateInstance.model, template.bindingDelegate);
-    } else {
-      return document.importNode(template.content, true);
+      activeTemplate(router, route.firstElementChild, route, url, eventDetail);
     }
   }
 
@@ -251,7 +235,7 @@
     if (route.hasAttribute('active')) {
       if (route.hasAttribute('template')) {
         // template
-        activeElement(router, stampTemplate(importLink.import.querySelector('template'), route, url), eventDetail);
+        activeTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
       } else {
         // custom element
         activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, url, eventDetail);
@@ -269,6 +253,28 @@
       }
     }
     activeElement(router, customElement, eventDetail);
+  }
+
+  // Create an instance of the template
+  function activeTemplate(router, template, route, url, eventDetail) {
+    var templateInstance;
+    // template.createInstance(model) binds a model to a template and also fixes https://github.com/erikringsmuth/app-router/issues/19
+    if ('createInstance' in template) {
+      var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+
+      // if the app-router is in a Polymer element, shalow clone the element's model
+      if (router.templateInstance) {
+        for (var property in router.templateInstance.model) {
+          if (router.templateInstance.model.hasOwnProperty(property) && !model.hasOwnProperty(property)) {
+            model[property] = router.templateInstance.model[property];
+          }
+        }
+      }
+      templateInstance = template.createInstance(model);
+    } else {
+      templateInstance = document.importNode(template.content, true);
+    }
+    activeElement(router, templateInstance, eventDetail);
   }
 
   // Replace the active route's content with the new element
