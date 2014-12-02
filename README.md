@@ -162,11 +162,11 @@ Finally, it's possible to encapsulate the router in a Polymer element, and bind 
              and can make use of its variables/functions -->
         </template>
       </app-route>
-	  <app-route path="/user/:uid" >
+      <app-route path="/user/:uid" >
         <template>
           <app-user auth="{{auth}}" uid="{{uid}}"></app-user>
-          <!-- app-login accepts the auth attribute 
-             and can make use of its variables/functions -->
+          <!-- note that uid is now available in this scope as well
+             when this page is accessed-->
         </template>
       </app-route>
     </app-router>
