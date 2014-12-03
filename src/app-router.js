@@ -247,10 +247,9 @@
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
     var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-    var model = utilities.merge(routeArgs, parentScopeAttributes(router, route));
-    for (var property in model) {
-      if (model.hasOwnProperty(property)) {
-        customElement[property] = model[property];
+    for (var arg in routeArgs) {
+      if (routeArgs.hasOwnProperty(arg)) {
+        customElement[arg] = routeArgs[arg];
       }
     }
     activeElement(router, customElement, eventDetail);
@@ -263,8 +262,7 @@
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
       var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-      var model = utilities.extend(parentScopeAttributes(router, route), routeArgs);
-      templateInstance = template.createInstance(model);
+      templateInstance = template.createInstance(routeArgs);
     } else {
       templateInstance = document.importNode(template.content, true);
     }
@@ -318,18 +316,6 @@
         }
       }
     }
-  }
-
-  // If the app-router is inside a Polymer element, return an object with the element's published attributes
-  function parentScopeAttributes(router, route) {
-    var model = {};
-    if (route.hasAttribute('parentScopeAttributes') && 'templateInstance' in router) {
-      attrs = route.getAttribute('parentScopeAttributes').split(' ');
-      for (var i = 0; i < attrs.length; i++) {
-        model[attrs[i]] = router.templateInstance.model[attrs[i]];
-      }
-    }
-    return model;
   }
 
   // parseUrl(location, mode) - Augment the native URL() constructor to get info about hash paths
@@ -502,32 +488,6 @@
 
     return args;
   };
-
-  // merge(a, b) - Merge two objects into a new object using shallow copy. The first object's properties take priority.
-  utilities.merge = function(a, b) {
-    var c = {};
-    for (var b1 in b) {
-      if (b.hasOwnProperty(b1)) {
-        c[b1] = b[b1];
-      }
-    }
-    for (var a1 in a) {
-      if (a.hasOwnProperty(a1)) {
-        c[a1] = a[a1];
-      }
-    }
-    return c;
-  }
-
-  // extend(a, b) - Extend a with properties from b.
-  utilities.extend = function(a, b) {
-    for (var prop in b) {
-      if (b.hasOwnProperty(prop)) {
-        a[prop] = b[prop];
-      }
-    }
-    return a;
-  }
 
   // typecast(value) - Typecast the string value to an unescaped string, number, or boolean
   utilities.typecast = function(value) {
