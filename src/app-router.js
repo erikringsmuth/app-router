@@ -263,7 +263,7 @@
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
       var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-      var model = utilities.merge(routeArgs, parentScopeAttributes(router, route));
+      var model = utilities.extend(parentScopeAttributes(router, route), routeArgs);
       templateInstance = template.createInstance(model);
     } else {
       templateInstance = document.importNode(template.content, true);
@@ -517,6 +517,16 @@
       }
     }
     return c;
+  }
+
+  // extend(a, b) - Extend a with properties from b.
+  utilities.extend = function(a, b) {
+    for (var prop in b) {
+      if (b.hasOwnProperty(prop)) {
+        a[prop] = b[prop];
+      }
+    }
+    return a;
   }
 
   // typecast(value) - Typecast the string value to an unescaped string, number, or boolean
