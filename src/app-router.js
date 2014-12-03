@@ -246,10 +246,11 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-    for (var arg in routeArgs) {
-      if (routeArgs.hasOwnProperty(arg)) {
-        customElement[arg] = routeArgs[arg];
+    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+    model.parentModel = parentModel(router);
+    for (var property in model) {
+      if (model.hasOwnProperty(property)) {
+        customElement[property] = model[property];
       }
     }
     activeElement(router, customElement, eventDetail);
@@ -261,8 +262,9 @@
     if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
-      var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-      templateInstance = template.createInstance(routeArgs);
+      var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+      model.parentModel = parentModel(router);
+      templateInstance = template.createInstance(model);
     } else {
       templateInstance = document.importNode(template.content, true);
     }
@@ -315,6 +317,15 @@
           route.removeChild(nodeToRemove);
         }
       }
+    }
+  }
+
+  // If the app-router is in a Polymer template or custom element, get the model bound to the template or custom element
+  function parentModel(router) {
+    if ('templateInstance' in router) {
+      return router.templateInstance.model
+    } else {
+      return {};
     }
   }
 
