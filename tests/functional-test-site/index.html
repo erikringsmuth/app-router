@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>app-router</title>
     <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
     <link rel="import" href="pages/bundled-elements.html">
     <link rel="import" href="/src/app-router.html">
   </head>
@@ -23,6 +24,8 @@
       <li><a href="#/template">/template</a></li>
       <li><a href="#/inline-template">/inline-template</a></li>
       <li><a href="#/word/123">/regular-expression</a></li>
+      <li><a href="#/template-binding/1234/route%20args!">/template-binding/1234/route%20args!</a></li>
+      <li><a href="#/custom-element-binding/1234/route%20args!">/custom-element-binding/1234/route%20args!</a></li>
       <li><a href="#/redirect">/redirect</a></li>
       <li><a href="#/canceled-event">/canceled-event</a></li>
     </ul>
@@ -34,12 +37,12 @@
       <app-route path="/preloaded-bundled-custom-element" element="preloaded-custom-element-page"></app-route>
       <app-route path="/imported-bundled-custom-element" import="pages/imported-bundled-elements.html" element="imported-custom-element-page"></app-route>
       <app-route path="/template" import="pages/template-page.html" template></app-route>
-      <app-route path="/inline-template" template>
+      <app-route path="/inline-template">
         <template>
           <h2>Inline Template Page</h2>
         </template>
       </app-route>
-      <app-route path="/^\/\w+\/\d+$/i" regex template>
+      <app-route path="/^\/\w+\/\d+$/i" regex>
         <template>
           <h2>Regular Expression <code>/^\/\w+\/\d+$/i</code></h2>
         </template>
@@ -55,13 +58,6 @@
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
 
-    <!-- shadow -->
-    <p>Hide content in a shadow root. Only matches "/custom-element".</p>
-    <app-router shadow id="shadow-router">
-      <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
-      <app-route path="*" import="pages/not-found-page.html"></app-route>
-    </app-router>
-
     <!-- init="manual" -->
     <p>Should manually be initialized. Only matches "/custom-element".</p>
     <app-router init="manual" id="manual-init">
@@ -74,11 +70,48 @@
       });
     </script>
 
+    <!-- parent scope -->
+    <p>Data binding to templates, app-router in a Polymer element, and parentModel bindings.</p>
+    <polymer-element name="parent-binding-page" attributes="second third" noscript>
+      <template>
+        <h2>parent published attribute - {{parentModel.first}}</h2>
+        <h2>route arg bound to custom element - {{second}}</h2>
+        <h2>route arg bound to custom element - {{third}}</h2>
+        <h2>parent property (not published) - {{parentModel.fourth}}</h2>
+      </template>
+    </polymer-element>
+    <polymer-element name="parent-binding-example" attributes="first">
+      <template>
+        <p>In the parent template, first arg - {{first}}</p>
+        <app-router id="default-router">
+          <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
+          <app-route path="/custom-element-binding/:second/:third" element="parent-binding-page"></app-route>
+          <app-route path="/template-binding/:second/:third">
+            <template>
+              <h2>parent published attribute - {{parentModel.first}}</h2>
+              <h2>route arg bound to template - {{second}}</h2>
+              <h2>route arg bound to template - {{third}}</h2>
+              <h2>parent property (not published) - {{parentModel.fourth}}</h2>
+            </template>
+          </app-route>
+          <app-route path="*" import="pages/not-found-page.html"></app-route>
+        </app-router>
+      </template>
+      <script>
+        Polymer('parent-binding-example', {
+          ready: function() {
+            this.fourth = '4th arg!';
+          }
+        });
+      </script>
+    </polymer-element>
+    <parent-binding-example first="1st arg!"></parent-binding-example>
+
     <!-- lifecycle events -->
     <p>Logs lifecycle events. Should <code>preventDefault()</code> when navigating to <code>/canceled-event</code>.</p>
     <app-router init="manual" id="lifecycle-events">
       <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
-      <app-route path="/canceled-event" template id="canceled-event">
+      <app-route path="/canceled-event" id="canceled-event">
         <template>
           <h2>Canceled Event (broken if you can see this)</h2>
         </template>

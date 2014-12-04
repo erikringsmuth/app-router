@@ -322,7 +322,7 @@
 
   // If the app-router is in a Polymer template or custom element, get the model bound to the template or custom element
   function parentModel(router) {
-    if ('templateInstance' in router) {
+    if (router.templateInstance) {
       return router.templateInstance.model
     } else {
       return {};
