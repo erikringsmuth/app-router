@@ -72,16 +72,25 @@
 
     <!-- parent scope -->
     <p>Data binding to templates, app-router in a Polymer element, and parentModel bindings.</p>
-    <polymer-element name="parent-binding-page" attributes="second third" noscript>
+    <polymer-element name="parent-binding-page" attributes="second third">
       <template>
         <h2>parent published attribute - {{parentModel.first}}</h2>
         <h2>route arg bound to custom element - {{second}}</h2>
         <h2>route arg bound to custom element - {{third}}</h2>
         <h2>parent property (not published) - {{parentModel.fourth}}</h2>
       </template>
+      <script>
+        Polymer('parent-binding-page', {
+          domReady: function() {
+            // dynamic data binding should update the parent's template too
+            this.parentModel.first = 'updated 1st arg!';
+          }
+        });
+      </script>
     </polymer-element>
     <polymer-element name="parent-binding-example" attributes="first">
       <template>
+        <!-- dynamic data binding should update the parent's template when the child sets parentModel.first -->
         <p>In the parent template, first arg - {{first}}</p>
         <app-router id="default-router">
           <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
@@ -101,6 +110,9 @@
         Polymer('parent-binding-example', {
           ready: function() {
             this.fourth = '4th arg!';
+          },
+          firstChanged: function(oldFirst, newFirst) {
+            console.log('parent {{first}} updated: ' + newFirst);
           }
         });
       </script>
