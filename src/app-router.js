@@ -1,3 +1,4 @@
+// @license Copyright (C) 2014 Erik Ringsmuth - MIT license
 (function(window, document) {
   var utilities = {};
   var importedURIs = {};

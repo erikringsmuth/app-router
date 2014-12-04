@@ -16,7 +16,9 @@ gulp.task('lint', function() {
 
 gulp.task('build', function() {
   return gulp.src('src/app-router.js')
-    .pipe(uglify())
+    .pipe(uglify({
+      preserveComments: 'some'
+    }))
     .pipe(gulp.dest('.'));
 });
 
