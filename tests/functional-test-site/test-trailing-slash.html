@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="pages/bundled-elements.html">
+    <link rel="import" href="/src/app-router.html">
+  </head>
+  <body>
+    <style>
+      p {
+        margin-top: 50px;
+      }
+    </style>
+
+    <p>Test the different <code>app-route</code> types by navigating through these links.</p>
+    <ul>
+      <li><a href="#/custom-element">/custom-element</a></li>
+      <li><a href="#/custom-element/">/custom-element/</a></li>
+      <li><a href="#/other">/other</a></li>
+    </ul>
+
+    <p>Should ignore trailing slashes and match "/custom-element" and "/custom-element/" with the same route.</p>
+
+    <app-router trailingSlash="ignore" id="ignore-trailing-slash">
+      <app-route path="/custom-element/" import="pages/custom-element-page.html"></app-route>
+      <app-route path="*" import="pages/not-found-page.html"></app-route>
+    </app-router>
+
+  </body>
+</html>
