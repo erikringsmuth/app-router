@@ -101,7 +101,7 @@ Path variables and query parameters automatically attach to the element's attrib
 <order-page orderId="123" sort="ascending"></order-page>
 ```
 
-If you are using Polymer, you can also bind path variables and query parameters to templates.
+If you're using Polymer, you can also bind path variables and query parameters to templates.
 ```html
 <app-route path="/order/:orderId">
   <template>
