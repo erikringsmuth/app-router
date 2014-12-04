@@ -95,10 +95,19 @@ Path variables and query parameters automatically attach to the element's attrib
 <a is="pushstate-anchor" href="/order/123?sort=ascending">Order 123</a>
 
 <!-- route -->
-<app-route path="/order/:id" import="/pages/order-page.html"></app-route>
+<app-route path="/order/:orderId" import="/pages/order-page.html"></app-route>
 
-<!-- will bind 123 to the page's `id` attribute and "ascending" to the `sort` attribute -->
-<order-page id="123" sort="ascending"></order-page>
+<!-- will bind 123 to the page's `orderId` attribute and "ascending" to the `sort` attribute -->
+<order-page orderId="123" sort="ascending"></order-page>
+```
+
+If you are using Polymer, you can also bind path variables and query parameters to templates.
+```html
+<app-route path="/order/:orderId">
+  <template>
+    <p>Your order number is {{orderId}}</p>
+  </template>
+</app-route>
 ```
 
 See it in action [here](https://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
@@ -127,7 +136,7 @@ Include the `element="element-name"` attribute on the route to use a pre-loaded 
 ```
 
 #### import template
-You can import a `<template>` instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the `template` attribute.
+You can import a `<template>` instead of a custom element. Just include the `template` attribute.
 
 ```html
 <app-route path="/example" import="/pages/template-page.html" template></app-route>

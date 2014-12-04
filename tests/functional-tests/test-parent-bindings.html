@@ -9,11 +9,6 @@
     <link rel="import" href="/src/app-router.html">
   </head>
   <body>
-    <style>
-      p {
-        margin-top: 50px;
-      }
-    </style>
 
     <p>Test the different <code>app-route</code> types by navigating through these links.</p>
     <ul>
@@ -45,7 +40,6 @@
         <!-- dynamic data binding should update the parent's template when the child sets parentModel.first -->
         <p>In the parent template, first arg - {{first}}</p>
         <app-router id="default-router">
-          <app-route path="/custom-element" import="pages/custom-element-page.html"></app-route>
           <app-route path="/custom-element-binding/:second/:third" element="parent-binding-page"></app-route>
           <app-route path="/template-binding/:second/:third">
             <template>
