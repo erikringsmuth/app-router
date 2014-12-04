@@ -273,10 +273,7 @@
   // Create the route's model
   function createModel(router, route, url) {
     var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-    if (route.hasAttribute('bindParentModel') && router.templateInstance) {
-      model.parentModel = router.templateInstance.model;
-    }
-    if (route.hasAttribute('bindRouter')) {
+    if (route.hasAttribute('bindRouter') || router.hasAttribute('bindRouter')) {
       model.router = router;
     }
     return model;

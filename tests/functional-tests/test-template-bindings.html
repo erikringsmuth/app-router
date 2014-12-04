@@ -14,54 +14,47 @@
     <ul>
       <li><a href="#/template-binding/1234/route%20args!">/template-binding/1234/route%20args!</a></li>
       <li><a href="#/custom-element-binding/1234/route%20args!">/custom-element-binding/1234/route%20args!</a></li>
-      <li><a href="#/bind-router">/bind-router</a></li>
-      <li><a href="#/no-parent-binding">/no-parent-binding</a></li>
+      <li><a href="#/no-router-binding">/no-router-binding</a></li>
     </ul>
 
-    <p>Data binding to templates, app-router in a Polymer element, and <code>parentModel</code> bindings.</p>
+    <p>Data binding to templates, testing <code>bindRouter</code>, and <code>bindRouter</code> to get the parent template with <code>router.templateInstance.model</code> bindings.</p>
 
-    <polymer-element name="parent-binding-page" attributes="second third">
+    <polymer-element name="test-binding-page" attributes="second third router">
       <template>
-        <h2>parent published attribute - {{parentModel.first}}</h2>
+        <h2>parent published attribute - {{router.templateInstance.model.first}}</h2>
         <h2>route arg bound to custom element - {{second}}</h2>
         <h2>route arg bound to custom element - {{third}}</h2>
-        <h2>parent property (not published) - {{parentModel.fourth}}</h2>
+        <h2>parent property (not published) - {{router.templateInstance.model.fourth}}</h2>
       </template>
       <script>
-        Polymer('parent-binding-page', {
+        Polymer('test-binding-page', {
           domReady: function() {
             // dynamic data binding should update the parent's template too
-            this.parentModel.first = 'updated 1st arg!';
+            this.router.templateInstance.model.first = 'updated 1st arg!';
           }
         });
       </script>
     </polymer-element>
 
-    <polymer-element name="parent-binding-example" attributes="first">
+    <polymer-element name="router-binding-example" attributes="first">
       <template>
-        <!-- dynamic data binding should update the parent's template when the child sets parentModel.first -->
+        <!-- dynamic data binding should update the parent's template when the child sets router.templateInstance.model.first -->
         <p>In the parent template, first arg - {{first}}</p>
-        <app-router id="router">
-          <app-route path="/custom-element-binding/:second/:third" element="parent-binding-page" bindParentModel></app-route>
-          <app-route path="/template-binding/:second/:third" bindParentModel>
+        <app-router>
+          <app-route path="/custom-element-binding/:second/:third" element="test-binding-page" bindRouter></app-route>
+          <app-route path="/template-binding/:second/:third" bindRouter>
             <template>
-              <h2>parent published attribute - {{parentModel.first}}</h2>
+              <h2>parent published attribute - {{router.templateInstance.model.first}}</h2>
               <h2>route arg bound to template - {{second}}</h2>
               <h2>route arg bound to template - {{third}}</h2>
-              <h2>parent property (not published) - {{parentModel.fourth}}</h2>
+              <h2>parent property (not published) - {{router.templateInstance.model.fourth}}</h2>
             </template>
           </app-route>
-          <app-route path="/bind-router" bindRouter>
-            <template>
-              <h2>binding the router</h2>
-              <h2>Test router binding - {{router.testRouterProperty}}</h2>
-            </template>
-          </app-route>
-          <app-route path="/no-parent-binding">
+          <app-route path="/no-router-binding">
             <template>
               <h2>Parent bindings shouldn't be available in this case.</h2>
-              <h2>parent published attribute - {{parentModel.first}}</h2>
-              <h2>parent property (not published) - {{parentModel.fourth}}</h2>
+              <h2>parent published attribute - {{router.templateInstance.model.first}}</h2>
+              <h2>parent property (not published) - {{router.templateInstance.model.fourth}}</h2>
             </template>
           </app-route>
           <app-route path="*">
@@ -72,10 +65,9 @@
         </app-router>
       </template>
       <script>
-        Polymer('parent-binding-example', {
+        Polymer('router-binding-example', {
           ready: function() {
             this.fourth = '4th arg!';
-            this.$.router.testRouterProperty = 'Router Property';
           },
           firstChanged: function(oldFirst, newFirst) {
             console.log('parent {{first}} updated: ' + newFirst);
@@ -84,7 +76,7 @@
       </script>
     </polymer-element>
 
-    <parent-binding-example first="1st arg!"></parent-binding-example>
+    <router-binding-example first="1st arg!"></router-binding-example>
 
   </body>
 </html>
