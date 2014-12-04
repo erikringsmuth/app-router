@@ -246,8 +246,7 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-    model.parentModel = parentModel(router);
+    var model = createModel(router, route, url);
     for (var property in model) {
       if (model.hasOwnProperty(property)) {
         customElement[property] = model[property];
@@ -262,13 +261,24 @@
     if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
-      var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-      model.parentModel = parentModel(router);
+      var model = createModel(router, route, url);
       templateInstance = template.createInstance(model);
     } else {
       templateInstance = document.importNode(template.content, true);
     }
     activeElement(router, templateInstance, eventDetail);
+  }
+
+  // Create the route's model
+  function createModel(router, route, url) {
+    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+    if (route.hasAttribute('bindParentModel') && router.templateInstance) {
+      model.parentModel = router.templateInstance.model;
+    }
+    if (route.hasAttribute('bindRouter')) {
+      model.router = router;
+    }
+    return model;
   }
 
   // Replace the active route's content with the new element
@@ -317,15 +327,6 @@
           route.removeChild(nodeToRemove);
         }
       }
-    }
-  }
-
-  // If the app-router is in a Polymer template or custom element, get the model bound to the template or custom element
-  function parentModel(router) {
-    if (router.templateInstance) {
-      return router.templateInstance.model
-    } else {
-      return {};
     }
   }
 
