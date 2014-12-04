@@ -205,4 +205,4 @@ Source files are under the `src` folder. The build process writes to the root di
 To build:
 - Run `bower install` and `npm install` to install dev dependencies
 - Lint, test, build, and minify code with `gulp`
-- Manually run functional tests in the browser by starting a static content server (node `http-server` or `python -m SimpleHTTPServer`) and open [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)
+- Manually run functional tests in the browser by starting a static content server (node `http-server` or `python -m SimpleHTTPServer`) and open [http://localhost:8080/tests/functional-tests/](http://localhost:8080/tests/functional-tests/)
