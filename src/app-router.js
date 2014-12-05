@@ -182,7 +182,26 @@
       transitionAnimationEnd(router.previousRoute);
     }
     if (router.activeRoute) {
-      router.activeRoute.removeAttribute('active');
+      // If the route we're navigating to references the same object that the current route is set to,
+      // for example when changing a databound parameter (ex: navigating from article/0 to articles/1),
+      // check if the route has a navigation-action modifier set and perform the appropriate action.
+      if (route.hasAttribute('import')
+          && router.activeRoute.hasAttribute('import')
+          && route.hasAttribute('navigate-action')
+          && (route.getAttribute('import') == router.activeRoute.getAttribute('import'))) {
+
+          var action = route.getAttribute('navigate-action');
+
+          if (action == 'removeDuplicateInstance') {
+              transitionAnimationEnd(router.activeRoute);
+          } else if (action == 'stopOnDuplicateLoad') {
+              return;
+          } else {
+              fire('navigate-action-not-found', eventDetail, router)
+          }
+      } else {
+          router.activeRoute.removeAttribute('active');
+      }
     }
     router.previousRoute = router.activeRoute;
     router.activeRoute = route;
