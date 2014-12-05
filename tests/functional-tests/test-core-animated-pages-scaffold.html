@@ -41,9 +41,7 @@
       <template>
         <sidebar-layout>
           <div class="title">first</div>
-
           <h2>first page</h2>
-
         </sidebar-layout>
       </template>
     </polymer-element>
@@ -52,20 +50,16 @@
       <template>
         <sidebar-layout>
           <div class="title">second</div>
-
           <h2>second page</h2>
-
         </sidebar-layout>
       </template>
     </polymer-element>
 
-    <polymer-element name="third-page" noscript>
+    <polymer-element name="third-page" attributes="pageNum" noscript>
       <template>
         <sidebar-layout>
           <div class="title">third</div>
-
-          <h2>third page</h2>
-
+          <h2>{{pageNum}} page</h2>
         </sidebar-layout>
       </template>
     </polymer-element>
