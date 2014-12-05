@@ -14,6 +14,7 @@
     <p>Test the different <code>app-route</code> types by navigating through these links.</p>
     <ul>
       <li><a href="#/first">/first</a></li>
+      <li><a href="#/second">/second</a></li>
       <li><a href="#/page/123">/page/123</a></li>
       <li><a href="#/page/456">/page/456</a></li>
     </ul>
@@ -24,6 +25,11 @@
       <app-route path="/first">
         <template>
           <h2>First page</h2>
+        </template>
+      </app-route>
+      <app-route path="/second">
+        <template>
+          <h2>Second page</h2>
         </template>
       </app-route>
       <app-route path="/page/:pageNum">
