@@ -8,6 +8,8 @@
     <scaffold-layout selected="databinding">
       <div class="title">Data Binding Demo</div>
 
+      <h2>Path Variables & Query Parameters</h2>
+
       <p>Change values in the address bar and see them change here. Path variables and query parameters are automatically attached to the element's attributes.</p>
 
       <h4 class="top-spacing">Route Args</h4>
@@ -33,6 +35,58 @@
 <code-block>&lt;polymer-element name="demo-page" attributes="pathArg1 queryParam1" noscript&gt;
   &lt;template&gt;
     &lt;p&gt;Demo page using a path variable {{'\{{pathArg1}\}'}} and query parameter {{'\{{queryParam1}\}'}}!&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/polymer-element&gt;</code-block>
+
+      <h2 class="top-spacing">Polymer &lt;template&gt;</h2>
+
+      <p>If you're using Polymer, you can also bind path variables and query parameters to templates.</p>
+
+<code-block>&lt;app-route path="/order/:orderId"&gt;
+  &lt;template&gt;
+    &lt;p&gt;Your order number is {{'\{{orderId}\}'}}&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/app-route&gt;</code-block>
+
+      <h2 class="top-spacing">Accessing the router and parent scope</h2>
+
+      <p>You can bind the router to an element or template using the <code-snippet>bindRoute</code-snippet> attribute. This gives you easy access to the router's API including <code-snippet>router.go('/path')</code-snippet>.</p>
+
+<code-block>&lt;app-router&gt;
+  &lt;app-route path="/customer/:customerId" element="customer-page" bindRouter&gt;&lt;/app-route&gt;
+&lt;/app-router&gt;
+
+&lt;polymer-element name="customer-page" attributes="customerId router"&gt;
+  &lt;template&gt;
+    &lt;h2&gt;Customer ID: {{'\{{customerId}\}'}}&lt;/h2&gt;
+    &lt;button on-click="{{'\{{goToOrders}\}'}}"&gt;Orders&lt;/button&gt;
+  &lt;/template&gt;
+  &lt;script&gt;
+    Polymer('customer-page', {
+      goToOrders: function() {
+        this.router.go('/orders/' + this.customerId);
+      }
+    });
+  &lt;/script&gt;
+&lt;/polymer-element&gt;</code-block>
+
+      <p>If you're using Polymer templates you can also access the parent scope using <code-snippet>router.templateInstance.model</code-snippet>.</p>
+
+<code-block>&lt;polymer-element name="my-app" noscript&gt;
+  &lt;template&gt;
+    &lt;!-- my-app session object with things like {{'\{{session.userName}\}'}} --&gt;
+    &lt;user-session session="{{'\{{session}\}'}}"&gt;&lt;/user-session&gt;
+    &lt;h2&gt;Hello {{'\{{session.userName}\}'}}&lt;/h2&gt;
+    &lt;app-router&gt;
+      &lt;app-route path="/customer/:customerId" bindRouter&gt;
+        &lt;template&gt;
+          &lt;!-- this template does not have acces to {{'\{{session}\}'}} in the parent scope. it can use {{'\{{router}\}'}} instead. --&gt;
+          &lt;h2&gt;Hello {{'\{{router.templateInstance.model.session.userName}\}'}}&lt;/h2&gt;
+          &lt;!-- {{'\{{customerId}\}'}} is bound directly to this template --&gt;
+          &lt;h2&gt;Customer ID: {{'\{{customerId}\}'}}&lt;/h2&gt;
+        &lt;/template&gt;
+      &lt;/app-route&gt;
+    &lt;/app-router&gt;
   &lt;/template&gt;
 &lt;/polymer-element&gt;</code-block>
 
