@@ -283,7 +283,10 @@
   function activeElement(router, element, eventDetail) {
     // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
     // otherwise we can remove the old route's content right away.
-    if (!router.hasAttribute('core-animated-pages')) {
+    // UNLESS
+    // if the route we're navigating to matches the same app-route (ex: path="/article/:id" navigating from /article/0 to
+    // /article/1), then we have to simply replace the route's content instead of animating a transition.
+    if (!router.hasAttribute('core-animated-pages') || eventDetail.route === eventDetail.oldRoute) {
       removeRouteContent(router.previousRoute);
     }
 
