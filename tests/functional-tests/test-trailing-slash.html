@@ -18,7 +18,7 @@
 
     <p>Should ignore trailing slashes and match "/custom-element" and "/custom-element/" with the same route.</p>
 
-    <app-router trailingSlash="ignore" id="ignore-trailing-slash">
+    <app-router trailingSlash="ignore">
       <app-route path="/custom-element/" import="pages/custom-element-page.html"></app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
