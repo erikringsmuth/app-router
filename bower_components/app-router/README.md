@@ -95,45 +95,22 @@ Path variables and query parameters automatically attach to the element's attrib
 <a is="pushstate-anchor" href="/order/123?sort=ascending">Order 123</a>
 
 <!-- route -->
-<app-route path="/order/:id" import="/pages/order-page.html"></app-route>
+<app-route path="/order/:orderId" import="/pages/order-page.html"></app-route>
 
-<!-- will bind 123 to the page's `id` attribute and "ascending" to the `sort` attribute -->
-<order-page id="123" sort="ascending"></order-page>
+<!-- will bind 123 to the page's `orderId` attribute and "ascending" to the `sort` attribute -->
+<order-page orderId="123" sort="ascending"></order-page>
+```
+
+If you're using Polymer, you can also bind path variables and query parameters to templates.
+```html
+<app-route path="/order/:orderId">
+  <template>
+    <p>Your order number is {{orderId}}</p>
+  </template>
+</app-route>
 ```
 
 See it in action [here](https://erikringsmuth.github.io/app-router/#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!).
-
-## Multiple Layouts
-Each page chooses which layout to use. This allows multiple layouts in the same app. Use `<content>` tag insertion points to insert the page into the layout. This is similar to nested routes but completely decouples the page layout from the router.
-
-This is a simple example showing a page and it's layout.
-
-#### home-page.html
-
-```html
-<link rel="import" href="/layouts/simple-layout.html">
-<polymer-element name="home-page" noscript>
-  <template>
-    <simple-layout>
-      <div class="title">Home</div>
-      <p>The home page!</p>
-    </simple-layout>
-  </template>
-</polymer-element>
-```
-
-#### simple-layout.html
-
-```html
-<polymer-element name="simple-layout" noscript>
-  <template>
-    <core-toolbar>
-      <content select=".title"><!-- content with class 'title' --></content>
-    </core-toolbar>
-    <content><!-- all other content --></content>
-  </template>
-</polymer-element>
-```
 
 ## &lt;app-route&gt; options
 
@@ -159,7 +136,7 @@ Include the `element="element-name"` attribute on the route to use a pre-loaded 
 ```
 
 #### import template
-You can import a `<template>` instead of a custom element. This doesn't have data binding and is lighter-weight than a custom element. Just include the `template` attribute.
+You can import a `<template>` instead of a custom element. Just include the `template` attribute.
 
 ```html
 <app-route path="/example" import="/pages/template-page.html" template></app-route>
@@ -218,73 +195,6 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 </app-router>
 ```
 
-## core-animated-pages
-
-> Experimental! The browser may slow to a crawl depending on which animations you use.
-
-Animate transitions using [core-animated-pages](https://www.polymer-project.org/docs/elements/core-elements.html#core-animated-pages). You have to load Polymer and `<core-animated-pages>` to use this feature.
-
-Include the `core-animated-pages` attribute on the `<app-router>` and define the `transitions` you want to use.
-```html
-<link rel="import" href="/bower_components/polymer/polymer.html">
-<link rel="import" href="/bower_components/core-animated-pages/core-animated-pages.html">
-
-<app-router core-animated-pages transitions="hero-transition cross-fade">
-  <app-route path="/home" import="/pages/home-page.html"></app-route>
-  <app-route path="/demo" import="/pages/demo-page.html"></app-route>
-</app-router>
-```
-
-Then include the transition attributes on the content you want to animate. This example uses the `cross-fade` transition.
-
-#### home-page.html
-
-```html
-<polymer-element name="home-page" noscript>
-  <template>
-    <core-toolbar cross-fade>Home</core-toolbar>
-    <p>Home page!</p>
-  </template>
-</polymer-element>
-```
-
-#### demo-page.html
-
-```html
-<polymer-element name="demo-page" noscript>
-  <template>
-    <core-toolbar cross-fade>Demo</core-toolbar>
-    <p>Demo page!</p>
-  </template>
-</polymer-element>
-```
-
-The toolbar will fade out on the home page and fade in on the demo page.
-
-### How it works
-The `<app-router>` contains a `<core-animated-pages>` in it's shadow DOM. Each `<app-route>` is a page. When you navigate to a route it's content is loaded inside the `<app-route>` element. The previous example looks like this when it's wired up.
-
-```html
-<app-router core-animated-pages transitions="hero-transition cross-fade">
-  #shadow-root
-  <core-animated-pages transitions="hero-transition cross-fade">
-    <!-- light DOM -->
-    <app-route path="/home" import="/pages/home-page.html">
-      <home-page>
-        #shadow-root
-        <core-toolbar cross-fade>Home</core-toolbar>
-        <p>Home page!</p>
-      </home-page>
-    </app-route>
-    <app-route path="/demo" import="/pages/demo-page.html">
-      <!-- empty until you navigate to /demo -->
-    </app-route>
-  </core-animated-pages>
-</app-router>
-```
-
-When you navigate from `/home` to `/demo` there will temporarily be both a `<home-page>` and `<demo-page>` in the DOM while the transition is animated. Once the transition is complete, `<core-animated-pages>` fires a `core-animated-pages-transition-end` event and the `<home-page>` is removed from the DOM.
-
 ## Demo Site & Example Setup
 Check out the `app-router` in action at [erikringsmuth.github.io/app-router](https://erikringsmuth.github.io/app-router).
 
@@ -304,4 +214,4 @@ Source files are under the `src` folder. The build process writes to the root di
 To build:
 - Run `bower install` and `npm install` to install dev dependencies
 - Lint, test, build, and minify code with `gulp`
-- Manually run functional tests in the browser by starting a static content server (node `http-server` or `python -m SimpleHTTPServer`) and open [http://localhost:8080/tests/functional-test-site/](http://localhost:8080/tests/functional-test-site/)
+- Manually run functional tests in the browser by starting a static content server (node `http-server` or `python -m SimpleHTTPServer`) and open [http://localhost:8080/tests/functional-tests/](http://localhost:8080/tests/functional-tests/)

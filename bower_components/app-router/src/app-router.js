@@ -1,3 +1,4 @@
+// @license Copyright (C) 2014 Erik Ringsmuth - MIT license
 (function(window, document) {
   var utilities = {};
   var importedURIs = {};
@@ -197,17 +198,7 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
-      activeElement(router, stampTemplate(route.firstElementChild), eventDetail);
-    }
-  }
-
-  // Create an instance of the template
-  function stampTemplate(template) {
-    if ('createInstance' in template) {
-      // the Polymer way (see issue https://github.com/erikringsmuth/app-router/issues/19)
-      return template.createInstance();
-    } else {
-      return document.importNode(template.content, true);
+      activeTemplate(router, route.firstElementChild, route, url, eventDetail);
     }
   }
 
@@ -245,7 +236,7 @@
     if (route.hasAttribute('active')) {
       if (route.hasAttribute('template')) {
         // template
-        activeElement(router, stampTemplate(importLink.import.querySelector('template')), eventDetail);
+        activeTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
       } else {
         // custom element
         activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, url, eventDetail);
@@ -256,20 +247,49 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var routeArgs = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
-    for (var arg in routeArgs) {
-      if (routeArgs.hasOwnProperty(arg)) {
-        customElement[arg] = routeArgs[arg];
+    var model = createModel(router, route, url, eventDetail);
+    for (var property in model) {
+      if (model.hasOwnProperty(property)) {
+        customElement[property] = model[property];
       }
     }
     activeElement(router, customElement, eventDetail);
+  }
+
+  // Create an instance of the template
+  function activeTemplate(router, template, route, url, eventDetail) {
+    var templateInstance;
+    if ('createInstance' in template) {
+      // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
+      // https://github.com/erikringsmuth/app-router/issues/19
+      var model = createModel(router, route, url, eventDetail);
+      templateInstance = template.createInstance(model);
+    } else {
+      templateInstance = document.importNode(template.content, true);
+    }
+    activeElement(router, templateInstance, eventDetail);
+  }
+
+  // Create the route's model
+  function createModel(router, route, url, eventDetail) {
+    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+    if (route.hasAttribute('bindRouter') || router.hasAttribute('bindRouter')) {
+      model.router = router;
+    }
+    eventDetail.model = model;
+    fire('before-data-binding', eventDetail, router);
+    fire('before-data-binding', eventDetail, eventDetail.route);
+    return model;
   }
 
   // Replace the active route's content with the new element
   function activeElement(router, element, eventDetail) {
     // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
     // otherwise we can remove the old route's content right away.
-    if (!router.hasAttribute('core-animated-pages')) {
+    // UNLESS
+    // if the route we're navigating to matches the same app-route (ex: path="/article/:id" navigating from /article/0 to
+    // /article/1), then we have to simply replace the route's content instead of animating a transition.
+    if (!router.hasAttribute('core-animated-pages') || eventDetail.route === eventDetail.oldRoute) {
       removeRouteContent(router.previousRoute);
     }
 
