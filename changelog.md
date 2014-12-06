@@ -1,9 +1,10 @@
 ## app-router change log
 
 #### v2.1.0
-- Added data binding to <template> tags when Polymer (TemplateBinding.js) is present
-- Added `bindRouter` attribute to pass the router to the `app-route`'s page
-- Fixed a `core-animated-pages` bug where multiple URLs matched the same `app-route` (ex: `path="/page/:num"` and paths `/page/1`, `/page/2`) 
+- Added data binding to `<template>` tags when Polymer (`TemplateBinding.js`) is present.
+- Added `bindRouter` attribute to pass the router to the `app-route`'s page.
+- Added `before-data-binding` event to add properties to a model before it's bound to the route's custom element or template.
+- Fixed a `core-animated-pages` bug where multiple URLs matched the same `app-route` (ex: `path="/page/:num"` and paths `/page/1`, `/page/2`).
 
 #### v2.0.4
 - The move from `platform.js` to `webcomponents.js` removed the `URL()` constructor polyfill. The v2.0.3 fix created a bug in Safari when parsing the URL. This fixes Safari.
