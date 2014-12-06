@@ -14,6 +14,7 @@
     <ul>
       <li><a href="#/template-binding/1234/route%20args!">/template-binding/1234/route%20args!</a></li>
       <li><a href="#/custom-element-binding/1234/route%20args!">/custom-element-binding/1234/route%20args!</a></li>
+      <li><a href="#/before-data-binding-event">/before-data-binding-event</a></li>
       <li><a href="#/no-router-binding">/no-router-binding</a></li>
     </ul>
 
@@ -57,6 +58,11 @@
               <h2>parent property (not published) - {{router.templateInstance.model.fourth}}</h2>
             </template>
           </app-route>
+          <app-route path="/before-data-binding-event" on-before-data-binding="{{updateRouteModel}}">
+            <template>
+              <h2>Property bound using <code>before-data-binding</code> event - {{newProperty}}</h2>
+            </template>
+          </app-route>
           <app-route path="*">
             <template>
               <h2>Not Found</h2>
@@ -71,6 +77,9 @@
           },
           firstChanged: function(oldFirst, newFirst) {
             console.log('parent {{first}} updated: ' + newFirst);
+          },
+          updateRouteModel: function(event) {
+            event.detail.model.newProperty = 'modified model';
           }
         });
       </script>

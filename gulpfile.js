@@ -53,7 +53,7 @@ gulp.task('watch', function() {
 
 // default
 gulp.task('default', function() {
-  gulp.run('watch', 'lint', 'build', 'minify', 'test');
+  gulp.run('lint', 'build', 'minify', 'test');
 });
 
 // Travis CI

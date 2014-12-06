@@ -247,7 +247,7 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var model = createModel(router, route, url);
+    var model = createModel(router, route, url, eventDetail);
     for (var property in model) {
       if (model.hasOwnProperty(property)) {
         customElement[property] = model[property];
@@ -262,7 +262,7 @@
     if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
-      var model = createModel(router, route, url);
+      var model = createModel(router, route, url, eventDetail);
       templateInstance = template.createInstance(model);
     } else {
       templateInstance = document.importNode(template.content, true);
@@ -271,11 +271,14 @@
   }
 
   // Create the route's model
-  function createModel(router, route, url) {
+  function createModel(router, route, url, eventDetail) {
     var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
     if (route.hasAttribute('bindRouter') || router.hasAttribute('bindRouter')) {
       model.router = router;
     }
+    eventDetail.model = model;
+    fire('before-data-binding', eventDetail, router);
+    fire('before-data-binding', eventDetail, eventDetail.route);
     return model;
   }
 
