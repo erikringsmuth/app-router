@@ -31,7 +31,7 @@ describe('parseUrl(location, mode)', function() {
   it('should parse a hash path when mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/#/example/path', 'auto')).toEqual({
       path: '/example/path',
-      hash: '#/example/path',
+      hash: '',
       search: '',
       isHashPath: true
     });
@@ -40,7 +40,7 @@ describe('parseUrl(location, mode)', function() {
   it('should parse the search on a hash path', function() {
     expect(router.util.parseUrl('http://domain.com/#/example/path?queryParam=true', 'auto')).toEqual({
       path: '/example/path',
-      hash: '#/example/path?queryParam=true',
+      hash: '',
       search: '?queryParam=true',
       isHashPath: true
     });
@@ -49,7 +49,7 @@ describe('parseUrl(location, mode)', function() {
   it('should parse a hashbang path when mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/#!/example/path?queryParam=true', 'auto')).toEqual({
       path: '/example/path',
-      hash: '#!/example/path?queryParam=true',
+      hash: '',
       search: '?queryParam=true',
       isHashPath: true
     });
@@ -58,7 +58,7 @@ describe('parseUrl(location, mode)', function() {
   it('should use the hash path and hash search when there is both a regular path and a hash path and mode="auto"', function() {
     expect(router.util.parseUrl('http://domain.com/other/path?queryParam2=false#/example/path?queryParam1=true', 'auto')).toEqual({
       path: '/example/path',
-      hash: '#/example/path?queryParam1=true',
+      hash: '',
       search: '?queryParam1=true',
       isHashPath: true
     });
@@ -67,7 +67,7 @@ describe('parseUrl(location, mode)', function() {
   it('should return the hashbang path when there is both a path and a hashbang path', function() {
     expect(router.util.parseUrl('http://domain.com/other/path?queryParam2=false#!/example/path?queryParam1=true', 'auto')).toEqual({
       path: '/example/path',
-      hash: '#!/example/path?queryParam1=true',
+      hash: '',
       search: '?queryParam1=true',
       isHashPath: true
     });
@@ -91,7 +91,7 @@ describe('parseUrl(location, mode)', function() {
   it('should use the hash as the path when mode="hash" even if it doesn\'t start with #/ or #!/', function() {
     expect(router.util.parseUrl('http://domain.com/regular/path#hash/path', 'hash')).toEqual({
       path: 'hash/path',
-      hash: '#hash/path',
+      hash: '',
       search: '',
       isHashPath: true
     });
@@ -108,6 +108,54 @@ describe('parseUrl(location, mode)', function() {
       path: '/',
       hash: '',
       search: '',
+      isHashPath: true
+    });
+  });
+
+  it('should parse the hash when mode="pushstate"', function() {
+    expect(router.util.parseUrl('http://domain.com/regular/path?queryParam1=true#first', 'pushstate')).toEqual({
+      path: '/regular/path',
+      hash: '#first',
+      search: '?queryParam1=true',
+      isHashPath: false
+    });
+  });
+
+  it('should parse the hash when mode="auto" and the hash does not start with a #/ or #!/', function() {
+    expect(router.util.parseUrl('http://domain.com/regular/path?queryParam1=true#first', 'auto')).toEqual({
+      path: '/regular/path',
+      hash: '#first',
+      search: '?queryParam1=true',
+      isHashPath: false
+    });
+  });
+
+  it('should parse the hash when mode="auto" and the hash starts with a #/ or #!/', function() {
+    expect(router.util.parseUrl('http://domain.com/#/hash/path#first', 'auto')).toEqual({
+      path: '/hash/path',
+      hash: '#first',
+      search: '',
+      isHashPath: true
+    });
+    expect(router.util.parseUrl('http://domain.com/#/hash/path?queryParam1=true#first', 'auto')).toEqual({
+      path: '/hash/path',
+      hash: '#first',
+      search: '?queryParam1=true',
+      isHashPath: true
+    });
+  });
+
+  it('should parse the hash when mode="hash"', function() {
+    expect(router.util.parseUrl('http://domain.com//#/hash/path#first', 'hash')).toEqual({
+      path: '/hash/path',
+      hash: '#first',
+      search: '',
+      isHashPath: true
+    });
+    expect(router.util.parseUrl('http://domain.com//#/hash/path?queryParam1=true#first', 'hash')).toEqual({
+      path: '/hash/path',
+      hash: '#first',
+      search: '?queryParam1=true',
       isHashPath: true
     });
   });
