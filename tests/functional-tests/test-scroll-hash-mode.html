@@ -20,7 +20,11 @@
       <li><a href="#/page2">/page2</a></li>
       <li><a href="#/page2#top">/page2#top</a></li>
       <li><a href="#/page2#middle">/page2#middle</a></li>
-      <li><a href="#/page2#bottom">/page1#bottom</a></li>
+      <li><a href="#/page2#bottom">/page2#bottom</a></li>
+      <li><a href="#/page3">/page3</a></li>
+      <li><a href="#/page3#top">/page3#top</a></li>
+      <li><a href="#/page3#middle">/page3#middle</a></li>
+      <li><a href="#/page3#bottom">/page3#bottom</a></li>
     </ul>
 
     <p>Test navigating to hash fragments.</p>
@@ -28,6 +32,7 @@
     <app-router>
       <app-route path="/page1" import="pages/scroll-page-1.html"></app-route>
       <app-route path="/page2" import="pages/scroll-page-2.html"></app-route>
+      <app-route path="/page3" import="pages/scroll-page-scaffold.html"></app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
 
