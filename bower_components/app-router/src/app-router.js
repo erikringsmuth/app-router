@@ -253,7 +253,7 @@
         customElement[property] = model[property];
       }
     }
-    activeElement(router, customElement, eventDetail);
+    activeElement(router, customElement, url, eventDetail);
   }
 
   // Create an instance of the template
@@ -267,7 +267,7 @@
     } else {
       templateInstance = document.importNode(template.content, true);
     }
-    activeElement(router, templateInstance, eventDetail);
+    activeElement(router, templateInstance, url, eventDetail);
   }
 
   // Create the route's model
@@ -283,7 +283,7 @@
   }
 
   // Replace the active route's content with the new element
-  function activeElement(router, element, eventDetail) {
+  function activeElement(router, element, url, eventDetail) {
     // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
     // otherwise we can remove the old route's content right away.
     // UNLESS
@@ -306,6 +306,22 @@
       if (router.previousRoute) {
         router.previousRoute.transitionAnimationInProgress = true;
       }
+    }
+
+    // scroll to the URL hash if it's present
+    if (url.hash && !router.hasAttribute('core-animated-pages')) {
+      var hash = url.hash;
+      // wait for the browser's scrolling to finish before we scroll to the hash
+      // ex: http://example.com/#/page1#middle
+      // the browser will scroll to an element with id or name `/page1#middle` when the page finishes loading. if it doesn't exist
+      // it will scroll to the top of the page. let the browser finish the current event loop and scroll to the top of the page
+      // before we scroll to the element with id or name `middle`.
+      setTimeout(function() {
+        var hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
+        if (hashElement && hashElement.scrollIntoView) {
+          hashElement.scrollIntoView(true);
+        }
+      }, 0);
     }
 
     fire('activate-route-end', eventDetail, router);
@@ -390,8 +406,17 @@
         }
       }
 
-      // hash paths get the search from the hash if it exists
       if (url.isHashPath) {
+        url.hash = '';
+
+        // hash paths might have an additional hash in the hash path for scrolling to a specific part of the page #/hash/path#elementId
+        var secondHashIndex = url.path.indexOf('#');
+        if (secondHashIndex !== -1) {
+          url.hash = url.path.substring(secondHashIndex);
+          url.path = url.path.substring(0, secondHashIndex);
+        }
+
+        // hash paths get the search from the hash if it exists
         var searchIndex = url.path.indexOf('?');
         if (searchIndex !== -1) {
           url.search = url.path.substring(searchIndex);

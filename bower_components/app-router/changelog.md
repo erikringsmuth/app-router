@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### v2.2.0
+- Added ability to scroll to hash fragment on navigation. For example, `http://example.com/#/page1#middle` will now scroll to an element with `id="middle"` or `name="middle"`.
+
 #### v2.1.0
 - Added data binding to `<template>` tags when Polymer (`TemplateBinding.js`) is present.
 - Added `bindRouter` attribute to pass the router to the `app-route`'s page.

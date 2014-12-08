@@ -8,7 +8,7 @@
     <scaffold-layout selected="events">
       <div class="title">Lifecycle Events</div>
 
-      <h2>lifecycle events</h2>
+      <h2 id="lifecycle-events">lifecycle events</h2>
 
       <p>Lifecycle events let you hook into different stages of the route process.</p>
 
@@ -17,21 +17,21 @@
   &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
 
-      <h4 class="top-spacing">state-change (attach to app-router)</h4>
+      <h4 id="state-change" class="top-spacing">state-change (attach to app-router)</h4>
       <p><code-snippet>state-change</code-snippet> is the first event fired when the URL changes. This is triggered by a <code-snippet>hashchange</code-snippet>,  <code-snippet>popstate</code-snippet>, or full page load. Calling <code-snippet>event.preventDefault()</code-snippet> will prevent the new route from loading.</p>
 <code-block>// event.detail looks like this
 {
   path: '/new-path'
 }</code-block>
 
-      <h4 class="top-spacing">not-found (attach to app-router)</h4>
+      <h4 id="not-found" class="top-spacing">not-found (attach to app-router)</h4>
       <p><code-snippet>not-found</code-snippet> is fired after a <code-snippet>state-change</code-snippet> if no matching route is found.</p>
 <code-block>// event.detail looks like this
 {
   path: '/new-path'
 }</code-block>
 
-      <h4 class="top-spacing">activate-route-start (attach to app-router or app-route)</h4>
+      <h4 id="activate-route-start" class="top-spacing">activate-route-start (attach to app-router or app-route)</h4>
       <p><code-snippet>activate-route-start</code-snippet> is fired before the new route is imported or added to the DOM. Calling <code-snippet>event.preventDefault()</code-snippet> will prevent the new route from loading.</p>
 <code-block>// event.detail looks like this
 {
@@ -40,7 +40,7 @@
   oldRoute: oldRoute
 }</code-block>
 
-      <h4 class="top-spacing">before-data-binding (attach to app-router or app-route)</h4>
+      <h4 id="before-data-binding" class="top-spacing">before-data-binding (attach to app-router or app-route)</h4>
       <p><code-snippet>before-data-binding</code-snippet> is fired after the new route is imported but before it is added to the DOM. It allows you to update the model before it is bound to the custom element or template.</p>
 <code-block>// event.detail looks like this
 {
@@ -53,7 +53,7 @@
   }
 }</code-block>
 
-      <h4 class="top-spacing">activate-route-end (attach to app-router or app-route)</h4>
+      <h4 id="activate-route-end" class="top-spacing">activate-route-end (attach to app-router or app-route)</h4>
       <p><code-snippet>activate-route-end</code-snippet> is fired after the DOM has been changed to the new route.</p>
 <code-block>// event.detail looks like this
 {
@@ -63,7 +63,7 @@
   model: {}
 }</code-block>
 
-      <h2 class="top-spacing">addEventListener()</h2>
+      <h2 id="addeventlistener" class="top-spacing">addEventListener()</h2>
       <p>Attach event listeners the JS way without Polymer.</p>
 
       <p>Note: You should manually initialize the router to make sure the event listeners are attached before the first route loads.</p>
@@ -87,7 +87,7 @@
   });
 &lt;/script&gt;</code-block>
 
-      <h2 class="top-spacing">Polymer event mapping</h2>
+      <h2 id="polymer-event-mapping" class="top-spacing">Polymer event mapping</h2>
       <p>If you're using Polymer you can use <a href="https://www.polymer-project.org/docs/polymer/polymer.html#declarative-event-mapping">declarative event mapping</a>. This example shows how to redirect to a login page if the user hasn't signed in.</p>
 <code-block>&lt;polymer-element name="demo-app"&gt;
   &lt;template&gt;

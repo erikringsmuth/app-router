@@ -8,27 +8,27 @@
     <scaffold-layout selected="databinding">
       <div class="title">Data Binding Demo</div>
 
-      <h2>Path Variables & Query Parameters</h2>
+      <h2 id="path-variables-and-query-parameters">Path Variables & Query Parameters</h2>
 
       <p>Change values in the address bar and see them change here. Path variables and query parameters are automatically attached to the element's attributes.</p>
 
-      <h4 class="top-spacing">Route Args</h4>
+      <h4 id="route-args" class="top-spacing">Route Args</h4>
 
       <p>Path variables and query parameters attached to this page.</p>
 
 <code-block>{{routeArgs}}</code-block>
 
-      <h4 class="top-spacing">URL</h4>
+      <h4 id="url" class="top-spacing">URL</h4>
 
 <code-block>{{url}}</code-block>
 
-      <h4 class="top-spacing">Route</h4>
+      <h4 id="route" class="top-spacing">Route</h4>
 
       <p>Path variables are defined on the <code-snippet>app-route</code-snippet>.</p>
 
 <code-block>&lt;app-route path="/demo/:pathArg1" import="pages/demo-page.html"&gt;&lt;/app-route&gt;</code-block>
 
-      <h4 class="top-spacing">Page</h4>
+      <h4 id="page" class="top-spacing">Page</h4>
 
       <p>Path variables and query parameters are defined on the custom element and used in the template.</p>
 
@@ -38,7 +38,7 @@
   &lt;/template&gt;
 &lt;/polymer-element&gt;</code-block>
 
-      <h2 class="top-spacing">Polymer &lt;template&gt;</h2>
+      <h2 id="polymer-template" class="top-spacing">Polymer &lt;template&gt;</h2>
 
       <p>If you're using Polymer, you can also bind path variables and query parameters to templates.</p>
 
@@ -48,7 +48,7 @@
   &lt;/template&gt;
 &lt;/app-route&gt;</code-block>
 
-      <h2 class="top-spacing">bindRouter attribute</h2>
+      <h2 id="bindrouter-attribute" class="top-spacing">bindRouter attribute</h2>
 
       <p>You can bind the router to an element or template using the <code-snippet>bindRouter</code-snippet> attribute. This gives you access to the router's API including <code-snippet>router.go('/path')</code-snippet>.</p>
 
@@ -71,7 +71,7 @@
   &lt;/script&gt;
 &lt;/polymer-element&gt;</code-block>
 
-      <h2 class="top-spacing">before-data-binding event</h4>
+      <h2 id="before-data-binding-event" class="top-spacing">before-data-binding event</h4>
       <p>The <code-snippet>before-data-binding</code-snippet> event allows you to update the model before it is bound to the route's custom element or template.</p>
 <code-block>&lt;app-router&gt;
   &lt;app-route path="/" import="/pages/home-page.html" on-before-data-binding="{{'\{{bindSession}\}'}}"&gt;&lt;/app-route&gt;
@@ -87,9 +87,9 @@
     // modify or add properties here before data binding happens
   }
 }</code-block>
-      <p>See <a is="pushstate-anchor" href="../#/events">Lifecycle Events</a> for more info.</p>
+      <p>See <a is="pushstate-anchor" href="../#/events#before-data-binding">Lifecycle Events before-data-binding</a> for more info.</p>
 
-      <h2 class="top-spacing">Accessing the parent scope</h2>
+      <h2 id="accessing-the-parent-scope" class="top-spacing">Accessing the parent scope</h2>
 
       <p>If you're using Polymer you can also access the parent scope using <code-snippet>router.templateInstance.model</code-snippet>. See <a href="https://www.polymer-project.org/docs/polymer/databinding.html#event-handling-and-data-binding">Polymer's documentation</a> on <code-snippet>templateInstance.model</code-snippet>. In short, every DOM element in a Polymer template has a <code-snippet>templateInstance</code-snippet> property that references the template (or custom element) that contains it.</p>
 
