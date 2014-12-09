@@ -9,5 +9,26 @@ body /deep/ li {
   color: #555;
 }
 body /deep/ .top-spacing {
-  margin-top: 1.6em;
+  padding-top: .6em;
+}
+body /deep/ h1>a,
+body /deep/ h2>a,
+body /deep/ h3>a,
+body /deep/ h4>a {
+  display: none;
+  text-decoration: none;
+  color: #2f76d0;
+  font-weight: 300;
+}
+body /deep/ h1:hover>a,
+body /deep/ h2:hover>a,
+body /deep/ h3:hover>a,
+body /deep/ h4:hover>a {
+  display: inline;
+}
+body /deep/ h1:hover>a:hover,
+body /deep/ h2:hover>a:hover,
+body /deep/ h3:hover>a:hover,
+body /deep/ h4:hover>a:hover {
+  text-decoration: underline;
 }
