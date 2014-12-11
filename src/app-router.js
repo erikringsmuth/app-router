@@ -279,7 +279,7 @@
     eventDetail.model = model;
     fire('before-data-binding', eventDetail, router);
     fire('before-data-binding', eventDetail, eventDetail.route);
-    return model;
+    return eventDetail.model;
   }
 
   // Replace the active route's content with the new element
