@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### v2.2.1
+- Fixing bug where the `before-data-binding` event wasn't using the updated model if the entire model was replaced.
+
 #### v2.2.0
 - Added ability to scroll to hash fragment on navigation. For example, `http://example.com/#/page1#middle` will now scroll to an element with `id="middle"` or `name="middle"`.
 
