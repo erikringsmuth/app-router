@@ -2,6 +2,7 @@
 
 #### v2.3.0
 - Adding `typecast="auto|string"` option on the `app-router`. Path variables and query parameters are typecast to numbers, booleans, and unescaped strings by default. Now you can get the raw string with `typecast="string"`.
+- Optimized hash fragment changes so that if only the hash fragment changes it will scroll to the fragment and not reload the entire page.
 
 #### v2.2.1
 - Fixing bug where the `before-data-binding` event wasn't using the updated model if the entire model was replaced.
