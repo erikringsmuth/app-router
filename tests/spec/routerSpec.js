@@ -215,11 +215,11 @@ describe('testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', functio
   });
 });
 
-describe('routeArguments(routePath, urlPath, search, isRegExp)', function() {
+describe('routeArguments(routePath, urlPath, search, isRegExp, typecast)', function() {
   var router = document.createElement('app-router');
 
   it('should parse query parameters', function() {
-    var args = router.util.routeArguments('*', '/example/path', '?stringQueryParam=example%20string&numQueryParam=12.34', false);
+    var args = router.util.routeArguments('*', '/example/path', '?stringQueryParam=example%20string&numQueryParam=12.34', false, true);
     expect(args).toEqual({
       stringQueryParam: 'example string',
       numQueryParam: 12.34
@@ -227,29 +227,37 @@ describe('routeArguments(routePath, urlPath, search, isRegExp)', function() {
   });
 
   it('should correctly get a query parameter with an equals sign in the value', function() {
-    var args = router.util.routeArguments('*', '/example/path', '?queryParam=some=text&otherParam=123', false);
+    var args = router.util.routeArguments('*', '/example/path', '?queryParam=some=text&otherParam=123', false, true);
     expect(args.queryParam).toEqual('some=text');
   });
 
   it('should parse string path parameters', function() {
-    var args = router.util.routeArguments('/person/:name', '/person/jon', '?queryParam=true', false);
+    var args = router.util.routeArguments('/person/:name', '/person/jon', '?queryParam=true', false, true);
     expect(args.name).toEqual('jon');
   });
 
   it('should parse number path parameters', function() {
-    var args = router.util.routeArguments('/customer/:id', '/customer/123', '?queryParam=true', false);
+    var args = router.util.routeArguments('/customer/:id', '/customer/123', '?queryParam=true', false, true);
     expect(args.id).toEqual(123);
   });
 
   it('should not add an empty string value when the search is empty', function() {
-    var args = router.util.routeArguments('*', '/example/path', '', false);
+    var args = router.util.routeArguments('*', '/example/path', '', false, true);
     expect(args.hasOwnProperty('')).toBeFalsy();
     expect(args).toEqual({});
   });
 
   it('should still parse query parameters on regex paths', function() {
-    var args = router.util.routeArguments('/^\\/\\w+\\/\\d+$/i', '/example/123', '?queryParam=correct', true);
+    var args = router.util.routeArguments('/^\\/\\w+\\/\\d+$/i', '/example/123', '?queryParam=correct', true, true);
     expect(args.queryParam).toEqual('correct');
+  });
+
+  it('should not typecast when typecast="string"', function() {
+    var args = router.util.routeArguments('*', '/example/path', '?stringQueryParam=example%20string&numQueryParam=12.34', false, false);
+    expect(args).toEqual({
+      stringQueryParam: 'example%20string',
+      numQueryParam: '12.34'
+    });
   });
 });
 

@@ -39,6 +39,11 @@
       router.setAttribute('mode', 'auto');
     }
 
+    // typecast="auto|string"
+    if (!router.hasAttribute('typecast')) {
+      router.setAttribute('typecast', 'auto');
+    }
+
     // <app-router core-animated-pages transitions="hero-transition cross-fade">
     if (router.hasAttribute('core-animated-pages')) {
       // use shadow DOM to wrap the <app-route> elements in a <core-animated-pages> element
@@ -272,7 +277,7 @@
 
   // Create the route's model
   function createModel(router, route, url, eventDetail) {
-    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'), router.getAttribute('typecast') === 'auto');
     if (route.hasAttribute('bindRouter') || router.hasAttribute('bindRouter')) {
       model.router = router;
     }
@@ -488,7 +493,7 @@
   };
 
   // routeArguments(routePath, urlPath, search, isRegExp) - Gets the path variables and query parameter values from the URL
-  utilities.routeArguments = function(routePath, urlPath, search, isRegExp) {
+  utilities.routeArguments = function(routePath, urlPath, search, isRegExp, typecast) {
     var args = {};
 
     // regular expressions can't have path variables
@@ -522,9 +527,11 @@
       args[queryParameterParts[0]] = queryParameterParts.splice(1, queryParameterParts.length - 1).join('=');
     }
 
-    // parse the arguments into unescaped strings, numbers, or booleans
-    for (var arg in args) {
-      args[arg] = utilities.typecast(args[arg]);
+    if (typecast) {
+      // parse the arguments into unescaped strings, numbers, or booleans
+      for (var arg in args) {
+        args[arg] = utilities.typecast(args[arg]);
+      }
     }
 
     return args;

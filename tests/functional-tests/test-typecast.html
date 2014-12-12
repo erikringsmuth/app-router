@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/src/app-router.html">
+  </head>
+  <body>
+
+    <p>Test the different <code>app-route</code> types by navigating through these links.</p>
+    <ul>
+      <li><a href="#/page1/123">/page1/123</a></li>
+      <li><a href="#/page2/hey%20you!">/page2/hey%20you!</a></li>
+    </ul>
+
+    <p>Look at the console output to see if the model's properties are typecast or strings.</p>
+
+    <app-router init="manual" typecast="string">
+      <app-route path="/page1/:num">
+        <template>
+          <h2>Page 1 - {{num}}</h2>
+        </template>
+      </app-route>
+      <app-route path="/page2/:string">
+        <template>
+          <h2>Page 2 - {{string}}</h2>
+        </template>
+      </app-route>
+      <app-route path="*" import="pages/not-found-page.html"></app-route>
+    </app-router>
+    <script>
+      window.addEventListener('WebComponentsReady', function() {
+        var router = document.querySelector('app-router');
+        router.addEventListener('before-data-binding', function(event) {
+          console.log(event.detail.model);
+        });
+        router.init();
+      });
+    </script>
+
+  </body>
+</html>
