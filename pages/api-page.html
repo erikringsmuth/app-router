@@ -74,6 +74,13 @@
   &lt;app-route path="/home" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
 
+      <h4 id="typecast" class="top-spacing">typecast <a href="../#/api#typecast">#</a></h4>
+      <p>Path variables and query parameters are typecast to numbers, booleans, and unescaped strings. You can specify whether to typecast or use the raw strings with <code-snippet>typecast="auto|string"</code-snippet>.</p>
+<code-block>&lt;app-router typecast="string"&gt;
+  &lt;!-- customerId will be bound as "123" instead of the number 123 --&gt;
+  &lt;app-route path="/customer/:customerId" import="/pages/customer-page.html"&gt;&lt;/app-route&gt;
+&lt;/app-router&gt;</code-block>
+
       <h4 id="go" class="top-spacing">go(path, options) <a href="../#/api#go">#</a></h4>
       <p>You can call the router from Javascript to navigate imperatively.</p>
 <code-block>document.querySelector('app-router').go('/home');

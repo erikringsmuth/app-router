@@ -3,6 +3,7 @@
   var utilities = {};
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
+  var previousUrl = {};
 
   // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [shadow]></app-router>
   var AppRouter = Object.create(HTMLElement.prototype);
@@ -37,6 +38,11 @@
     // mode="auto|hash|pushstate"
     if (!router.hasAttribute('mode')) {
       router.setAttribute('mode', 'auto');
+    }
+
+    // typecast="auto|string"
+    if (!router.hasAttribute('typecast')) {
+      router.setAttribute('typecast', 'auto');
     }
 
     // <app-router core-animated-pages transitions="hero-transition cross-fade">
@@ -134,11 +140,18 @@
   // Find the first <app-route> that matches the current URL and change the active route
   function stateChange(router) {
     var url = utilities.parseUrl(window.location.href, router.getAttribute('mode'));
+
+    // don't load a new route if only the hash fragment changed
+    if (url.path === previousUrl.path && url.search === previousUrl.search && url.isHashPath === previousUrl.isHashPath) {
+      scrollToHash(url.hash);
+      return;
+    }
+    previousUrl = url;
+
+    // fire a state-change event on the app-router and return early if the user called event.preventDefault()
     var eventDetail = {
       path: url.path
     };
-
-    // fire a state-change event on the app-router and return early if the user called event.preventDefault()
     if (!fire('state-change', eventDetail, router)) {
       return;
     }
@@ -272,14 +285,14 @@
 
   // Create the route's model
   function createModel(router, route, url, eventDetail) {
-    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'));
+    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'), router.getAttribute('typecast') === 'auto');
     if (route.hasAttribute('bindRouter') || router.hasAttribute('bindRouter')) {
       model.router = router;
     }
     eventDetail.model = model;
     fire('before-data-binding', eventDetail, router);
     fire('before-data-binding', eventDetail, eventDetail.route);
-    return model;
+    return eventDetail.model;
   }
 
   // Replace the active route's content with the new element
@@ -310,18 +323,7 @@
 
     // scroll to the URL hash if it's present
     if (url.hash && !router.hasAttribute('core-animated-pages')) {
-      var hash = url.hash;
-      // wait for the browser's scrolling to finish before we scroll to the hash
-      // ex: http://example.com/#/page1#middle
-      // the browser will scroll to an element with id or name `/page1#middle` when the page finishes loading. if it doesn't exist
-      // it will scroll to the top of the page. let the browser finish the current event loop and scroll to the top of the page
-      // before we scroll to the element with id or name `middle`.
-      setTimeout(function() {
-        var hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
-        if (hashElement && hashElement.scrollIntoView) {
-          hashElement.scrollIntoView(true);
-        }
-      }, 0);
+      scrollToHash(url.hash);
     }
 
     fire('activate-route-end', eventDetail, router);
@@ -350,13 +352,30 @@
     }
   }
 
+  // scroll to the element with id="hash" or name="hash"
+  function scrollToHash(hash) {
+    if (!hash) return;
+
+    // wait for the browser's scrolling to finish before we scroll to the hash
+    // ex: http://example.com/#/page1#middle
+    // the browser will scroll to an element with id or name `/page1#middle` when the page finishes loading. if it doesn't exist
+    // it will scroll to the top of the page. let the browser finish the current event loop and scroll to the top of the page
+    // before we scroll to the element with id or name `middle`.
+    setTimeout(function() {
+      var hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
+      if (hashElement && hashElement.scrollIntoView) {
+        hashElement.scrollIntoView(true);
+      }
+    }, 0);
+  }
+
   // parseUrl(location, mode) - Augment the native URL() constructor to get info about hash paths
   //
-  // Example parseUrl('http://domain.com/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string', 'auto')
+  // Example parseUrl('http://domain.com/other/path?queryParam3=false#/example/path?queryParam1=true&queryParam2=example%20string#middle', 'auto')
   //
   // returns {
   //   path: '/example/path',
-  //   hash: '#/example/path?queryParam1=true&queryParam2=example%20string'
+  //   hash: '#middle'
   //   search: '?queryParam1=true&queryParam2=example%20string',
   //   isHashPath: true
   // }
@@ -488,7 +507,7 @@
   };
 
   // routeArguments(routePath, urlPath, search, isRegExp) - Gets the path variables and query parameter values from the URL
-  utilities.routeArguments = function(routePath, urlPath, search, isRegExp) {
+  utilities.routeArguments = function(routePath, urlPath, search, isRegExp, typecast) {
     var args = {};
 
     // regular expressions can't have path variables
@@ -522,9 +541,11 @@
       args[queryParameterParts[0]] = queryParameterParts.splice(1, queryParameterParts.length - 1).join('=');
     }
 
-    // parse the arguments into unescaped strings, numbers, or booleans
-    for (var arg in args) {
-      args[arg] = utilities.typecast(args[arg]);
+    if (typecast) {
+      // parse the arguments into unescaped strings, numbers, or booleans
+      for (var arg in args) {
+        args[arg] = utilities.typecast(args[arg]);
+      }
     }
 
     return args;

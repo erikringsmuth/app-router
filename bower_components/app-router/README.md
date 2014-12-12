@@ -196,7 +196,7 @@ By default `/home` and `/home/` are treated as separate routes. You can configur
 ```
 
 ## Demo Site & Example Setup
-Check out the `app-router` in action at [erikringsmuth.github.io/app-router](https://erikringsmuth.github.io/app-router).
+Check out the `app-router` in action at [erikringsmuth.github.io/app-router](https://erikringsmuth.github.io/app-router/).
 
 You can download an example setup here https://github.com/erikringsmuth/app-router-examples to get running locally.
 
