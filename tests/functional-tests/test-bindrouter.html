@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/src/app-router.html">
+  </head>
+  <body>
+
+    <p>Test the different <code>app-route</code> types by navigating through these links.</p>
+    <ul>
+      <li><a href="#/">/</a></li>
+      <li><a href="#/polymer-page">/polymer-page</a></li>
+      <li><a href="#/custom-el-page">/custom-el-page</a></li>
+      <li><a href="#/other">/other</a></li>
+    </ul>
+
+    <p>Test when <code>bindRouter</code> is available in the custom element lifecycle. <code>/polymer-page</code> and <code>/custom-el-page</code> should call <code>router.go('/other')</code>. You should never see <code>/polymer-page</code> or <code>/custom-el-page</code>.</p>
+
+    <polymer-element name="first-page" noscript>
+      <template>
+        <h2>Page 1</h2>
+      </template>
+    </polymer-element>
+
+    <polymer-element name="polymer-page" attributes="router">
+      <template>
+        <h2><code>polymer-page</code> - should call <code>router.go('/other')</code> so you shouldn't be reading this.</h2>
+      </template>
+      <script>
+        Polymer('polymer-page', {
+          domReady: function() {
+            this.router.go('/other');
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <script>
+      var customElPage = Object.create(HTMLElement.prototype);
+      customElPage.attachedCallback = function() {
+        this.router.go('/other');
+      };
+      document.registerElement('custom-el-page', {
+        prototype: customElPage
+      });
+    </script>
+
+    <polymer-element name="other-page" noscript>
+      <template>
+        <h2>Other page - <code>router.go()</code> was called correctly.</h2>
+      </template>
+    </polymer-element>
+
+    <app-router mode="hash">
+      <app-route path="/" element="first-page"></app-route>
+      <app-route path="/polymer-page" element="polymer-page" bindRouter></app-route>
+      <app-route path="/custom-el-page" element="custom-el-page" bindRouter></app-route>
+      <app-route path="/other" element="other-page"></app-route>
+      <app-route path="*">
+        <template>
+          <h2>Not Found</h2>
+        </template>
+      </app-route>
+    </app-router>
+
+  </body>
+</html>
