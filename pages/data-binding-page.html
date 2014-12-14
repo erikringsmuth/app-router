@@ -85,6 +85,21 @@
 }</code-block>
       <p>See <a is="pushstate-anchor" href="../#/events#before-data-binding">Lifecycle Events before-data-binding</a> for more info.</p>
 
+      <h2 id="callbacks" class="top-spacing">attachedCallback() and domReady() <a href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!#callbacks">#</a></h2>
+
+      <p>Warning: The <code-snippet>createdCallback()</code-snippet> and Polymer's <code-snippet>ready()</code-snippet> callback are called BEFORE data binding.</p>
+
+      <p>Steps to load a new route.</p>
+
+      <ul>
+        <li>import element</li>
+        <li><code-snippet>el = document.createElement('element-name')</code-snippet></li>
+        <li>data binding</li>
+        <li><code-snippet>activeRoute.appendChild(el)</code-snippet></li>
+      </ul>
+
+      <p>The <code-snippet>attachedCallback()</code-snippet> and Polymer's <code-snippet>domReady()</code-snippet> callback are called after data binding is complete. If you're using <code-snippet>bindRouter</code-snippet>, you should use <code-snippet>attachedCallback()</code-snippet> or <code-snippet>domReady()</code-snippet> to wait for <code-snippet>this.router</code-snippet> to be defined.</p>
+
       <h2 id="accessing-the-parent-scope" class="top-spacing">Accessing the parent scope <a href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!#accessing-the-parent-scope">#</a></h2>
 
       <p>If you're using Polymer you can also access the parent scope using <code-snippet>router.templateInstance.model</code-snippet>. See <a href="https://www.polymer-project.org/docs/polymer/databinding.html#event-handling-and-data-binding">Polymer's documentation</a> on <code-snippet>templateInstance.model</code-snippet>. In short, every DOM element in a Polymer template has a <code-snippet>templateInstance</code-snippet> property that references the template (or custom element) that contains it.</p>
