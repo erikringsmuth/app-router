@@ -113,10 +113,10 @@
       // mode = auto or hash
       path = '#' + path;
     }
-    if (options && options.replace !== true) {
-      window.history.pushState(null, null, path);
-    } else {
+    if (options && options.replace === true) {
       window.history.replaceState(null, null, path);
+    } else {
+      window.history.pushState(null, null, path);
     }
     stateChange(this);
   };
