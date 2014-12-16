@@ -3,7 +3,6 @@
   var utilities = {};
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
-  var previousUrl = {};
 
   // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [shadow]></app-router>
   var AppRouter = Object.create(HTMLElement.prototype);
@@ -29,6 +28,7 @@
       return;
     }
     router.isInitialized = true;
+    router.previousUrl = {};
 
     // trailingSlash="strict|ignore"
     if (!router.hasAttribute('trailingSlash')) {
@@ -142,7 +142,7 @@
     var url = utilities.parseUrl(window.location.href, router.getAttribute('mode'));
 
     // don't load a new route if only the hash fragment changed
-    if (url.path === previousUrl.path && url.search === previousUrl.search && url.isHashPath === previousUrl.isHashPath) {
+    if (url.path === router.previousUrl.path && url.search === router.previousUrl.search && url.isHashPath === router.previousUrl.isHashPath) {
       scrollToHash(url.hash);
       return;
     }
