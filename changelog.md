@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### v2.3.1
+- Fixing bug where `router.go('/path')` would replace state instead of push state.
+
 #### v2.3.0
 - Adding `typecast="auto|string"` option on the `app-router`. Path variables and query parameters are typecast to numbers, booleans, and unescaped strings by default. Now you can get the raw string with `typecast="string"`.
 - Optimized hash fragment changes so that if only the hash fragment changes it will scroll to the fragment and not reload the entire page.
