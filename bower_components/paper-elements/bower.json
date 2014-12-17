@@ -28,5 +28,5 @@
     "paper-toggle-button": "Polymer/paper-toggle-button#^0.5.0",
     "sampler-scaffold": "Polymer/sampler-scaffold#^0.5.0"
   },
-  "version": "0.5.1"
+  "version": "0.5.2"
 }

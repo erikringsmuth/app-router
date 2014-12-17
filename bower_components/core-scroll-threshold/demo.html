@@ -1,0 +1,73 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html>
+<head>
+
+  <title>core-image</title>
+
+  <script src="../webcomponentsjs/webcomonents.js"></script>
+
+  <link rel="import" href="core-scroll-threshold.html">
+
+  <style>
+    #scroller {
+      height: 300px;
+      border: 1px solid red;
+      padding: 20px;
+      overflow: auto;
+    }
+    .thing {
+      padding: 10px;
+      margin: 10px;
+      background: lightblue;
+      border-radius: 10px;
+      font-size: 2em;
+    }
+  </style>
+
+</head>
+<body unresolved>
+
+<template is="auto-binding">
+  <core-scroll-threshold id="threshold" scrollTarget="{{$.scroller}}" lowerThreshold="100" on-lower-trigger="{{loadMore}}" fit></core-scroll-threshold>
+  <div id="scroller" fit>
+    <template repeat="{{i in data}}">
+      <div class="thing">{{i}}</div>
+    </template>
+    <div hidden?="{{!$.threshold.lowerTriggered}}">Please wait...</div>
+  </div> 
+</template>
+
+<script>
+
+  addEventListener('template-bound', function(e) {
+
+    var scope = e.target;
+    var n;
+    scope.data = [];
+    for (n=0; n<20; n++) {
+      scope.data.push(n);
+    }
+    scope.loadMore = function() {
+      setTimeout(function() {
+        for (var i=n; i<n+10; i++) {
+          scope.data.push(i);
+        }
+        n = i;
+        scope.$.threshold.clearLower();
+      }, 1000);
+    };
+  });
+
+</script>
+
+</body>
+</html>

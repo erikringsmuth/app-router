@@ -28,15 +28,15 @@
     "paper-toggle-button": "Polymer/paper-toggle-button#^0.5.0",
     "sampler-scaffold": "Polymer/sampler-scaffold#^0.5.0"
   },
-  "version": "0.5.1",
+  "version": "0.5.2",
   "homepage": "https://github.com/Polymer/paper-elements",
-  "_release": "0.5.1",
+  "_release": "0.5.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.5.1",
-    "commit": "63357858497478986a2602267b060e2b1844191a"
+    "tag": "0.5.2",
+    "commit": "e83810e162a6f40092612a2bf772ad6ca638a035"
   },
   "_source": "git://github.com/Polymer/paper-elements.git",
-  "_target": "~0.5.1",
+  "_target": "~0.5.2",
   "_originalSource": "Polymer/paper-elements"
 }

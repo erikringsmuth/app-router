@@ -110,15 +110,36 @@
   // }
   AppRouter.go = function(path, options) {
     if (this.getAttribute('mode') !== 'pushstate') {
-      // mode = auto or hash
+      // mode == auto or hash
       path = '#' + path;
     }
-    if (options && options.replace !== true) {
-      window.history.pushState(null, null, path);
-    } else {
+    if (options && options.replace === true) {
       window.history.replaceState(null, null, path);
+    } else {
+      window.history.pushState(null, null, path);
     }
-    stateChange(this);
+
+    // dispatch a popstate event
+    try {
+      var popstateEvent = new PopStateEvent('popstate', {
+        bubbles: false,
+        cancelable: false,
+        state: {}
+      });
+
+      if ('dispatchEvent_' in window) {
+        // FireFox with polyfill
+        window.dispatchEvent_(popstateEvent);
+      } else {
+        // normal
+        window.dispatchEvent(popstateEvent);
+      }
+    } catch(error) {
+      // Internet Exploder
+      var fallbackEvent = document.createEvent('CustomEvent');
+      fallbackEvent.initCustomEvent('popstate', false, false, { state: {} });
+      window.dispatchEvent(fallbackEvent);
+    }
   };
 
   // fire(type, detail, node) - Fire a new CustomEvent(type, detail) on the node
@@ -142,7 +163,7 @@
     var url = utilities.parseUrl(window.location.href, router.getAttribute('mode'));
 
     // don't load a new route if only the hash fragment changed
-    if (url.path === previousUrl.path && url.search === previousUrl.search && url.isHashPath === previousUrl.isHashPath) {
+    if (url.hash !== previousUrl.hash && url.path === previousUrl.path && url.search === previousUrl.search && url.isHashPath === previousUrl.isHashPath) {
       scrollToHash(url.hash);
       return;
     }

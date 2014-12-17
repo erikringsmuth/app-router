@@ -34,6 +34,7 @@
     "core-range": "Polymer/core-range#^0.5.0",
     "core-scaffold": "Polymer/core-scaffold#^0.5.0",
     "core-scroll-header-panel": "Polymer/core-scroll-header-panel#^0.5.0",
+    "core-scroll-threshold": "Polymer/core-scroll-threshold#^0.5.0",
     "core-selection": "Polymer/core-selection#^0.5.0",
     "core-selector": "Polymer/core-selector#^0.5.0",
     "core-shared-lib": "Polymer/core-shared-lib#^0.5.0",
@@ -46,15 +47,15 @@
     "core-transition": "Polymer/core-transition#^0.5.0",
     "sampler-scaffold": "Polymer/sampler-scaffold#^0.5.0"
   },
-  "version": "0.5.1",
+  "version": "0.5.2",
   "homepage": "https://github.com/Polymer/core-elements",
-  "_release": "0.5.1",
+  "_release": "0.5.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.5.1",
-    "commit": "63cb3a0bdcf2cc2f008c4168abac0b55473634ce"
+    "tag": "0.5.2",
+    "commit": "e1cf8b00b6b6e64f2acee93c36f260b1c4d941c5"
   },
   "_source": "git://github.com/Polymer/core-elements.git",
-  "_target": "~0.5.1",
+  "_target": "~0.5.2",
   "_originalSource": "Polymer/core-elements"
 }
