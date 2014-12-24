@@ -334,6 +334,10 @@
       scrollToHash(url.hash);
     }
 
+    if(element){
+      element.init()
+    }
+
     fire('activate-route-end', eventDetail, router);
     fire('activate-route-end', eventDetail, eventDetail.route);
   }
