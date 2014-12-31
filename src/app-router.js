@@ -288,6 +288,8 @@
       }
     }
     activeElement(router, customElement, url, eventDetail);
+    // Force databinding to update on platforms that lack Object.observe (https://www.polymer-project.org/docs/polymer/polymer.html#what-is-platformflush)
+    Platform.flush();
   }
 
   // Create an instance of the template
@@ -302,6 +304,8 @@
       templateInstance = document.importNode(template.content, true);
     }
     activeElement(router, templateInstance, url, eventDetail);
+    // Force databinding to update on platforms that lack Object.observe (https://www.polymer-project.org/docs/polymer/polymer.html#what-is-platformflush)
+    Platform.flush();
   }
 
   // Create the route's model
