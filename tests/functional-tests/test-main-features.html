@@ -19,8 +19,10 @@
       <li><a href="#/template">/template</a></li>
       <li><a href="#/inline-template">/inline-template</a></li>
       <li><a href="#/word/123">/regular-expression</a></li>
-      <li><a href="#/match-multiple/123">/match-multiple/123</a></li>
-      <li><a href="#/match-multiple/456">/match-multiple/456</a></li>
+      <li><a href="#/match-template/123">/match-template/123</a></li>
+      <li><a href="#/match-template/456">/match-template/456</a></li>
+      <li><a href="#/match-element/234">/match-element/234</a></li>
+      <li><a href="#/match-element/345">/match-element/345</a></li>
       <li><a href="#/redirect">/redirect</a></li>
     </ul>
 
@@ -42,11 +44,12 @@
         </template>
       </app-route>
       <app-route path="/redirect" redirect="/custom-element"></app-route>
-      <app-route path="/match-multiple/:pageNum">
+      <app-route path="/match-template/:pageNum">
         <template>
-          <h2>Match multiple URLs {{pageNum}}</h2>
+          <h2>Match multiple URLs template - {{pageNum}}</h2>
         </template>
       </app-route>
+      <app-route path="/match-element/:pageNum" import="pages/databind-page.html"></app-route>
       <app-route path="*" import="pages/not-found-page.html"></app-route>
     </app-router>
 
