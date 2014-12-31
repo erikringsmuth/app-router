@@ -1,4 +1,4 @@
-// @license Copyright (C) 2014 Erik Ringsmuth - MIT license
+// @license Copyright (C) 2015 Erik Ringsmuth - MIT license
 (function(window, document) {
   var utilities = {};
   var importedURIs = {};
@@ -232,7 +232,7 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
-      activeTemplate(router, route.firstElementChild, route, url, eventDetail);
+      activateTemplate(router, route.firstElementChild, route, url, eventDetail);
     }
   }
 
@@ -270,7 +270,7 @@
     if (route.hasAttribute('active')) {
       if (route.hasAttribute('template')) {
         // template
-        activeTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
+        activateTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
       } else {
         // custom element
         activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, url, eventDetail);
@@ -287,11 +287,11 @@
         customElement[property] = model[property];
       }
     }
-    activeElement(router, customElement, url, eventDetail);
+    activateElement(router, customElement, url, eventDetail);
   }
 
   // Create an instance of the template
-  function activeTemplate(router, template, route, url, eventDetail) {
+  function activateTemplate(router, template, route, url, eventDetail) {
     var templateInstance;
     if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
@@ -301,7 +301,7 @@
     } else {
       templateInstance = document.importNode(template.content, true);
     }
-    activeElement(router, templateInstance, url, eventDetail);
+    activateElement(router, templateInstance, url, eventDetail);
   }
 
   // Create the route's model
@@ -317,7 +317,7 @@
   }
 
   // Replace the active route's content with the new element
-  function activeElement(router, element, url, eventDetail) {
+  function activateElement(router, element, url, eventDetail) {
     // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
     // otherwise we can remove the old route's content right away.
     // UNLESS

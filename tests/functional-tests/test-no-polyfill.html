@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <link rel="import" href="/src/app-router.html">
+  </head>
+  <body>
+
+    <p>Test the different <code>app-route</code> types by navigating through these links.</p>
+    <ul>
+      <li><a href="#/page1">/page1</a></li>
+      <li><a href="#/page2">/page2</a></li>
+    </ul>
+
+    <p>Should work in browsers that support web components natively.</p>
+
+    <app-router>
+      <app-route path="/page1">
+        <template>
+          <h2>Page 1</h2>
+        </template>
+      </app-route>
+      <app-route path="/page2">
+        <template>
+          <h2>Page 2</h2>
+        </template>
+      </app-route>
+      <app-route path="*">
+        <template>
+          <h2>Not Found</h2>
+        </template>
+      </app-route>
+    </app-router>
+
+  </body>
+</html>

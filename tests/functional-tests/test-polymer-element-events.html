@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/src/app-router.html">
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+  </head>
+  <body>
+
+    <p>Test the difference between Polymer's domReady() and ready() callbacks.</p>
+    <ul>
+      <li><a href="#/domready/123">/domready/123</a></li>
+      <li><a href="#/domready/456">/domready/456</a></li>
+      <li><a href="#/ready/789">/ready/123</a></li>
+      <li><a href="#/ready/890">/ready/456</a></li>
+    </ul>
+
+    <polymer-element name="domready-page" attributes="pageNum">
+      <template>
+        <h2>domready {{pageNum}}</h2>
+      </template>
+      <script>
+        Polymer({
+          domReady: function() {
+            console.log('domReady() ' + this.pageNum);
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <polymer-element name="ready-page" attributes="pageNum">
+      <template>
+        <h2>ready {{pageNum}}</h2>
+      </template>
+      <script>
+        Polymer({
+          ready: function() {
+            console.log('ready() ' + this.pageNum);
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <app-router>
+      <app-route path="/domready/:pageNum" element="domready-page"></app-route>
+      <app-route path="/ready/:pageNum" element="ready-page"></app-route>
+    </app-router>
+
+  </body>
+</html>
