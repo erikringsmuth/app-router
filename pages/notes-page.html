@@ -65,6 +65,49 @@ window.dispatchEvent(new PopStateEvent('popstate', {
 
       <p>The <a href="https://github.com/erikringsmuth/pushstate-anchor">pushstate-anchor</a> takes care of this for you by calling <code-snippet>pushState()</code-snippet> and dispatching a <code-snippet>popstate</code-snippet> event.</p>
 
+      <h2 id="cordova" class="top-spacing">Cordova compatibility <a href="../#/notes#cordova">#</a></h2>
+
+      <p>When using app-router with <a href="http://cordova.apache.org/">Cordova</a>, there are two caveats to be aware of: relative path urls and default page url.</p>
+
+      <h3 id="cordova-relative-paths" class="top-spacing">Relative pathing <a href="../#/notes#cordova-relative-paths">#</a></h3>
+
+      <p>
+        When Cordova packages your web application for distribution as a mobile app, it copies your website onto local storage and loads it using the file:// protocol. As a result of this, if you use absolute pathing like you would for an website hosted at the
+        root of a url like:
+      </p>
+
+      <code-block>
+        &lt;app-router&gt;
+          &lt;app-route path="/" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
+          &lt;app-route path="*" import="/pages/not-found.html"&gt;&lt;/app-route&gt;
+        &lt;/app-router&gt;
+      </code-block>
+
+      <p>
+        Your pages will fail to load. Instead, use relative pathing for your page urls like:
+      </p>
+
+      <code-block>
+        &lt;app-router&gt;
+          &lt;app-route path="/" import="pages/home-page.html"&gt;&lt;/app-route&gt;
+          &lt;app-route path="*" import="pages/not-found.html"&gt;&lt;/app-route&gt;
+        &lt;/app-router&gt;
+      </code-block>
+
+      <h3 id="cordova-default-url" class="top-spacing">Default Url <a href="../#/notes#cordova-default-url">#</a></h3>
+
+      <p>
+        Cordova loads the default page as a variation on 'file://.../www/index.html' where the full path varies from mobile platform to mobile platform. To make your application's default homepage load as cross platform as possible, try a routing table like:
+      </p>
+
+      <code-block>
+        &lt;app-router&gt;
+          &lt;app-route path="/" import="pages/home-page.html"&gt;&lt;/app-route&gt;
+          &lt;app-route path="/.*/www/index.html/" regex import="pages/home-page.html"&gt;&lt;/app-route&gt;
+          &lt;app-route path="*" import="pages/not-found.html"&gt;&lt;/app-route&gt;
+        &lt;/app-router&gt;
+      </code-block>
+
     </scaffold-layout>
   </template>
 </polymer-element>
