@@ -240,27 +240,14 @@
   function importAndActivate(router, importUri, route, url, eventDetail) {
     var importLink;
     function importLoadedCallback() {
+      importedURIs[importUri] = true;
       activateImport(router, importLink, importUri, route, url, eventDetail);
     }
 
     if (!importedURIs.hasOwnProperty(importUri)) {
-      // hasn't been imported yet
-      importedURIs[importUri] = true;
-      importLink = document.createElement('link');
-      importLink.setAttribute('rel', 'import');
-      importLink.setAttribute('href', importUri);
-      importLink.addEventListener('load', importLoadedCallback);
-      document.head.appendChild(importLink);
-    } else {
-      // previously imported. this is an async operation and may not be complete yet.
-      importLink = document.querySelector('link[href="' + importUri + '"]');
-      if (importLink.import) {
-        // import complete
-        importLoadedCallback();
-      } else {
-        // wait for `onload`
-        importLink.addEventListener('load', importLoadedCallback);
-      }
+      Polymer.import( [importUri], importLoadedCallback)
+    }else {
+      importLoadedCallback()
     }
   }
 
@@ -345,6 +332,10 @@
     // scroll to the URL hash if it's present
     if (url.hash && !router.hasAttribute('core-animated-pages')) {
       scrollToHash(url.hash);
+    }
+
+    if(element){
+      element.init()
     }
 
     fire('activate-route-end', eventDetail, router);
