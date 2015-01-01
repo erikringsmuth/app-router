@@ -34,7 +34,7 @@
   &lt;/template&gt;
 &lt;/polymer-element&gt;</code-block>
 
-      <h2 id="polymer-template" class="top-spacing">Polymer &lt;template&gt; <a href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!#polymer-template">#</a></h2>
+      <h2 id="polymer-template" class="top-spacing">Polymer &lt;template&gt; <a href="../#/databinding/#polymer-template">#</a></h2>
 
       <p>If you're using Polymer, you can also bind path variables and query parameters to templates.</p>
 
@@ -44,7 +44,22 @@
   &lt;/template&gt;
 &lt;/app-route&gt;</code-block>
 
-      <h2 id="bindrouter-attribute" class="top-spacing">bindRouter attribute <a href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!#bindrouter-attribute">#</a></h2>
+      <h2 id="callbacks" class="top-spacing">WARNING: ready() callback <a href="../#/databinding/#callbacks">#</a></h2>
+
+      <p>Polymer's <code-snippet>ready()</code-snippet> callback and the <code-snippet>createdCallback()</code-snippet> are called BEFORE data binding is complete. Use <code-snippet>domReady()</code-snippet> or the <code-snippet>attachedCallback()</code-snippet> instead.</p>
+
+      <p>The router goes through these steps to load a new route.</p>
+
+      <ul>
+        <li>import element</li>
+        <li><code-snippet>el = document.createElement('element-name')</code-snippet></li>
+        <li>data binding</li>
+        <li><code-snippet>activeRoute.appendChild(el)</code-snippet></li>
+      </ul>
+
+      <p>Polymer's <code-snippet>ready()</code-snippet> callback and the <code-snippet>createdCallback()</code-snippet> are called immediately after <code-snippet>document.createElement()</code-snippet>. The <code-snippet>domReady()</code-snippet> and <code-snippet>attachedCallback()</code-snippet> are called later and can safely use variables from data binding.</p>
+
+      <h2 id="bindrouter-attribute" class="top-spacing">bindRouter attribute <a href="../#/databinding/#bindrouter-attribute">#</a></h2>
 
       <p>You can bind the router to an element or template using the <code-snippet>bindRouter</code-snippet> attribute. This gives you access to the router's API including <code-snippet>router.go('/path')</code-snippet>.</p>
 
@@ -67,40 +82,20 @@
   &lt;/script&gt;
 &lt;/polymer-element&gt;</code-block>
 
-      <h2 id="before-data-binding-event" class="top-spacing">before-data-binding event <a href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!#before-data-binding-event">#</a></h4>
+      <h2 id="before-data-binding-event" class="top-spacing">before-data-binding event <a href="../#/databinding/#before-data-binding-event">#</a></h4>
       <p>The <code-snippet>before-data-binding</code-snippet> event allows you to update the model before it is bound to the route's custom element or template.</p>
 <code-block>&lt;app-router&gt;
-  &lt;app-route path="/" import="/pages/home-page.html" on-before-data-binding="{{'\{{bindSession}\}'}}"&gt;&lt;/app-route&gt;
+  &lt;app-route path="/" import="/pages/home-page.html" on-before-data-binding="{{'\{{modifyModel}\}'}}"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
 
-<code-block>// event.detail looks like this
-{
-  path: '/new-path',
-  route: newRoute,
-  oldRoute: oldRoute,
-  model: {
-    // path variables and query parameters
-    // modify or add properties here before data binding happens
-  }
+<code-block>modifyModel: function(event) {
+  // event.detail.model contains the path variables and query parameters
+  // you can add properties or modify the model
+  event.detail.model.session = session;
 }</code-block>
       <p>See <a is="pushstate-anchor" href="../#/events#before-data-binding">Lifecycle Events before-data-binding</a> for more info.</p>
 
-      <h2 id="callbacks" class="top-spacing">attachedCallback() and domReady() <a href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!#callbacks">#</a></h2>
-
-      <p>Warning: The <code-snippet>createdCallback()</code-snippet> and Polymer's <code-snippet>ready()</code-snippet> callback are called BEFORE data binding.</p>
-
-      <p>Steps to load a new route.</p>
-
-      <ul>
-        <li>import element</li>
-        <li><code-snippet>el = document.createElement('element-name')</code-snippet></li>
-        <li>data binding</li>
-        <li><code-snippet>activeRoute.appendChild(el)</code-snippet></li>
-      </ul>
-
-      <p>The <code-snippet>attachedCallback()</code-snippet> and Polymer's <code-snippet>domReady()</code-snippet> callback are called after data binding is complete. If you're using <code-snippet>bindRouter</code-snippet>, you should use <code-snippet>attachedCallback()</code-snippet> or <code-snippet>domReady()</code-snippet> to wait for <code-snippet>this.router</code-snippet> to be defined.</p>
-
-      <h2 id="accessing-the-parent-scope" class="top-spacing">Accessing the parent scope <a href="../#/databinding/1337?queryParam1=Routing%20with%20Web%20Components!#accessing-the-parent-scope">#</a></h2>
+      <h2 id="accessing-the-parent-scope" class="top-spacing">Accessing the parent scope <a href="../#/databinding/#accessing-the-parent-scope">#</a></h2>
 
       <p>If you're using Polymer you can also access the parent scope using <code-snippet>router.templateInstance.model</code-snippet>. See <a href="https://www.polymer-project.org/docs/polymer/databinding.html#event-handling-and-data-binding">Polymer's documentation</a> on <code-snippet>templateInstance.model</code-snippet>. In short, every DOM element in a Polymer template has a <code-snippet>templateInstance</code-snippet> property that references the template (or custom element) that contains it.</p>
 

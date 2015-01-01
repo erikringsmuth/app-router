@@ -67,33 +67,17 @@ window.dispatchEvent(new PopStateEvent('popstate', {
 
       <h2 id="cordova" class="top-spacing">Cordova compatibility <a href="../#/notes#cordova">#</a></h2>
 
-      <p>When using app-router with <a href="http://cordova.apache.org/">Cordova</a>, there are two caveats to be aware of: relative path URLs and the default page URL.</p>
+      <p>There are a couple things to be aware of when using app-router with <a href="http://cordova.apache.org/">Cordova</a>. iOS, Android, and Windows Phone all load files from different locations using the <code-snippet>file://</code-snippet> protocol but they all follow this pattern when loading the first page <code-snippet>file://**/www/index.html</code-snippet>.</p>
 
-      <h3 id="cordova-relative-paths" class="top-spacing">Cordova relative paths <a href="../#/notes#cordova-relative-paths">#</a></h3>
-
-      <p>When Cordova packages your web application for distribution as a mobile app, it copies your website onto local storage and loads it using the <code-snippet>file://</code-snippet> protocol. As a result, your pages will fail to load if you use absolute paths like this.</p>
-
-<code-block>&lt;app-router&gt;
-  &lt;app-route path="/" import="/pages/home-page.html"&gt;&lt;/app-route&gt;
-  &lt;app-route path="*" import="/pages/not-found.html"&gt;&lt;/app-route&gt;
-&lt;/app-router&gt;</code-block>
-
-      <p>Instead, use relative paths for your page URLs like this.</p>
-
-<code-block>&lt;app-router&gt;
-  &lt;app-route path="/" import="pages/home-page.html"&gt;&lt;/app-route&gt;
-  &lt;app-route path="*" import="pages/not-found.html"&gt;&lt;/app-route&gt;
-&lt;/app-router&gt;</code-block>
-
-      <h3 id="cordova-default-url" class="top-spacing">Cordova default URL <a href="../#/notes#cordova-default-url">#</a></h3>
-
-      <p>Cordova loads the default page from <code-snippet>file://.../www/index.html</code-snippet> where the path varies across mobile platforms. To make your application's default homepage load as cross platform as possible, try using a routing table like this.</p>
+      <p>You can set up your routes like this to load the first page.</p>
 
 <code-block>&lt;app-router&gt;
   &lt;app-route path="/" import="pages/home-page.html"&gt;&lt;/app-route&gt;
   &lt;app-route path="/.*/www/index.html/" regex import="pages/home-page.html"&gt;&lt;/app-route&gt;
   &lt;app-route path="*" import="pages/not-found.html"&gt;&lt;/app-route&gt;
 &lt;/app-router&gt;</code-block>
+
+      <p>You need to use relative paths since the files are in different locations in iOS, Android, and Windows Phone. Do this by removing the leading slash from the <code-snippet>import</code-snippet> attributes. You will also have to switch everything else in your app to use relative paths.</p>
 
     </scaffold-layout>
   </template>
