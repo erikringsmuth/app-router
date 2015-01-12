@@ -209,6 +209,17 @@
       return;
     }
 
+    // Update model instead of re-rendering if we're on the same route
+    if (router.activeRoute && router.activeRoute === route && route.firstElementChild) {
+      var model = createModel(router, route, url, eventDetail);
+      for (var property in model) {
+        if (model.hasOwnProperty(property)) {
+          route.firstElementChild[property] = model[property];
+        }
+      }
+      return;
+    }
+
     // update the references to the activeRoute and previousRoute. if you switch between routes quickly you may go to a
     // new route before the previous route's transition animation has completed. if that's the case we need to remove
     // the previous route's content before we replace the reference to the previous route.
