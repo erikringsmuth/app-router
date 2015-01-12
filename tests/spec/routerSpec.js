@@ -176,6 +176,10 @@ describe('testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', functio
     expect(router.util.testRoute('/example/*', '/example/path', 'strict', false)).toEqual(true);
   });
 
+  it('should return true when matching with a trailing wildcard with missing last url segment', function() {
+    expect(router.util.testRoute('/example/*', '/example', 'strict', false)).toEqual(true);
+  });
+
   it('should return true when matching with a path argument', function() {
     expect(router.util.testRoute('/:patharg/path', '/example/path', 'strict', false)).toEqual(true);
   });

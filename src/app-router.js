@@ -508,8 +508,8 @@
     // example routePathSegments = ['', 'example', '*']
     var routePathSegments = routePath.split('/');
 
-    // there must be the same number of path segments or it isn't a match
-    if (urlPathSegments.length !== routePathSegments.length) {
+    // there must be the same number of path segments or it isn't a match, unless the last segment is a wildcard, and length of remaining segments matches
+    if (urlPathSegments.length !== routePathSegments.length && (routePathSegments[routePathSegments.length-1] === '*' && urlPathSegments.length !== routePathSegments.length-1)) {
       return false;
     }
 
@@ -520,6 +520,10 @@
       if (routeSegment !== urlPathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
         // the path segment wasn't the same string and it wasn't a wildcard or parameter
         return false;
+      }
+      if (i+1 === routePathSegments.length && urlPathSegments.length < routePathSegments.length && routePathSegments[i+1] === '*') {
+        // the next route segment is a wildcard, and we've matched all provided url segments
+        return true
       }
     }
 
