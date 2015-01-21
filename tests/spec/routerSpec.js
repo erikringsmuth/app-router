@@ -213,6 +213,39 @@ describe('testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', functio
   it('should not match when the route path is a matching regular expression', function() {
     expect(router.util.testRoute('/^\\/\\w+\\/\\d+$/i', '/word/non-number', 'strict', true)).toEqual(false);
   });
+
+  it('should match globstars **', function() {
+    expect(router.util.testRoute('/**/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('/a/b/**', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('/*/b/**/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('/a/b/**/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+  });
+
+  it('should match zero segment globstars **', function() {
+    expect(router.util.testRoute('/**/a/b/**/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+  });
+
+  it('should ignore trailing slash when using globstars ** in the last segment of the route', function() {
+    expect(router.util.testRoute('/a/b/**', '/a/b', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('/a/b/**', '/a/b/', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('/a/b/**', '/a/b', 'ignore', false)).toEqual(true);
+    expect(router.util.testRoute('/a/b/**', '/a/b/', 'ignore', false)).toEqual(true);
+  });
+
+  it('should not match invalid globstars **', function() {
+    expect(router.util.testRoute('/a/b/**/c', '/a/b/c/d/e', 'strict', false)).toEqual(false);
+    expect(router.util.testRoute('/**/a/b/e', '/a/b/c/d/e', 'strict', false)).toEqual(false);
+    expect(router.util.testRoute('/a/b/e/**', '/a/b/c/d/e', 'strict', false)).toEqual(false);
+    expect(router.util.testRoute('/a/b/**/c/e/**', '/a/b/c/d/e', 'strict', false)).toEqual(false);
+  });
+
+  it('should match relative routes when they match the end of the URL', function() {
+    expect(router.util.testRoute('e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('b/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('a/b/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('a/**/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('/b/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(false);
+  });
 });
 
 describe('routeArguments(routePath, urlPath, search, isRegExp, typecast)', function() {
