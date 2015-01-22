@@ -221,8 +221,16 @@ describe('testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', functio
     expect(router.util.testRoute('/a/b/**/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
   });
 
-  it('should match zero segment globstars **', function() {
-    expect(router.util.testRoute('/**/a/b/**/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+  it('should match zero segment globstars ** in the middle of the route', function() {
+    expect(router.util.testRoute('/a/b/**/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+  });
+
+  it('should match zero segment globstars ** at the begining of the route', function() {
+    expect(router.util.testRoute('/**/a/b/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+  });
+
+  it('should match zero segment globstars ** at the end of the route', function() {
+    expect(router.util.testRoute('/a/b/c/d/e/**', '/a/b/c/d/e', 'strict', false)).toEqual(true);
   });
 
   it('should ignore trailing slash when using globstars ** in the last segment of the route', function() {
@@ -245,6 +253,8 @@ describe('testRoute(routePath, urlPath, trailingSlashOption, isRegExp)', functio
     expect(router.util.testRoute('a/b/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
     expect(router.util.testRoute('a/**/e', '/a/b/c/d/e', 'strict', false)).toEqual(true);
     expect(router.util.testRoute('/b/c/d/e', '/a/b/c/d/e', 'strict', false)).toEqual(false);
+    expect(router.util.testRoute('**', '/a/b/c/d/e', 'strict', false)).toEqual(true);
+    expect(router.util.testRoute('**/', '/a/b/c/d/e/', 'strict', false)).toEqual(true);
   });
 });
 
@@ -290,6 +300,22 @@ describe('routeArguments(routePath, urlPath, search, isRegExp, typecast)', funct
     expect(args).toEqual({
       stringQueryParam: 'example%20string',
       numQueryParam: '12.34'
+    });
+  });
+
+  it('should parse routes with globstars', function() {
+    var args = router.util.routeArguments('/a/**/:d/:e/*', '/a/b/c/d/e/f', '', false, true);
+    expect(args).toEqual({
+      d: 'd',
+      e: 'e'
+    });
+  });
+
+  it('should parse relative routes', function() {
+    var args = router.util.routeArguments('c/:d/:e/*', '/a/b/c/d/e/f', '', false, true);
+    expect(args).toEqual({
+      d: 'd',
+      e: 'e'
     });
   });
 });

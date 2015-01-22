@@ -45,18 +45,14 @@ gulp.task('test', function() {
 
 // watch
 gulp.task('watch', function() {
-  gulp.watch(files,['lint', 'build', 'minify', 'test'])
+  gulp.watch(files, ['lint', 'build', 'minify', 'test'])
     .on('change', function(event) {
       console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
 });
 
 // default
-gulp.task('default', function() {
-  gulp.run('lint', 'build', 'minify', 'test');
-});
+gulp.task('default', ['lint', 'build', 'minify', 'test']);
 
 // Travis CI
-gulp.task('ci', function(){
-  gulp.run('lint');
-});
+gulp.task('ci', ['lint']);

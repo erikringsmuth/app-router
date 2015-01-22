@@ -470,8 +470,8 @@
 
   // testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
   //
-  // Example routePath: '/example/*'
-  // Example urlPath = '/example/path'
+  // Example routePath: 'b/**/e/*'
+  // Example urlPath = '/a/b/c/d/e/f'
   utilities.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
     // this algorithm tries to fail or succeed as quickly as possible for the most common cases
 
@@ -496,36 +496,55 @@
       return true;
     }
 
-    // look for wildcards
-    if (routePath.indexOf('*') === -1 && routePath.indexOf(':') === -1) {
-      // no wildcards and we already made sure it wasn't an exact match so the test fails
-      return false;
-    }
-
-    // example urlPathSegments = ['', example', 'path']
+    // example urlPathSegments = ['b', '**', 'e', '*']
     var urlPathSegments = urlPath.split('/');
 
-    // example routePathSegments = ['', 'example', '*']
+    // example routePathSegments = ['', 'a', 'b', 'c', 'd', 'e', 'f']
     var routePathSegments = routePath.split('/');
 
-    // there must be the same number of path segments or it isn't a match
-    if (urlPathSegments.length !== routePathSegments.length) {
+    // recursively test if the segments match
+    return segmentsMatch(routePathSegments, routePathSegments.length - 1, urlPathSegments, urlPathSegments.length - 1)
+  };
+
+  // recursively test the route segments against the url segments in place (without creating copies of the arrays for each recursive call).
+  // start testing at the end and move backwards. this simplifies testing for relative routes.
+  function segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex) {
+    // we hit the end of both the route segments and the url segments, if we got this far everything matched
+    if (routeIndex === -1 && urlIndex === -1) {
+      return true;
+    }
+
+    // we hit the end of the route segments and it was a relative path. absolute paths like '/this/path' split to ['', 'this', 'path'] where the first segment is an empty string.
+    if (routeIndex === -1 && routeSegments[0] !== '') {
+      return true;
+    }
+
+    // we hit the end of one or the other but not both
+    if (routeIndex < 0 || urlIndex < 0) {
       return false;
     }
 
-    // check equality of each path segment
-    for (var i = 0; i < routePathSegments.length; i++) {
-      // the path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
-      var routeSegment = routePathSegments[i];
-      if (routeSegment !== urlPathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
-        // the path segment wasn't the same string and it wasn't a wildcard or parameter
-        return false;
+    var routeSegment = routeSegments[routeIndex];
+    var urlSegment = urlSegments[urlIndex];
+
+    // if they match exactly, recursively test the remaining segments
+    if (routeSegment === urlSegment || routeSegment === '*' || routeSegment.charAt(0) === ':') {
+      return segmentsMatch(routeSegments, routeIndex - 1, urlSegments, urlIndex - 1);
+    }
+
+    // globstars can match zero to many URL segments
+    if (routeSegment === '**') {
+      for (var i = urlIndex; i >= 0; i--) {
+        // test if the remaining route segments match any of the remaining url segment array prefixes
+        if (segmentsMatch(routeSegments, routeIndex - 1, urlSegments, i)) {
+          return true;
+        }
       }
     }
 
-    // nothing failed. the route matches the URL.
-    return true;
-  };
+    // all tests failed, the route segments do not match the url segments
+    return false;
+  }
 
   // routeArguments(routePath, urlPath, search, isRegExp) - Gets the path variables and query parameter values from the URL
   utilities.routeArguments = function(routePath, urlPath, search, isRegExp, typecast) {
