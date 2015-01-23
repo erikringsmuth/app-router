@@ -496,6 +496,11 @@
       return true;
     }
 
+    // relative routes a/b/c are the same as routes that start with a globstar /**/a/b/c
+    if (routePath.charAt(0) !== '/') {
+      routePath = '/**/' + routePath;
+    }
+
     // example urlPathSegments = ['b', '**', 'e', '*']
     var urlPathSegments = urlPath.split('/');
 
@@ -509,23 +514,14 @@
   // recursively test the route segments against the url segments in place (without creating copies of the arrays for each recursive call).
   // start testing at the end and move backwards. this simplifies testing for relative routes.
   function segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex) {
-    // we hit the end of both the route segments and the url segments, if we got this far everything matched
-    if (routeIndex === -1 && urlIndex === -1) {
-      return true;
-    }
-
-    // we hit the end of the route segments and it was a relative path. absolute paths like '/this/path' split to ['', 'this', 'path'] where the first segment is an empty string.
-    if (routeIndex === -1 && routeSegments[0] !== '') {
-      return true;
-    }
-
-    // we hit the end of one or the other but not both
-    if (routeIndex < 0 || urlIndex < 0) {
-      return false;
-    }
-
     var routeSegment = routeSegments[routeIndex];
     var urlSegment = urlSegments[urlIndex];
+
+    // we hit the end of the route segments or the url segments
+    if (typeof routeSegment === 'undefined' || typeof urlSegment === 'undefined') {
+      // return true if we hit the end of both at the same time meaning everything else matched, else return false
+      return routeSegment === urlSegment;
+    }
 
     // if they match exactly, recursively test the remaining segments
     if (routeSegment === urlSegment || routeSegment === '*' || routeSegment.charAt(0) === ':') {
@@ -562,11 +558,16 @@
       // urlPath '/customer/123'
       // routePath '/customer/:id'
       // parses id = '123'
-      for (var index = 0; index < routePathSegments.length; index++) {
-        var routeSegment = routePathSegments[index];
+      var routeIndex = routePathSegments.length - 1;
+      var urlIndex = urlPathSegments.length - 1;
+      while (urlIndex >= 0 && routeIndex >= 0) {
+        var routeSegment = routePathSegments[routeIndex];
+        var urlSegment = urlPathSegments[urlIndex];
         if (routeSegment.charAt(0) === ':') {
-          args[routeSegment.substring(1)] = urlPathSegments[index];
+          args[routeSegment.substring(1)] = urlPathSegments[urlIndex];
         }
+        routeIndex--;
+        urlIndex--;
       }
     }
 

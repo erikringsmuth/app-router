@@ -318,6 +318,20 @@ describe('routeArguments(routePath, urlPath, search, isRegExp, typecast)', funct
       e: 'e'
     });
   });
+
+  it('should parse relative routes with globstars', function() {
+    var args = router.util.routeArguments('b/:c/**/g', '/a/b/c/d/e/f/g', '', false, true);
+    expect(args).toEqual({
+      c: 'c'
+    });
+  });
+
+  it('should parse relative routes with globstars greedily', function() {
+    var args = router.util.routeArguments('/a/**/:middle/**/f', '/a/b/c/d/e/f', '', false, true);
+    expect(args).toEqual({
+      middle: 'e'
+    });
+  });
 });
 
 describe('typecast(value)', function() {
