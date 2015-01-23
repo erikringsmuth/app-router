@@ -512,7 +512,7 @@
   };
 
   // recursively test the route segments against the url segments in place (without creating copies of the arrays for each recursive call)
-  function segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex) {
+  function segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex, pathVariables) {
     var routeSegment = routeSegments[routeIndex];
     var urlSegment = urlSegments[urlIndex];
 
@@ -529,14 +529,17 @@
 
     // if the current segments match, recursively test the remaining segments
     if (routeSegment === urlSegment || routeSegment === '*' || routeSegment.charAt(0) === ':') {
-      return segmentsMatch(routeSegments, routeIndex + 1, urlSegments, urlIndex + 1);
+      if (routeSegment.charAt(0) === ':' && typeof pathVariables !== 'undefined') {
+        pathVariables[routeSegment.substring(1)] = urlSegments[urlIndex];
+      }
+      return segmentsMatch(routeSegments, routeIndex + 1, urlSegments, urlIndex + 1, pathVariables);
     }
 
     // globstars can match zero to many URL segments
     if (routeSegment === '**') {
       for (var i = urlIndex; i < urlSegments.length; i++) {
         // test if the remaining route segments match any of the remaining url segments
-        if (segmentsMatch(routeSegments, routeIndex + 1, urlSegments, i)) {
+        if (segmentsMatch(routeSegments, routeIndex + 1, urlSegments, i, pathVariables)) {
           return true;
         }
       }
@@ -552,6 +555,11 @@
 
     // regular expressions can't have path variables
     if (!isRegExp) {
+      // relative routes a/b/c are the same as routes that start with a globstar /**/a/b/c
+      if (routePath.charAt(0) !== '/') {
+        routePath = '/**/' + routePath;
+      }
+    
       // example urlPathSegments = ['', example', 'path']
       var urlPathSegments = urlPath.split('/');
 
@@ -562,17 +570,7 @@
       // urlPath '/customer/123'
       // routePath '/customer/:id'
       // parses id = '123'
-      var routeIndex = routePathSegments.length - 1;
-      var urlIndex = urlPathSegments.length - 1;
-      while (urlIndex >= 0 && routeIndex >= 0) {
-        var routeSegment = routePathSegments[routeIndex];
-        var urlSegment = urlPathSegments[urlIndex];
-        if (routeSegment.charAt(0) === ':') {
-          args[routeSegment.substring(1)] = urlPathSegments[urlIndex];
-        }
-        routeIndex--;
-        urlIndex--;
-      }
+      segmentsMatch(routePathSegments, 0, urlPathSegments, 0, args);
     }
 
     var queryParameters = search.substring(1).split('&');
