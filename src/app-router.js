@@ -508,14 +508,18 @@
     var routePathSegments = routePath.split('/');
 
     // recursively test if the segments match
-    return segmentsMatch(routePathSegments, routePathSegments.length - 1, urlPathSegments, urlPathSegments.length - 1)
+    return segmentsMatch(routePathSegments, 0, urlPathSegments, 0)
   };
 
-  // recursively test the route segments against the url segments in place (without creating copies of the arrays for each recursive call).
-  // start testing at the end and move backwards. this simplifies testing for relative routes.
+  // recursively test the route segments against the url segments in place (without creating copies of the arrays for each recursive call)
   function segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex) {
     var routeSegment = routeSegments[routeIndex];
     var urlSegment = urlSegments[urlIndex];
+
+    // if we're at the last route segment and it is a globstar, it will match the rest of the url
+    if (routeSegment === '**' && routeIndex === routeSegments.length - 1) {
+      return true;
+    }
 
     // we hit the end of the route segments or the url segments
     if (typeof routeSegment === 'undefined' || typeof urlSegment === 'undefined') {
@@ -525,14 +529,14 @@
 
     // if they match exactly, recursively test the remaining segments
     if (routeSegment === urlSegment || routeSegment === '*' || routeSegment.charAt(0) === ':') {
-      return segmentsMatch(routeSegments, routeIndex - 1, urlSegments, urlIndex - 1);
+      return segmentsMatch(routeSegments, routeIndex + 1, urlSegments, urlIndex + 1);
     }
 
     // globstars can match zero to many URL segments
     if (routeSegment === '**') {
-      for (var i = urlIndex; i >= 0; i--) {
-        // test if the remaining route segments match any of the remaining url segment array prefixes
-        if (segmentsMatch(routeSegments, routeIndex - 1, urlSegments, i)) {
+      for (var i = urlIndex; i < urlSegments.length; i++) {
+        // test if the remaining route segments match any of the remaining url segments
+        if (segmentsMatch(routeSegments, routeIndex + 1, urlSegments, i)) {
           return true;
         }
       }
