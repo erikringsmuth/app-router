@@ -473,7 +473,7 @@
   // Example routePath: 'b/**/e/*'
   // Example urlPath = '/a/b/c/d/e/f'
   utilities.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
-    // this algorithm tries to fail or succeed as quickly as possible for the most common cases
+    // try to fail or succeed as quickly as possible for the most common cases
 
     // handle trailing slashes (options: strict (default), ignore)
     if (trailingSlashOption === 'ignore') {
@@ -501,7 +501,7 @@
       routePath = '/**/' + routePath;
     }
 
-    // example urlPathSegments = ['b', '**', 'e', '*']
+    // example urlPathSegments = ['', '**', 'b', '**', 'e', '*']
     var urlPathSegments = urlPath.split('/');
 
     // example routePathSegments = ['', 'a', 'b', 'c', 'd', 'e', 'f']
@@ -527,7 +527,7 @@
       return routeSegment === urlSegment;
     }
 
-    // if they match exactly, recursively test the remaining segments
+    // if the current segments match, recursively test the remaining segments
     if (routeSegment === urlSegment || routeSegment === '*' || routeSegment.charAt(0) === ':') {
       return segmentsMatch(routeSegments, routeIndex + 1, urlSegments, urlIndex + 1);
     }
