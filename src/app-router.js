@@ -470,8 +470,8 @@
 
   // testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
   //
-  // Example routePath: 'b/**/e/*'
-  // Example urlPath = '/a/b/c/d/e/f'
+  // Example routePath: '/user/:userId/**'
+  // Example urlPath = '/user/123/bio'
   utilities.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
     // try to fail or succeed as quickly as possible for the most common cases
 
@@ -501,17 +501,16 @@
       routePath = '/**/' + routePath;
     }
 
-    // example urlPathSegments = ['', '**', 'b', '**', 'e', '*']
-    var urlPathSegments = urlPath.split('/');
-
-    // example routePathSegments = ['', 'a', 'b', 'c', 'd', 'e', 'f']
-    var routePathSegments = routePath.split('/');
-
-    // recursively test if the segments match
-    return segmentsMatch(routePathSegments, 0, urlPathSegments, 0)
+    // recursively test if the segments match (start at 1 because 0 is always an empty string)
+    return segmentsMatch(routePath.split('/'), 1, urlPath.split('/'), 1)
   };
 
-  // recursively test the route segments against the url segments in place (without creating copies of the arrays for each recursive call)
+  // segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex, pathVariables)
+  // recursively test the route segments against the url segments in place (without creating copies of the arrays
+  // for each recursive call)
+  //
+  // example routeSegments ['', 'user', ':userId', '**']
+  // example urlSegments ['', 'user', '123', 'bio']
   function segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex, pathVariables) {
     var routeSegment = routeSegments[routeIndex];
     var urlSegment = urlSegments[urlIndex];
@@ -529,6 +528,7 @@
 
     // if the current segments match, recursively test the remaining segments
     if (routeSegment === urlSegment || routeSegment === '*' || routeSegment.charAt(0) === ':') {
+      // store the path variable if we have a pathVariables object
       if (routeSegment.charAt(0) === ':' && typeof pathVariables !== 'undefined') {
         pathVariables[routeSegment.substring(1)] = urlSegments[urlIndex];
       }
@@ -537,8 +537,8 @@
 
     // globstars can match zero to many URL segments
     if (routeSegment === '**') {
+      // test if the remaining route segments match any combination of the remaining url segments
       for (var i = urlIndex; i < urlSegments.length; i++) {
-        // test if the remaining route segments match any of the remaining url segments
         if (segmentsMatch(routeSegments, routeIndex + 1, urlSegments, i, pathVariables)) {
           return true;
         }
@@ -560,17 +560,11 @@
         routePath = '/**/' + routePath;
       }
     
-      // example urlPathSegments = ['', example', 'path']
-      var urlPathSegments = urlPath.split('/');
-
-      // example routePathSegments = ['', 'example', '*']
-      var routePathSegments = routePath.split('/');
-
       // get path variables
       // urlPath '/customer/123'
       // routePath '/customer/:id'
       // parses id = '123'
-      segmentsMatch(routePathSegments, 0, urlPathSegments, 0, args);
+      segmentsMatch(routePath.split('/'), 1, urlPath.split('/'), 1, args);
     }
 
     var queryParameters = search.substring(1).split('&');

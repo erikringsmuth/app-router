@@ -326,10 +326,10 @@ describe('routeArguments(routePath, urlPath, search, isRegExp, typecast)', funct
     });
   });
 
-  it('should parse relative routes with globstars greedily', function() {
+  it('should parse relative routes with globstars lazily (non-greedy, take the smallest amount that matches)', function() {
     var args = router.util.routeArguments('/a/**/:middle/**/f', '/a/b/c/d/e/f', '', false, true);
     expect(args).toEqual({
-      middle: 'e'
+      middle: 'b'
     });
   });
 });
