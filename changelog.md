@@ -1,5 +1,9 @@
 ## app-router change log
 
+#### v2.4.0
+- Adding globstar `**` support.
+- Adding relative paths `users/:userId` which is the same as `/**/users/:userId`.
+
 #### v2.3.2
 - Fixed bug where calling `router.go('/path')` on the current path wouldn't reload the page.
 - Switched `router.go('/path')` to fire a `popstate` event instead of directly calling `stateChange()` in order to support multiple routers on the same page.
