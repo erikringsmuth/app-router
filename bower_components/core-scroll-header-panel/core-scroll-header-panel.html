@@ -46,10 +46,12 @@ that represents a header by adding a `core-header` class to it.
 
 @group Polymer Core Elements
 @element core-scroll-header-panel
+@mixins Polymer.CoreResizable https://github.com/polymer/core-resizable
 @homepage github.io
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-resizable/core-resizable.html">
 
 <polymer-element name="core-scroll-header-panel">
 <template>
@@ -77,7 +79,7 @@ that represents a header by adding a `core-header` class to it.
 <script>
 (function() {
 
-  Polymer('core-scroll-header-panel', {
+  Polymer(Polymer.mixin({
     
     /**
      * Fired when the content has been scrolled.
@@ -184,7 +186,15 @@ that represents a header by adding a `core-header` class to it.
     observe: {
       'headerMargin fixed': 'setup'
     },
-    
+
+    eventDelegates: {
+      'core-resize': 'measureHeaderHeight'
+    },
+
+    attached: function() {
+      this.resizableAttachedHandler();
+    },
+
     ready: function() {
       this._scrollHandler = this.scroll.bind(this);
       this.scroller.addEventListener('scroll', this._scrollHandler);
@@ -192,6 +202,7 @@ that represents a header by adding a `core-header` class to it.
     
     detached: function() {
       this.scroller.removeEventListener('scroll', this._scrollHandler);
+      this.resizableDetachedHandler();
     },
     
     domReady: function() {
@@ -330,7 +341,7 @@ that represents a header by adding a `core-header` class to it.
       }
     }
 
-  });
+  }, Polymer.CoreResizable));
   
   //determine proper transform mechanizm
   if (document.documentElement.style.transform !== undefined) {

@@ -66,6 +66,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       padding: 8px;
     }
 
+    html /deep/ core-overlay {
+      border: 1px solid #ccc;
+      padding: 8px;
+      background: #fff;
+    }
+
     .constrained-height {
       height: 150px;
     }
@@ -116,6 +122,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <section>
 
       <div>Layered dropdowns</div>
+
+      <button onclick="document.getElementById('overlay').toggle()">toggle core-overlay</button>
+
+      <core-overlay id="overlay">
+
+        <paper-dropdown-menu label="Your favorite pastry">
+          <paper-dropdown layered class="dropdown">
+            <core-menu class="menu">
+              <template repeat="{{pastries}}">
+                <paper-item>{{}}</paper-item>
+              </template>
+            </core-menu>
+          </paper-dropdown>
+        </paper-dropdown-menu>
+
+      </core-overlay>
 
       <button onclick="document.getElementById('collapse').toggle()">toggle core-collapse</button>
 

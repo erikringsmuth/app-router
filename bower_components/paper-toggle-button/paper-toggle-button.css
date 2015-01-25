@@ -15,53 +15,81 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   outline: none;
 }
 
+/* Class selectors can be overridden by users. */
+
+.toggle-bar {
+  background-color: #000000;
+}
+
+.toggle-button {
+  background-color: #f1f1f1;
+}
+
+[checked] .toggle {
+  background-color: #0f9d58;
+}
+
+.toggle-ink {
+  color: #bbb;
+}
+
+[checked] .toggle-ink {
+  color: #0f9d58;
+}
+
+/* ID selectors should not be overriden by users. */
+
 #toggleContainer {
   position: relative;
-  width: 64px;
-  height: 16px;
+  width: 36px;
+  height: 14px;
+}
+
+#toggleContainer[disabled] {
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 #toggleBar {
   position: absolute;
-  top: 8px;
-  left: 16px;
-  height: 1px;
-  width: 32px;
-  background-color: #5a5a5a;
-  pointer-events: none;
-}
-
-#toggleBar[checked] {
-  background-color: #0f9d58;
-}
-
-#toggleContainer[checked] #checkedBar {
+  height: 100%;
   width: 100%;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0.26;
+  transition: background-color linear .08s;
 }
 
-#toggleRadio {
+[checked] #toggleBar {
+  opacity: 0.5;
+}
+
+#toggleButton {
   position: absolute;
-  left: 0;
-  padding: 8px 48px 8px 0;
-  margin: -8px -48px -8px 0;
-  transition: -webkit-transform linear .08s;
-  transition: transform linear .08s;
+  top: -3px;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.4);
+  transition: -webkit-transform linear .08s, background-color linear .08s;
+  transition: transform linear .08s, background-color linear .08s;
 }
 
-#toggleRadio[checked] {
-  -webkit-transform: translate(48px, 0);
-  transform: translate(48px, 0);
-  padding: 8px 0 8px 48px;
-  margin: -8px 0 -8px -48px;
-}
-
-#toggleRadio.dragging {
+#toggleButton.dragging {
   -webkit-transition: none;
   transition: none;
 }
 
-/* disabled state */
-#toggleContainer[disabled] {
-  opacity: 0.3;
+[checked] #toggleButton {
+  -webkit-transform: translate(16px, 0);
+  transform: translate(16px, 0);
+}
+
+#ink {
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  width: 48px;
+  height: 48px;
   pointer-events: none;
 }

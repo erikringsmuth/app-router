@@ -27,10 +27,6 @@
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
       margin: 0;
       padding: 24px;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
       -webkit-tap-highlight-color: rgba(0,0,0,0);
       -webkit-touch-callout: none;
     }
@@ -41,6 +37,10 @@
     
     paper-radio-group.blue paper-radio-button::shadow #onRadio {
       background-color: #4285f4;
+    }
+
+    paper-radio-group.blue paper-radio-button[checked]::shadow #offRadio {
+      border-color: #4285f4;
     }
     
     paper-radio-button {

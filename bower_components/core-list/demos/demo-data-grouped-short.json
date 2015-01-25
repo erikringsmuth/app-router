@@ -23,7 +23,6 @@
         {"letter": "U"},
         {"letter": "V"},
         {"letter": "W"},
-        {"letter": "X"},
         {"letter": "Y"},
         {"letter": "Z"}
     ],
@@ -3283,7 +3282,6 @@
             "text": "Deserunt ad dolore aliquip magna deserunt eu velit labore elit. Ut labore consequat ad amet et magna aute deserunt culpa labore officia ullamco.",
             "color": "rgb(216,110,116)"
         }],
-        [],
         [{
             "index": 4820,
             "name": "Yang Chambers",

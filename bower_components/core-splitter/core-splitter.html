@@ -38,10 +38,12 @@ Example:
 
 @group Polymer Core Elements
 @element core-splitter
+@mixins Polymer.CoreResizer https://github.com/polymer/core-resizable
 @homepage github.io
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-resizable/core-resizable.html">
 
 <polymer-element name="core-splitter" attributes="direction locked minSize allowOverflow"
     on-trackstart="{{trackStart}}" on-track="{{track}}" on-down="{{preventSelection}}">
@@ -53,7 +55,7 @@ Example:
 </template>
 <script>
 
-  Polymer('core-splitter', {
+  Polymer(Polymer.mixin({
 
     /**
      * Possible values are `left`, `right`, `up` and `down`.
@@ -94,8 +96,19 @@ Example:
      */
     allowOverflow: false,
 
+    // Listen for resize requests on parent, since splitter is peer to resizables
+    resizerIsPeer: true,
+
     ready: function() {
       this.directionChanged();
+    },
+
+    attached: function() {
+      this.resizerAttachedHandler();
+    },
+
+    detached: function() {
+      this.resizerDetachedHandler();
     },
 
     domReady: function() {
@@ -137,12 +150,14 @@ Example:
       var d = e[this.horizontal ? 'dy' : 'dx'];
       this.target.style[this.dimension] =
           this.size + (this.isNext ? -d : d) + 'px';
+      this.notifyResize();
     },
 
     preventSelection: function(e) {
       e.preventDefault();
     }
-  });
+
+  }, Polymer.CoreResizer));
 
 </script>
 </polymer-element>

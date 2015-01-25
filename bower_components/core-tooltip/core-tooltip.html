@@ -60,13 +60,14 @@ You can customize this attribute with the `tipAttribute` attribute:
 
 @group Polymer Core Elements
 @element core-tooltip
-@extends core-focusable
-@mixins Polymer.CoreFocusable
+@mixins Polymer.CoreFocusable https://github.com/polymer/core-focusable
+@mixins Polymer.CoreResizable https://github.com/polymer/core-resizable
 @homepage http://www.polymer-project.org/components/core-tooltip/index.html
 -->
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-focusable/core-focusable.html">
+<link rel="import" href="../core-resizable/core-resizable.html">
 
 <!-- TODO: would be nice to inherit from label to get .htmlFor, and .control,
            but the latter is readonly. -->
@@ -101,6 +102,10 @@ You can customize this attribute with the `tipAttribute` attribute:
        * @default null
        */
       label: null,
+
+      eventDelegates: {
+        'core-resize': 'positionChanged'
+      },
 
       computed: {
         // Indicates whether the tooltip has a set label propety or
@@ -149,6 +154,11 @@ You can customize this attribute with the `tipAttribute` attribute:
 
       attached: function() {
         this.updatedChildren();
+        this.resizableAttachedHandler();
+      },
+
+      detached: function() {
+        this.resizableDetachedHandler();
       },
 
       updatedChildren: function () {
@@ -199,6 +209,7 @@ You can customize this attribute with the `tipAttribute` attribute:
     };
 
     Polymer.mixin2(proto, Polymer.CoreFocusable);
+    Polymer.mixin(proto, Polymer.CoreResizable);
     Polymer(proto);
   })();
 

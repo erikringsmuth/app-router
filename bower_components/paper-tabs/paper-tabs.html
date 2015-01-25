@@ -34,7 +34,7 @@ between different views.
       <paper-tab>Tab 3</paper-tab>
     </paper-tabs>
   
-    <core-pages selected="{{selected}}>
+    <core-pages selected="{{selected}}">
       <div>Page 1</div>
       <div>Page 2</div>
       <div>Page 3</div>
@@ -77,11 +77,13 @@ To change the ink ripple color:
 @group Paper Elements
 @element paper-tabs
 @extends core-selector
+@mixins Polymer.CoreResizable https://github.com/polymer/core-resizable
 @homepage github.io
 -->
 
 <link rel="import" href="../core-selector/core-selector.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../core-resizable/core-resizable.html">
 <link rel="import" href="paper-tab.html">
 
 <polymer-element name="paper-tabs" extends="core-selector" attributes="noink nobar noslide scrollable hideScrollButton" role="tablist" horizontal center layout>
@@ -109,7 +111,7 @@ To change the ink ripple color:
 </template>
 <script>
 
-  Polymer('paper-tabs', {
+  Polymer(Polymer.mixin({
     
     /**
      * If true, ink ripple effect is disabled.
@@ -164,6 +166,10 @@ To change the ink ripple color:
      * @default false
      */
     hideScrollButton: false,
+
+    eventDelegates: {
+      'core-resize': 'resizeHandler'
+    },
     
     activateEvent: 'tap',
     
@@ -179,13 +185,18 @@ To change the ink ripple color:
     },
     
     domReady: function() {
-      this.async('scroll');
+      this.async('resizeHandler');
       this._tabsObserver.observe(this, {childList: true, subtree: true, characterData: true});
+    },
+
+    attached: function() {
+      this.resizableAttachedHandler();
     },
     
     detached: function() {
       Polymer.removeEventListener(this.$.tabsContainer, 'trackx', this._trackxHandler);
       this._tabsObserver.disconnect();
+      this.resizableDetachedHandler();
     },
     
     trackStart: function(e) {
@@ -207,6 +218,11 @@ To change the ink ripple color:
       this.$.tabsContainer.scrollLeft = this._startx - e.dx;
     },
     
+    resizeHandler: function() {
+      this.scroll();
+      this.updateBar();
+    },
+    
     scroll: function() {
       if (!this.scrollable) {
         return;
@@ -214,7 +230,7 @@ To change the ink ripple color:
       var tc = this.$.tabsContainer;
       var l = tc.scrollLeft;
       this.leftHidden = l === 0;
-      this.rightHidden = l === (tc.scrollWidth - tc.clientWidth);
+      this.rightHidden = l === Math.max(0, (tc.scrollWidth - tc.clientWidth));
     },
     
     holdLeft: function() {
@@ -322,7 +338,7 @@ To change the ink ripple color:
       }
     }
     
-  });
+  }, Polymer.CoreResizable));
   
 </script>
 </polymer-element>

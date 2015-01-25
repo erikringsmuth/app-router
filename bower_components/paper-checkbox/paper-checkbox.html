@@ -31,6 +31,7 @@ To change the ink color for checked state:
 To change the checkbox checked color:
 
     paper-checkbox::shadow #checkbox.checked {
+      background-color: #4285f4;
       border-color: #4285f4;
     }
 
@@ -63,7 +64,9 @@ To change the checbox unchecked color:
   
     <paper-ripple id="ink" class="circle recenteringTouch" checked?="{{!checked}}"></paper-ripple>
      
-    <div id="checkbox" on-animationend="{{checkboxAnimationEnd}}" on-webkitAnimationEnd="{{checkboxAnimationEnd}}"></div>
+    <div id="checkbox">
+      <div id="checkmark" on-animationend="{{checkboxAnimationEnd}}" on-webkitAnimationEnd="{{checkboxAnimationEnd}}"></div>
+    </div>
     
   </div>
   
@@ -89,19 +92,15 @@ To change the checbox unchecked color:
     toggles: true,
 
     checkedChanged: function() {
-      var cl = this.$.checkbox.classList;
-      cl.toggle('checked', this.checked);
-      cl.toggle('unchecked', !this.checked);
-      cl.toggle('checkmark', !this.checked);
-      cl.toggle('box', this.checked);
+      this.$.checkbox.classList.toggle('checked', this.checked);
       this.setAttribute('aria-checked', this.checked ? 'true': 'false');
+      this.$.checkmark.classList.toggle('hidden', !this.checked);
       this.fire('core-change');
     },
 
     checkboxAnimationEnd: function() {
-      var cl = this.$.checkbox.classList;
-      cl.toggle('checkmark', this.checked && !cl.contains('checkmark'));
-      cl.toggle('box', !this.checked && !cl.contains('box'));
+      var cl = this.$.checkmark.classList;
+      cl.toggle('hidden', !this.checked && cl.contains('hidden'));
     }
 
   });

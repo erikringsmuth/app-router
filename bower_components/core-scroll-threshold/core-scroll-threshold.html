@@ -18,19 +18,21 @@ region with the same orientation as this element is contained within.  Alternati
 the `scrollTarget` property can be set/bound to a non-child scrollable region, from which
 it will listen for events.
 
-Once a threshold has been reached, a `lower-threshold` or `upper-threshold` event will
+Once a threshold has been reached, a `lower-trigger` or `upper-trigger` event will
 be fired, at which point the user may perform actions such as lazily-loading more data
 to be displayed.  After any work is done, the user must then clear the threshold by
 calling the `clearUpper` or `clearLower` methods on this element, after which it will
-begin listening again for the scroll position to reach the threshold again (assuming
-the content in the) scrollable region has grown.  If the user no longer wishes to receive
-events (e.g. all data has been exhausted), the 
+begin listening again for the scroll position to reach the threshold again assuming
+the content in the scrollable region has grown.  If the user no longer wishes to receive
+events (e.g. all data has been exhausted), the threshold property in question (e.g.
+`lowerThreshold`) may be set to a falsy value to disable events and clear the associated
+triggered property.
 
 Example:
 
     <core-scroll-threshold id="threshold" lowerThreshold="500" 
-      on-lower-triggered="{{loadMore}}" lowerTriggered="{{spinnerShouldShow}}">
-    </scroll-threshold>
+      on-lower-trigger="{{loadMore}}" lowerTriggered="{{spinnerShouldShow}}">
+    </core-scroll-threshold>
 
     ...
 
@@ -61,7 +63,7 @@ Example:
        * element.
        *
        * @attribute scrollTarget
-       * @type string
+       * @type Element
        * @default null
        */
       scrollTarget: null,
@@ -91,7 +93,7 @@ Example:
        *
        * @attribute lowerThreshold
        * @type integer
-       * @default false
+       * @default null
        */
       lowerThreshold: null,
 

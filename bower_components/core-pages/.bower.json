@@ -2,17 +2,17 @@
   "name": "core-pages",
   "private": true,
   "dependencies": {
-    "core-selector": "Polymer/core-selector#^0.5.0"
+    "core-selector": "Polymer/core-selector#^0.5"
   },
-  "version": "0.5.1",
+  "version": "0.5.4",
   "homepage": "https://github.com/Polymer/core-pages",
-  "_release": "0.5.1",
+  "_release": "0.5.4",
   "_resolution": {
     "type": "version",
-    "tag": "0.5.1",
-    "commit": "edc04342a35e6783137410cfae2008a12d4ae125"
+    "tag": "0.5.4",
+    "commit": "8000f8b2e77816638f832f383393d6d2dd15b4f0"
   },
   "_source": "git://github.com/Polymer/core-pages.git",
-  "_target": "^0.5.0",
+  "_target": "^0.5",
   "_originalSource": "Polymer/core-pages"
 }

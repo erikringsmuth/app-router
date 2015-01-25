@@ -3,10 +3,11 @@
   "private": true,
   "description": "Tooltip popup for content",
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.0",
-    "core-focusable": "Polymer/core-focusable#^0.5.0",
-    "core-icon-button": "Polymer/core-icon-button#^0.5.0",
-    "paper-fab": "Polymer/paper-fab#^0.5.0"
+    "polymer": "Polymer/polymer#^0.5",
+    "core-focusable": "Polymer/core-focusable#^0.5",
+    "core-icon-button": "Polymer/core-icon-button#^0.5",
+    "paper-fab": "Polymer/paper-fab#^0.5",
+    "core-resizable": "Polymer/core-resizable#^0.5"
   },
-  "version": "0.5.1"
+  "version": "0.5.4"
 }

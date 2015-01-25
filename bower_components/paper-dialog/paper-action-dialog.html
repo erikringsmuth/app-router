@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 Material Design: <a href="http://www.google.com/design/spec/components/dialogs.html">Dialogs</a>
 
-`paper-action-dialog` is a `paper-dialog` a row of buttons at the bottom that
+`paper-action-dialog` is a `paper-dialog` with a row of buttons at the bottom that
 indicate user action. The action buttons do not scroll with the dialog body.
 
 The buttons should have either the `affirmative` or `dismissive` attribute. See
@@ -37,7 +37,7 @@ Example:
 
 <link href="paper-dialog-base.html" rel="import">
 
-<polymer-element name="paper-action-dialog" extends="paper-dialog-base" role="dialog">
+<polymer-element name="paper-action-dialog" extends="paper-dialog-base" role="dialog" layout vertical>
 
 <template>
 
@@ -67,7 +67,7 @@ Example:
   <paper-shadow z="3" fit></paper-shadow>
 
   <!-- need this because the host needs to be overflow: visible -->
-  <div id="scroller" relative>
+  <div id="scroller" relative flex auto>
     <template if="{{heading}}">
       <h1>{{heading}}</h1>
     </template>

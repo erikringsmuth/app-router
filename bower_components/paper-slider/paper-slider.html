@@ -116,6 +116,12 @@ To change the slider secondary progress bar color:
      *
      * @event core-change
      */
+     
+    /**
+     * Fired when the slider's immediateValue changes.
+     *
+     * @event immediate-value-change
+     */
 
     /**
      * Fired when the slider's value changes due to user interaction.
@@ -183,9 +189,17 @@ To change the slider secondary progress bar color:
      * @type number
      * @default 0
      */
-
     maxMarkers: 100,
-     
+
+    /**
+     * True when the user is dragging the slider.
+     *
+     * @attribute dragging
+     * @type boolean
+     * @default false
+     */
+    dragging: false,
+
     observe: {
       'step snaps': 'update'
     },
@@ -227,6 +241,7 @@ To change the slider secondary progress bar color:
       if (!this.dragging) {
         this.value = this.immediateValue;
       }
+      this.fire('immediate-value-change');
     },
 
     expandKnob: function() {
@@ -297,7 +312,7 @@ To change the slider secondary progress bar color:
       var ratio = (e.x - rect.left) / this._w;
       this.positionKnob(ratio);
       this.expandJob = this.job(this.expandJob, this.expandKnob, 60);
-      this.fire('change');
+      this.asyncFire('change');
     },
 
     knobTransitionEnd: function(e) {
@@ -307,7 +322,8 @@ To change the slider secondary progress bar color:
     },
 
     updateMarkers: function() {
-      this.markers = [], l = (this.max - this.min) / this.step;
+      this.markers = [];
+      var l = (this.max - this.min) / this.step;
       if (!this.snaps && l > this.maxMarkers) {
         return;
       }
@@ -316,10 +332,18 @@ To change the slider secondary progress bar color:
       }
     },
 
+    /**
+     * Increases value by `step` but not above `max`.
+     * @method increment
+     */
     increment: function() {
       this.value = this.clampValue(this.value + this.step);
     },
 
+    /**
+     * Decreases value by `step` but not below `min`.
+     * @method decrement
+     */
     decrement: function() {
       this.value = this.clampValue(this.value - this.step);
     },

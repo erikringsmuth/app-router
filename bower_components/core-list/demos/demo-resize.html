@@ -1,0 +1,428 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../core-list.html">
+  <link rel="import" href="../../core-ajax/core-ajax.html">
+  <link rel="import" href="../../core-animated-pages/core-animated-pages.html">
+  <link rel="import" href="../../core-animated-pages/transitions/slide-from-right.html">
+  <link rel="import" href="../../core-icon-button/core-icon-button.html">
+  <link rel="import" href="../../core-icon/core-icon.html">
+  <link rel="import" href="../../core-icons/core-icons.html">
+  <link rel="import" href="../../core-image/core-image.html">
+  <link rel="import" href="../../core-menu/core-menu.html">
+  <link rel="import" href="../../core-overlay/core-overlay.html">
+  <link rel="import" href="../../core-scroll-threshold/core-scroll-threshold.html">
+  <link rel="import" href="../../core-splitter/core-splitter.html">
+  <link rel="import" href="../../core-toolbar/core-toolbar.html">
+  <link rel="import" href="../../core-tooltip/core-tooltip.html">
+  <link rel="import" href="../../paper-button/paper-button.html">
+  <link rel="import" href="../../paper-dialog/paper-action-dialog.html">
+  <link rel="import" href="../../paper-dialog/paper-dialog.html">
+  <link rel="import" href="../../paper-dropdown/paper-dropdown.html">
+  <link rel="import" href="../../paper-fab/paper-fab.html">
+  <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../../paper-input/paper-input.html">
+  <link rel="import" href="../../paper-item/paper-item.html">
+  <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
+  <link rel="import" href="../../core-scroll-header-panel/core-scroll-header-panel.html">
+  <link rel="import" href="../../paper-shadow/paper-shadow.html">
+  <link rel="import" href="../../paper-spinner/paper-spinner.html">
+  <link rel="import" href="../../paper-tabs/paper-tabs.html">
+  <style>
+    html, body {
+      margin: 0;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: sans-serif;
+    }
+    list-test {
+      display: block;
+      height: 100%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body fit>
+
+<list-test></list-test>
+
+<polymer-element name="list-test" layout vertical relative>
+<template>
+  <style>
+    .message-item {
+      padding: 16px;
+      background: white;
+    }
+    .message-item.selected{
+      background-color: #eee;
+    }
+    .tabs {
+      background: #E91E63;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      color: white;
+    }
+    .toolbar {
+      background: #E91E63;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      color: white;
+    }
+    .avatar {
+      height: 40px;
+      width: 40px;
+      border-radius: 20px;
+      box-sizing: border-box;
+      border: 1px solid #DDD;
+      background-color: #DDD;
+    }
+    .pad {
+      padding: 0 16px;
+    }
+    .primary {
+      font-size: 16px;
+    }
+    .secondary {
+      font-size: 14px;
+    }
+    .dim {
+      color: gray;
+    }
+    .divider {
+      font-size: 14px;
+      font-weight: bold;
+      color: gray;
+      padding: 24px 16px 8px 16px;
+    }
+    .border {
+      margin-left: 72px;
+      border-bottom: 1px solid #DDD;
+    }
+    .photo-item {
+      box-sizing: border-box;
+      padding: 8px;
+    }
+    .photo {
+      background-size: cover;
+      height: 200px;
+      width: 200px;
+      box-sizing: border-box;
+      background-color: lightgray;
+    }
+    .title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px 8px 8px 8px;
+      color: white;
+      background: rgba(0,0,0,0.3);
+    }
+    .photo-pad {
+      padding: 16px;
+      align-items: center;
+    }
+    .photo-pad-left {
+      padding-left: 8px;
+    }
+    .pad-content {
+      padding: 16px;
+    }
+    .pad-icon {
+      margin-right: 0.5em;
+    }
+    .full-dialog {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      bottom: 16px;
+      right: 16px;
+    }
+
+  </style>
+
+  <core-ajax url="demo-data-500.json" response="{{messageData}}" auto></core-ajax>
+
+  <core-animated-pages selected="{{page}}" id="mainPages" valueattr="id" fit transitions="slide-from-right">
+
+    <!-- Main Menu -->
+    <div id="menuPage" layout vertical>
+      <core-toolbar class="toolbar">List Resizing Demos</core-toolbar>
+      <div>
+        <paper-item data-next="splitterPage" on-tap="{{changePage}}">
+          <core-icon icon="drawer" class="pad-icon"></core-icon>
+          Lists in Splitter
+        </paper-item>
+        <paper-item data-next="tabsPage" on-tap="{{changePage}}">
+          <core-icon icon="tab" class="pad-icon"></core-icon>
+          Lists in Pages
+        </paper-item>
+        <paper-item data-next="dialogPage" on-tap="{{changePage}}">
+          <core-icon icon="picture-in-picture" class="pad-icon"></core-icon>
+          Lists in Dialogs
+        </paper-item>
+      </div>
+    </div>
+
+    <!-- Lists in Splitters -->
+    <div id="splitterPage" layout vertical>
+
+      <core-toolbar class="toolbar">
+        <core-tooltip label="back" position="right">
+          <core-icon-button icon="arrow-back" on-tap="{{back}}"></core-icon-button>
+        </core-tooltip>
+        Lists in Spliters
+      </core-toolbar>
+
+      <div layout horizontal flex>
+
+        <core-list id="splitterMessages" data="{{messageData}}" groups="{{messageGroups}}" style="width: 50%;">
+          <template>
+            <div class="divider" divider>{{groupModel.label}}</div>
+            <div>
+              <div class="message-item {{selected?'selected':''}}" layout horizontal>
+                <img class="avatar" src="{{model.image}}">
+                <div class="pad" flex layout vertical>
+                  <div class="primary">{{index}} {{model.name}}</div>
+                  <div class="secondary">{{model.shortText}}</div>
+                  <div class="secondary dim Xclamp">{{model.longText}}</div>
+                </div>
+                <core-icon icon="{{model.boolean ? 'star' : 'star-outline'}}"></core-icon>
+              </div>
+              <div class="border"></div>
+            </div>
+          </template>
+        </core-list>
+
+        <core-splitter allowOverflow></core-splitter>
+      
+        <div id="splitterPhotosScroller" style="overflow:auto;" flex>
+          <core-scroll-threshold id="threshold" scrollTarget="{{$.splitterPhotosScroller}}" 
+            lowerThreshold="1000" on-lower-trigger="{{loadMore}}">
+          </core-scroll-threshold>
+          <core-list id="splitterPhotos" data="{{photosData}}" scrollTarget="{{$.splitterPhotosScroller}}" grid width="216">
+            <template>
+              <div class="photo-item">
+                <core-image class="photo" sizing="cover" load?="{{!!model}}" src="https://farm{{model.farm}}.staticflickr.com/{{model.server}}/{{model.id}}_{{model.secret}}_m.jpg" preload relative>
+                  <div class="title">{{index}} {{model.title}}</div>
+                </core-image>
+              </div>
+            </template>
+          </core-list>
+          <div class="photo-pad" hidden?="{{!$.threshold.lowerTriggered}}" layout horizontal center-justified>
+            <paper-spinner active></paper-spinner>
+            <div class="photo-pad-left">Loading...</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Lists in Tabs/Pages -->
+    <div layout vertical id="tabsPage">
+
+      <core-toolbar class="toolbar">
+        <core-icon-button icon="arrow-back" on-tap="{{back}}"></core-icon-button>
+        <div flex>Lists in Pages</div>
+        <paper-tabs selected="{{tabsPage}}" valueattr="name">
+          <paper-tab name="tabsMessagesPanel">Messages</paper-tab>
+          <paper-tab name="tabsPhotosScroller">Photos</paper-tab>
+        </paper-tabs>
+      </core-toolbar>
+
+      <core-animated-pages id="tabsPages" selected="{{tabsPage}}" valueattr="id" flex transitions="slide-from-right">
+
+        <core-scroll-header-panel id="tabsMessagesPanel" fit>
+          <core-toolbar>
+            <paper-menu-button>
+              <paper-icon-button icon="menu" noink></paper-icon-button>
+              <paper-dropdown class="dropdown">
+                <core-menu class="menu" on-core-activate="{{jumpToGroup}}" relative  style="height: 300px; width: 300px;">
+                  <core-list id="dropdownMessages" data="{{messageData}}" fit>
+                    <template>
+                      <paper-item>{{model.name}}</paper-item>
+                    </template>
+                  </core-list>
+                </core-menu>
+              </paper-dropdown>
+            </paper-menu-button>
+            Messages
+          </core-toolbar>
+          <core-list id="tabsMessages" data="{{messageData}}" groups="{{messageGroups}}" scrollTarget="{{$.tabsMessagesPanel.scroller}}">
+            <template>
+              <div class="divider" divider>{{groupModel.label}}</div>
+              <div>
+                <div class="message-item {{selected?'selected':''}}" layout horizontal>
+                  <img class="avatar" src="{{model.image}}">
+                  <div class="pad" flex layout vertical>
+                    <div class="primary">{{index}} {{model.name}}</div>
+                    <div class="secondary">{{model.shortText}}</div>
+                    <div class="secondary dim Xclamp">{{model.longText}}</div>
+                  </div>
+                  <core-icon icon="{{model.boolean ? 'star' : 'star-outline'}}"></core-icon>
+                </div>
+                <div class="border"></div>
+              </div>
+            </template>
+          </core-list>
+        </core-scroll-header-panel>
+      
+        <div id="tabsPhotosScroller" style="overflow:auto;" fit>
+          <core-scroll-threshold id="threshold" scrollTarget="{{$.tabsPhotosScroller}}" 
+            lowerThreshold="1000" on-lower-trigger="{{loadMore}}">
+          </core-scroll-threshold>
+          <core-list id="tabsPhotos" data="{{photosData}}" scrollTarget="{{$.tabsPhotosScroller}}" grid width="216">
+            <template>
+              <div class="photo-item">
+                <core-image class="photo" sizing="cover" load?="{{!!model}}" src="https://farm{{model.farm}}.staticflickr.com/{{model.server}}/{{model.id}}_{{model.secret}}_m.jpg" preload relative>
+                  <div class="title">{{index}} {{model.title}}</div>
+                </core-image>
+              </div>
+            </template>
+          </core-list>
+          <div class="photo-pad" hidden?="{{!$.threshold.lowerTriggered}}" layout horizontal center-justified>
+            <paper-spinner active></paper-spinner>
+            <div class="photo-pad-left">Loading...</div>
+          </div>
+        </div>
+
+      </core-animated-pages>
+
+    </div>
+
+    <!-- Lists in Dialogs -->
+    <div id="dialogPage" layout vertical>
+
+      <core-toolbar class="toolbar">
+        <core-icon-button icon="arrow-back" on-tap="{{back}}"></core-icon-button>
+        Lists in Dialogs
+      </core-toolbar>
+
+      <div flex class="pad-content">
+
+        <paper-button raised data-dialog="messagesDialog" on-tap="{{openDialog}}">Open Messages</paper-button>
+        <paper-button raised data-dialog="photosDialog" on-tap="{{openDialog}}">Open Photos</paper-button>
+
+        <paper-action-dialog class="full-dialog" heading="Messages" id="messagesDialog" layered="false" transition="core-transition-center">
+          <core-list id="dialogMessages" data="{{messageData}}" groups="{{messageGroups}}" scrollTarget="{{$.messagesDialog.sizingTarget}}">
+            <template>
+              <div class="divider" divider>{{groupModel.label}}</div>
+              <div>
+                <div class="message-item {{selected?'selected':''}}" layout horizontal>
+                  <img class="avatar" src="{{model.image}}">
+                  <div class="pad" flex layout vertical>
+                    <div class="primary">{{index}} {{model.name}}</div>
+                    <div class="secondary">{{model.shortText}}</div>
+                    <div class="secondary dim Xclamp">{{model.longText}}</div>
+                  </div>
+                  <core-icon icon="{{model.boolean ? 'star' : 'star-outline'}}"></core-icon>
+                </div>
+                <div class="border"></div>
+              </div>
+            </template>
+          </core-list>
+          <paper-button affirmative>Close</paper-button>
+        </paper-action-dialog>
+
+        <paper-action-dialog class="full-dialog" heading="Photos" id="photosDialog" layered="false" transition="core-transition-center">
+          <core-scroll-threshold id="threshold" scrollTarget="{{$.photosDialog.sizingTarget}}" 
+            lowerThreshold="1000" on-lower-trigger="{{loadMore}}">
+          </core-scroll-threshold>
+          <core-list id="dialogPhotos" data="{{photosData}}" scrollTarget="{{$.photosDialog.sizingTarget}}" grid width="216">
+            <template>
+              <div class="photo-item">
+                <core-image class="photo" sizing="cover" load?="{{!!model}}" src="https://farm{{model.farm}}.staticflickr.com/{{model.server}}/{{model.id}}_{{model.secret}}_m.jpg" preload relative>
+                  <div class="title">{{index}} {{model.title}}</div>
+                </core-image>
+              </div>
+            </template>
+          </core-list>
+          <div class="photo-pad" hidden?="{{!$.threshold.lowerTriggered}}" layout horizontal center-justified>
+            <paper-spinner active></paper-spinner>
+            <div class="photo-pad-left">Loading...</div>
+          </div>
+           <paper-button affirmative>Close</paper-button>
+        </paper-action-dialog>
+
+      </div>
+
+    </div>
+
+  </core-animated-pages>
+
+</template>
+<script>
+(function() {
+
+  Polymer('list-test', {
+    page: 'menuPage',
+    tabsPage: 'tabsMessagesPanel',
+    ready: function() {
+      CoreStyle.g.paperInput.focusedColor = 'white';
+      this.messageGroups = [
+        {length: 3, data: {label: 'Today'}},
+        {length: 15, data: {label: 'Yesterday'}},
+        {length: 30, data: {label: 'Last Week'}},
+        {length: 150, data: {label: 'Last Month'}},
+        {length: 150, data: {label: 'Last Quarter'}},
+        {length: 152, data: {label: 'Last Year'}}
+      ];
+
+      this.photosData = [];
+      this.photosPage = 1;
+      this.searchText = 'Japan';
+      this.apiKey = 'c304f1096a06486d3c1e7ab271bf7f3f';
+      this.perPage = 100;
+      this.load(1);
+    },
+    loadMore: function() {
+      this.load();
+    },
+    load: function(moreCount) {
+      if (this.photosPage > 0) {
+        var ajax = document.createElement('core-ajax');
+        ajax.url = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + 
+          this.apiKey + '&safe_search=1&sort=interestingness-desc&text=' + 
+          encodeURIComponent(this.searchText) + '&page=' + this.photosPage + "&format=json&per_page=" + this.perPage;
+        ajax.addEventListener('core-response', function(e) {
+          var data = this.photosData;
+          var resp = JSON.parse(e.detail.response.match('jsonFlickrApi\\((.*)\\)')[1]);
+          if (resp.stat == 'ok') {
+            resp.photos.photo.forEach(function(o) { data.push(o); });
+            this.photosPage = (resp.photos.page != resp.photos.pages) ? resp.photos.page + 1 : 0;
+            this.$.threshold.clearLower(!!this.photosPage);
+            if (moreCount) {
+              this.load(--moreCount);
+            }
+          }
+        }.bind(this));
+        ajax.go();
+      }
+    },
+    changePage: function(e) {
+      this.page = e.currentTarget.dataset.next;
+    },
+    back: function() {
+      this.page = 'menuPage';
+    },
+    openDialog: function(e) {
+      this.$[e.target.dataset.dialog].open();
+    }
+  });
+})();  
+</script>
+</polymer-element>
+
+</body>
+</html>

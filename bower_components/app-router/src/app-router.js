@@ -1,4 +1,4 @@
-// @license Copyright (C) 2014 Erik Ringsmuth - MIT license
+// @license Copyright (C) 2015 Erik Ringsmuth - MIT license
 (function(window, document) {
   var utilities = {};
   var importedURIs = {};
@@ -232,7 +232,7 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
-      activeTemplate(router, route.firstElementChild, route, url, eventDetail);
+      activateTemplate(router, route.firstElementChild, route, url, eventDetail);
     }
   }
 
@@ -270,7 +270,7 @@
     if (route.hasAttribute('active')) {
       if (route.hasAttribute('template')) {
         // template
-        activeTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
+        activateTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
       } else {
         // custom element
         activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, url, eventDetail);
@@ -287,11 +287,11 @@
         customElement[property] = model[property];
       }
     }
-    activeElement(router, customElement, url, eventDetail);
+    activateElement(router, customElement, url, eventDetail);
   }
 
   // Create an instance of the template
-  function activeTemplate(router, template, route, url, eventDetail) {
+  function activateTemplate(router, template, route, url, eventDetail) {
     var templateInstance;
     if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
@@ -301,7 +301,7 @@
     } else {
       templateInstance = document.importNode(template.content, true);
     }
-    activeElement(router, templateInstance, url, eventDetail);
+    activateElement(router, templateInstance, url, eventDetail);
   }
 
   // Create the route's model
@@ -317,7 +317,7 @@
   }
 
   // Replace the active route's content with the new element
-  function activeElement(router, element, url, eventDetail) {
+  function activateElement(router, element, url, eventDetail) {
     // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
     // otherwise we can remove the old route's content right away.
     // UNLESS
@@ -470,10 +470,10 @@
 
   // testRoute(routePath, urlPath, trailingSlashOption, isRegExp) - Test if the route's path matches the URL's path
   //
-  // Example routePath: '/example/*'
-  // Example urlPath = '/example/path'
+  // Example routePath: '/user/:userId/**'
+  // Example urlPath = '/user/123/bio'
   utilities.testRoute = function(routePath, urlPath, trailingSlashOption, isRegExp) {
-    // this algorithm tries to fail or succeed as quickly as possible for the most common cases
+    // try to fail or succeed as quickly as possible for the most common cases
 
     // handle trailing slashes (options: strict (default), ignore)
     if (trailingSlashOption === 'ignore') {
@@ -496,36 +496,58 @@
       return true;
     }
 
-    // look for wildcards
-    if (routePath.indexOf('*') === -1 && routePath.indexOf(':') === -1) {
-      // no wildcards and we already made sure it wasn't an exact match so the test fails
-      return false;
+    // relative routes a/b/c are the same as routes that start with a globstar /**/a/b/c
+    if (routePath.charAt(0) !== '/') {
+      routePath = '/**/' + routePath;
     }
 
-    // example urlPathSegments = ['', example', 'path']
-    var urlPathSegments = urlPath.split('/');
+    // recursively test if the segments match (start at 1 because 0 is always an empty string)
+    return segmentsMatch(routePath.split('/'), 1, urlPath.split('/'), 1)
+  };
 
-    // example routePathSegments = ['', 'example', '*']
-    var routePathSegments = routePath.split('/');
+  // segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex, pathVariables)
+  // recursively test the route segments against the url segments in place (without creating copies of the arrays
+  // for each recursive call)
+  //
+  // example routeSegments ['', 'user', ':userId', '**']
+  // example urlSegments ['', 'user', '123', 'bio']
+  function segmentsMatch(routeSegments, routeIndex, urlSegments, urlIndex, pathVariables) {
+    var routeSegment = routeSegments[routeIndex];
+    var urlSegment = urlSegments[urlIndex];
 
-    // there must be the same number of path segments or it isn't a match
-    if (urlPathSegments.length !== routePathSegments.length) {
-      return false;
+    // if we're at the last route segment and it is a globstar, it will match the rest of the url
+    if (routeSegment === '**' && routeIndex === routeSegments.length - 1) {
+      return true;
     }
 
-    // check equality of each path segment
-    for (var i = 0; i < routePathSegments.length; i++) {
-      // the path segments must be equal, be a wildcard segment '*', or be a path parameter like ':id'
-      var routeSegment = routePathSegments[i];
-      if (routeSegment !== urlPathSegments[i] && routeSegment !== '*' && routeSegment.charAt(0) !== ':') {
-        // the path segment wasn't the same string and it wasn't a wildcard or parameter
-        return false;
+    // we hit the end of the route segments or the url segments
+    if (typeof routeSegment === 'undefined' || typeof urlSegment === 'undefined') {
+      // return true if we hit the end of both at the same time meaning everything else matched, else return false
+      return routeSegment === urlSegment;
+    }
+
+    // if the current segments match, recursively test the remaining segments
+    if (routeSegment === urlSegment || routeSegment === '*' || routeSegment.charAt(0) === ':') {
+      // store the path variable if we have a pathVariables object
+      if (routeSegment.charAt(0) === ':' && typeof pathVariables !== 'undefined') {
+        pathVariables[routeSegment.substring(1)] = urlSegments[urlIndex];
+      }
+      return segmentsMatch(routeSegments, routeIndex + 1, urlSegments, urlIndex + 1, pathVariables);
+    }
+
+    // globstars can match zero to many URL segments
+    if (routeSegment === '**') {
+      // test if the remaining route segments match any combination of the remaining url segments
+      for (var i = urlIndex; i < urlSegments.length; i++) {
+        if (segmentsMatch(routeSegments, routeIndex + 1, urlSegments, i, pathVariables)) {
+          return true;
+        }
       }
     }
 
-    // nothing failed. the route matches the URL.
-    return true;
-  };
+    // all tests failed, the route segments do not match the url segments
+    return false;
+  }
 
   // routeArguments(routePath, urlPath, search, isRegExp) - Gets the path variables and query parameter values from the URL
   utilities.routeArguments = function(routePath, urlPath, search, isRegExp, typecast) {
@@ -533,22 +555,16 @@
 
     // regular expressions can't have path variables
     if (!isRegExp) {
-      // example urlPathSegments = ['', example', 'path']
-      var urlPathSegments = urlPath.split('/');
-
-      // example routePathSegments = ['', 'example', '*']
-      var routePathSegments = routePath.split('/');
-
+      // relative routes a/b/c are the same as routes that start with a globstar /**/a/b/c
+      if (routePath.charAt(0) !== '/') {
+        routePath = '/**/' + routePath;
+      }
+    
       // get path variables
       // urlPath '/customer/123'
       // routePath '/customer/:id'
       // parses id = '123'
-      for (var index = 0; index < routePathSegments.length; index++) {
-        var routeSegment = routePathSegments[index];
-        if (routeSegment.charAt(0) === ':') {
-          args[routeSegment.substring(1)] = urlPathSegments[index];
-        }
-      }
+      segmentsMatch(routePath.split('/'), 1, urlPath.split('/'), 1, args);
     }
 
     var queryParameters = search.substring(1).split('&');

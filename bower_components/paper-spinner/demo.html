@@ -33,22 +33,19 @@
   </style>
 </head>
 <body>
-  <template is="auto-binding">
-    <paper-spinner class="blue" active></paper-spinner>
-    <paper-spinner class="red" active></paper-spinner>
-    <paper-spinner class="yellow" active></paper-spinner>
-    <paper-spinner class="green" active></paper-spinner>
-    <paper-spinner active></paper-spinner>
-    <button on-tap="{{toggle}}">Toggle</button>
-  </template>
+  <paper-spinner class="blue" active></paper-spinner>
+  <paper-spinner class="red" active></paper-spinner>
+  <paper-spinner class="yellow" active></paper-spinner>
+  <paper-spinner class="green" active></paper-spinner>
+  <paper-spinner active></paper-spinner>
+  <button>Toggle</button>
   <script>
-    var t = document.querySelector('template');
-    t.toggle = function() {
+    document.querySelector('button').addEventListener('click', function() {
       var spinners = document.querySelectorAll('paper-spinner');
       Array.prototype.forEach.call(spinners, function(spinner) {
         spinner.active = !spinner.active;
       });
-    }
+    });
   </script>
 </body>
 </html>

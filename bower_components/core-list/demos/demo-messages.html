@@ -125,10 +125,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <core-toolbar class="toolbar">
     <paper-menu-button>
       <paper-icon-button icon="menu" noink></paper-icon-button>
-      <paper-dropdown class="dropdown">
+      <paper-dropdown class="dropdown" layered>
         <core-menu class="menu" on-core-activate="{{jumpToGroup}}">
           <template repeat="{{group, index in groups}}">
-            <paper-item label="{{group.data.label}}"></paper-item>
+            <paper-item>{{group.data.label}}</paper-item>
           </template>
         </core-menu>
       </paper-dropdown>
@@ -198,7 +198,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         clearTimeout(this.filterThrottle);
       }
       this.filterThrottle = setTimeout(function() {
-        var value = this.$.searchInput.inputValue;
+        var value = this.$.searchInput.value;
         this.filteredGroups = value ? null : this.groups;
         this.filteredData = this.data.filter(function(o) {
           return new RegExp(value, 'i').test(o.name);

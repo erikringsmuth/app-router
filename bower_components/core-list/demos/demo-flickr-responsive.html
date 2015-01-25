@@ -124,21 +124,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-dropdown>
     </paper-menu-button>
     <paper-menu-button>
-      <paper-icon-button icon="{{modeEl.icon}}" noink></paper-icon-button>
+      <paper-icon-button icon="{{modeEl.dataset.icon}}" noink></paper-icon-button>
       <paper-dropdown class="dropdown">
         <core-menu class="menu" selected="{{mode}}" selectedItem="{{modeEl}}">
-          <paper-item name="grid" icon="view-module">Grid</paper-item>
-          <paper-item name="list" icon="view-list">List</paper-item>
-          <paper-item name="responsive" icon="device:devices">Responsive</paper-item>
+          <paper-item name="grid" data-icon="view-module">
+            <core-icon icon="view-module"></core-icon>
+            <span class="pad-left">Grid</span>
+          </paper-item>
+          <paper-item name="list" data-icon="view-list">
+            <core-icon icon="view-list"></core-icon>
+            <span class="pad-left">List</span>
+          </paper-item>
+          <paper-item name="responsive" icon="device:devices">
+            <core-icon icon="device:devices"></core-icon>
+            <span class="pad-left">Responsive</span>
+          </paper-item>
         </core-menu>
       </paper-dropdown>
     </paper-menu-button>
     <paper-menu-button>
-      <paper-icon-button icon="{{groupedEl.icon}}" noink></paper-icon-button>
+      <paper-icon-button icon="{{groupedEl.dataset.icon}}" noink></paper-icon-button>
       <paper-dropdown class="dropdown">
         <core-menu class="menu" selected="{{grouped}}" selectedItem="{{groupedEl}}">
-          <paper-item name="yes" icon="image:filter-none">Show Groups</paper-item>
-          <paper-item name="no" icon="image:crop-din">No Groups</paper-item>
+          <paper-item name="yes" data-icon="image:filter-none">
+            <core-icon icon="image:filter-none"></core-icon>
+            <span class="pad-left">Show Groups</span>
+          </paper-item>
+          <paper-item name="no" data-icon="image:crop-din">
+            <core-icon icon="image:crop-din"></core-icon>
+            <span class="pad-left">No Groups</span>
+          </paper-item>
         </core-menu>
       </paper-dropdown>      
     </paper-menu-button>

@@ -17,40 +17,38 @@ Example:
 
 Styling toggle button:
 
-To change the ink color for checked state:
+To change the toggle color:
 
-    paper-toggle-button::shadow paper-radio-button::shadow #ink[checked] {
+    paper-toggle-button::shadow .toggle {
+      background-color: #9c27b0;
+    }
+
+To change the ink color:
+    
+    paper-toggle-button::shadow .toggle-ink {
+      color: #009688;
+    }
+
+To change the checked toggle color:
+
+    paper-toggle-button::shadow [checked] .toggle {
+      background-color: #4285f4;
+    }
+
+To change the checked ink color:
+
+    paper-toggle-button::shadow [checked] .toggle-ink {
       color: #4285f4;
     }
-    
-To change the radio checked color:
-    
-    paper-toggle-button::shadow paper-radio-button::shadow #onRadio {
-      background-color: #4285f4;
-    }
-    
-To change the bar color for checked state:
 
-    paper-toggle-button::shadow #toggleBar[checked] {
-      background-color: #4285f4;
-    }
-    
-To change the ink color for unchecked state:
+To change the toggle bar and toggle button colors separately:
 
-    paper-toggle-button::shadow paper-radio-button::shadow #ink {
-      color: #b5b5b5;
-    }
-    
-To change the radio unchecked color:
-    
-    paper-toggle-button::shadow paper-radio-button::shadow #offRadio {
-      border-color: #b5b5b5;
+    paper-toggle-button::shadow .toggle-bar {
+      background-color: #5677fc;
     }
 
-To change the bar color for unchecked state:
-
-    paper-toggle-button::shadow #toggleBar {
-      background-color: red;
+    paper-toggle-button::shadow .toggle-button {
+      background-color: #9c27b0;
     }
 
 @group Paper Elements
@@ -59,19 +57,23 @@ To change the bar color for unchecked state:
 -->
 
 <link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../core-a11y-keys/core-a11y-keys.html">
 
 <polymer-element name="paper-toggle-button" attributes="checked disabled" role="button" aria-pressed="false" tabindex="0">
 <template>
 
   <link rel="stylesheet" href="paper-toggle-button.css">
 
-  <div id="toggleContainer" disabled?="{{disabled}}">
+  <core-a11y-keys target="{{}}" keys="space" on-keys-pressed="{{tap}}"></core-a11y-keys>
+
+  <div id="toggleContainer" checked?="{{checked}}" disabled?="{{disabled}}">
   
-    <div id="toggleBar" checked?="{{checked}}"></div>
-  
-    <paper-radio-button id="toggleRadio" toggles checked="{{checked}}" on-change="{{changeAction}}" on-core-change="{{stopPropagation}}"
-        on-trackstart="{{trackStart}}" on-trackx="{{trackx}}" on-trackend="{{trackEnd}}"></paper-radio-button>
-    
+    <div id="toggleBar" class="toggle toggle-bar"></div>
+
+    <div id="toggleButton" class="toggle toggle-button">
+      <paper-ripple id="ink" class="toggle-ink circle"></paper-ripple>
+    </div>
+
   </div>
 
 </template>
@@ -99,7 +101,7 @@ To change the bar color for unchecked state:
      * @default false
      */
     checked: false,
-    
+
     /**
      * If true, the toggle button is disabled.  A disabled toggle button cannot
      * be tapped or dragged to change the checked state.
@@ -110,23 +112,55 @@ To change the bar color for unchecked state:
      */
     disabled: false,
 
+    eventDelegates: {
+      down: 'downAction',
+      up: 'upAction',
+      tap: 'tap',
+      trackstart: 'trackStart',
+      trackx: 'trackx',
+      trackend: 'trackEnd'
+    },
+
+    downAction: function(e) {
+      var rect = this.$.ink.getBoundingClientRect();
+      this.$.ink.downAction({
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      });
+    },
+
+    upAction: function(e) {
+      this.$.ink.upAction();
+    },
+
+    tap: function() {
+      if (this.disabled) {
+        return;
+      }
+      this.checked = !this.checked;
+      this.fire('change');
+    },
+
     trackStart: function(e) {
-      this._w = this.$.toggleBar.offsetLeft + this.$.toggleBar.offsetWidth;
+      if (this.disabled) {
+        return;
+      }
+      this._w = this.$.toggleBar.offsetWidth / 2;
       e.preventTap();
     },
 
     trackx: function(e) {
       this._x = Math.min(this._w, 
           Math.max(0, this.checked ? this._w + e.dx : e.dx));
-      this.$.toggleRadio.classList.add('dragging');
-      var s =  this.$.toggleRadio.style;
+      this.$.toggleButton.classList.add('dragging');
+      var s =  this.$.toggleButton.style;
       s.webkitTransform = s.transform = 'translate3d(' + this._x + 'px,0,0)';
     },
 
     trackEnd: function() {
-      var s =  this.$.toggleRadio.style;
+      var s =  this.$.toggleButton.style;
       s.transform = s.webkitTransform = '';
-      this.$.toggleRadio.classList.remove('dragging');
+      this.$.toggleButton.classList.remove('dragging');
       var old = this.checked;
       this.checked = Math.abs(this._x) > this._w / 2;
       if (this.checked !== old) {
@@ -137,15 +171,6 @@ To change the bar color for unchecked state:
     checkedChanged: function() {
       this.setAttribute('aria-pressed', Boolean(this.checked));
       this.fire('core-change');
-    },
-    
-    changeAction: function(e) {
-      e.stopPropagation();
-      this.fire('change');
-    },
-    
-    stopPropagation: function(e) {
-      e.stopPropagation();
     }
 
   });

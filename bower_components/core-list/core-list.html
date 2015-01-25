@@ -20,6 +20,14 @@ may be reused with a new model at any time.  Particularly, any state that
 may change as the result of a user interaction with the list item must be
 bound to the model to avoid view state inconsistency.
 
+IMPORTANT: `core-list` must ether be explicitly sized, or delegate scrolling to
+an explicitly sized parent.  By "explicitly sized", we mean it either has an
+explicit CSS `height` property set via a class or inline style, or else is sized
+by other layout means (e.g. `flex` or `fit`).  Alternatively, `core-list` can
+delegate scrolling to a scrollable element that contains the list by setting the
+`scrollTarget` property, and the same explicit sizing requiremets will apply
+to that element.
+
 ### Template model
 
 List item templates should bind to template models of the following structure:
@@ -162,11 +170,13 @@ the following abstract API:
 
 @group Polymer Core Elements
 @element core-list
+@mixins Polymer.CoreResizable https://github.com/polymer/core-resizable
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-selection/core-selection.html">
+<link rel="import" href="../core-resizable/core-resizable.html">
 
-<polymer-element name="core-list" on-tap="{{tapHandler}}" tabindex="-1">
+<polymer-element name="core-list" tabindex="-1">
 <template>
   <core-selection id="selection" multi="{{multi}}" on-core-select="{{selectedHandler}}"></core-selection>
   <link rel="stylesheet" href="core-list.css">
@@ -178,7 +188,7 @@ the following abstract API:
   var IOS = navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/);
   var IOS_TOUCH_SCROLLING = IOS && IOS[1] >= 8;
 
-  Polymer('core-list', {
+  Polymer(Polymer.mixin({
     
     publish: {
       /**
@@ -328,11 +338,16 @@ the following abstract API:
 
     },
 
+    eventDelegates: {
+      tap: 'tapHandler',
+      'core-resize': 'updateSize'
+    },
+
     // Local cache of scrollTop
     _scrollTop: 0,
     
     observe: {
-      'data grid width template scrollTarget': 'initialize',
+      'isAttached data grid width template scrollTarget': 'initialize',
       'multi selectionEnabled': '_resetSelection'
     },
 
@@ -357,33 +372,36 @@ the following abstract API:
       this._nestedGroups = false;
       this._groupStart = 0;
       this._groupStartIndex = 0;
-
-      this._boundResizeHandler = this.updateSize.bind(this);
-      window.addEventListener('resize', this._boundResizeHandler);
     },
 
     attached: function() {
+      this.isAttached = true;
       this.template = this.querySelector('template');
       if (!this.template.bindingDelegate) {
         this.template.bindingDelegate = this.element.syntax;
       }
+      this.resizableAttachedHandler();
     },
 
     detached: function() {
-      this.removeEventListener(this._boundScrollHandler);
-      this.removeEventListener(this._boundResizeHandler);
+      this.isAttached = false;
+      if (this._target) {
+        this._target.removeEventListener('scroll', this._boundScrollHandler);
+      }
+      this.resizableDetachedHandler();
     },
 
     /**
-     * To be called by the user when the list is resized or shown
-     * after being hidden.  Note, `core-list` calls this automatically
-     * when the window is resized.
+     * To be called by the user when the list is manually resized
+     * or shown after being hidden.
      *
      * @method updateSize
      */
     updateSize: function() {
-      this._resetIndex(this._getFirstVisibleIndex());
-      this.initializeData();
+      if (!this._positionPending && !this._needItemInit) {
+        this._resetIndex(this._getFirstVisibleIndex() || 0);
+        this.initialize();
+      }
     },
 
     _resetSelection: function() {
@@ -436,7 +454,7 @@ the following abstract API:
       }
       // Adjust offset/scroll position based on total number of items changed
       if (this._virtualStart < this._physicalCount) {
-        this._resetIndex(this._getFirstVisibleIndex());
+        this._resetIndex(this._getFirstVisibleIndex() || 0);
       } else {
         totalDelta = Math.max((totalDelta / this._rowFactor) * this._physicalAverage, -this._physicalOffset);
         this._physicalOffset += totalDelta;
@@ -456,13 +474,12 @@ the following abstract API:
 
     groupsChanged: function() {
       if (!!this.groups != this._grouped) {
-        this.initialize();
-        this._resetIndex(this._getFirstVisibleIndex() || this._virtualStart);
+        this.updateSize();
       }
     },
 
     initialize: function() {
-      if (!this.template) {
+      if (!this.template || !this.isAttached) {
         return;
       }
 
@@ -599,7 +616,9 @@ the following abstract API:
           throw 'Grid requires the `width` property to be set';
         }
         this._rowFactor = Math.floor(this._target.offsetWidth / this.width) || 1;
-        this._rowMargin = (this._target.offsetWidth - (this._rowFactor * this.width)) / 2;
+        var cs = getComputedStyle(this._target);
+        var padding = parseInt(cs.paddingLeft || 0) + parseInt(cs.paddingRight || 0);
+        this._rowMargin = (this._target.offsetWidth - (this._rowFactor * this.width) - padding) / 2;
       } else {
         this._rowFactor = 1;
         this._rowMargin = 0;
@@ -647,7 +666,11 @@ the following abstract API:
       
       // Add physical items up to a max based on data length, viewport size, and extra item overhang
       var currentCount = this._physicalCount || 0;
-      this._physicalCount = Math.min(Math.ceil(this._target.offsetHeight / (this._physicalAverage || this.height)) * this.runwayFactor * this._rowFactor, this._virtualCount);
+      var height = this._target.offsetHeight;
+      if (!height && this._target.offsetParent) {
+        console.warn('core-list must either be sized or be inside an overflow:auto div that is sized');
+      }
+      this._physicalCount = Math.min(Math.ceil(height / (this._physicalAverage || this.height)) * this.runwayFactor * this._rowFactor, this._virtualCount);
       this._physicalCount = Math.max(currentCount, this._physicalCount);
       this._physicalData = this._physicalData || new Array(this._physicalCount);
       var needItemInit = false;
@@ -779,10 +802,9 @@ the following abstract API:
 
       // Measure content in scroller before virtualized items
       if (this._target != this) {
-        el1 = this.previousElementSibling;
-        this._aboveSize = el1 ? el1.offsetTop + el1.offsetHeight : 0;
+        this._aboveSize = this.offsetTop;
       } else {
-        this._aboveSize = 0;
+        this._aboveSize = parseInt(getComputedStyle(this._target).paddingTop);
       }
 
       // Calculate average height
@@ -1232,7 +1254,7 @@ the following abstract API:
         var virtualIndex = this._virtualStart + i;
         var physicalIndex = this._virtualToPhysical(virtualIndex);
         var item = this._physicalItems[physicalIndex];
-        if (item._translateY >= this._scrollTop) {
+        if (!item.hidden && item._translateY >= this._scrollTop - this._aboveSize) {
           return virtualIndex;
         }
       }
@@ -1242,8 +1264,8 @@ the following abstract API:
       index = Math.min(index, this._virtualCount-1);
       index = Math.max(index, 0);
       this.changeStartIndex(index - this._virtualStart);
-      this._scrollTop = this.setScrollTop((index / this._rowFactor) * this._physicalAverage);
-      this._physicalOffset = this._scrollTop;
+      this._scrollTop = this.setScrollTop(this._aboveSize + (index / this._rowFactor) * this._physicalAverage);
+      this._physicalOffset = this._scrollTop - this._aboveSize;
       this._dir = 0;
     },
 
@@ -1286,7 +1308,7 @@ the following abstract API:
       this.refresh();
     }
 
-  });
+  }, Polymer.CoreResizable));
 
 })();
 </script>

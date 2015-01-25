@@ -8,6 +8,7 @@
     subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link href="../core-selector/core-selector.html" rel="import">
+<link href="../core-resizable/core-resizable.html" rel="import">
 
 <link href="transitions/hero-transition.html" rel="import">
 <link href="transitions/cross-fade.html" rel="import">
@@ -218,6 +219,7 @@ Example:
 
 @element core-animated-pages
 @extends core-selector
+@mixins Polymer.CoreResizer https://github.com/polymer/core-resizable
 @status beta
 @homepage github.io
 -->
@@ -245,7 +247,7 @@ Fired when a page transition completes.
 
 <script>
 
-  Polymer({
+  Polymer(Polymer.mixin({
 
     eventDelegates: {
       'core-transitionend': 'transitionEnd'
@@ -281,6 +283,14 @@ Fired when a page transition completes.
     created: function() {
       this._transitions = [];
       this.transitioning = [];
+    },
+
+    attached: function() {
+      this.resizerAttachedHandler();
+    },
+
+    detached: function() {
+      this.resizerDetachedHandler();
     },
 
     transitionsChanged: function() {
@@ -410,12 +420,14 @@ Fired when a page transition completes.
 
       if (!oldItem) {
         this.applySelection(this.selectedItem, true);
+        this.async(this.notifyResize);
         return;
       }
 
       if (this.hasAttribute('no-transition') || !this._transitionElements || !this._transitionElements.length) {
         this.applySelection(oldItem, false);
         this.applySelection(this.selectedItem, true);
+        this.notifyResize();
         return;
       }
 
@@ -425,11 +437,22 @@ Fired when a page transition completes.
         Polymer.flush();
         Polymer.endOfMicrotask(function() {
           self.applyTransition(oldItem, self.selectedItem);
+          self.notifyResize();
         });
+      }
+    },
+
+    resizerShouldNotify: function(el) {
+      // Only notify descendents of selected item
+      while (el && (el != this)) {
+        if (el == this.selectedItem) {
+          return true;
+        }
+        el = el.parentElement || (el.parentNode && el.parentNode.host);
       }
     }
 
-  });
+  }, Polymer.CoreResizer));
 
 </script>
 
