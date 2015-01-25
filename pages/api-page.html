@@ -10,26 +10,23 @@
 
       <h2 id="app-route-options">&lt;app-route&gt; options <a href="../#/api#app-route-options">#</a></h2>
 
-      <h4 id="path" class="top-spacing">path <a href="../#/api#path">#</a></h4>
-      <p>The <code-snippet>path</code-snippet> attribute is used to match the URL.</p>
-      <p>Example URL path - <code-snippet>/my-site/users/alice/orders/12345/invoice</code-snippet></p>
-<code-block>&lt;app-route path="/*/users/:userId/**" element="example-page"&gt;&lt;/app-route&gt;</code-block>
-      <ul>
-        <li><code-snippet>*</code-snippet> - matches exactly 1 path segment "my-site"</li>
-        <li><code-snippet>users</code-snippet> - matches the second path segment with the text "users"</li>
-        <li><code-snippet>:userId</code-snippet> - matches a single path segment "alice" and stores it in the variable <code-snippet>userId</code-snippet></li>
-        <li><code-snippet>**</code-snippet> - matches zero to many path segments</li>
-      </ul>
-      <p>Any route that doesn't start in a <code-snippet>/</code-snippet> is a relative route and is the same as if it  started with <code-snippet>/**</code-snippet>.</p>
-<code-block>&lt;app-route path="orders/:orderId/*" element="example-page"&gt;&lt;/app-route&gt;</code-block>
-      <p>This is the same as</p>
-<code-block>&lt;app-route path="/**/orders/:orderId/*" element="example-page"&gt;&lt;/app-route&gt;</code-block>
-      <ul>
-        <li><code-snippet>/**</code-snippet> - is added to the begining of the relative route and matches "/my-site/users/alice"</li>
-        <li><code-snippet>orders</code-snippet> - matches the path segment with the text "orders"</li>
-        <li><code-snippet>:orderId</code-snippet> - matches a single path segment "alice" and stores it in the variable <code-snippet>orderId</code-snippet></li>
-        <li><code-snippet>*</code-snippet> - matches exactly one path segment</li>
-      </ul>
+      <h4 id="path" class="top-spacing">path URL matching <a href="../#/api#path">#</a></h4>
+      <p>Match a string.</p>
+<code-block>&lt;app-route path="/home"&gt;&lt;/app-route&gt;</code-block>
+      <p>Store a path segment in a variable.</p>
+<code-block>&lt;app-route path="/orders/:orderId"&gt;&lt;/app-route&gt;</code-block>
+      <p>Match exactly one path segment with a wildcard.</p>
+<code-block>&lt;app-route path="/customers/*"&gt;&lt;/app-route&gt;</code-block>
+      <p>Match zero-to-many path segments with a globstar.</p>
+<code-block>&lt;app-route path="/products/**"&gt;&lt;/app-route&gt;</code-block>
+      <p>Use relative paths to ignore the URL prefix.</p>
+<code-block>&lt;app-route path="users/:userId"&gt;&lt;/app-route&gt;
+&lt;!-- the same as --&gt;
+&lt;app-route path="/**/users/:userId"&gt;&lt;/app-route&gt;</code-block>
+      <p>Match using regular expressions.</p>
+<code-block>&lt;app-route regex path="/^\/\w+\/\d+$/i"&gt;&lt;/app-route&gt;</code-block>
+      <p>Catch-all with <code-snippet>*</code-snippet>.</p>
+<code-block>&lt;app-route path="*"&gt;&lt;/app-route&gt;</code-block>
 
       <h4 id="import-custom-element" class="top-spacing">import a custom element <a href="../#/api#import-custom-element">#</a></h4>
       <p>Lazy-load a custom element.</p>
