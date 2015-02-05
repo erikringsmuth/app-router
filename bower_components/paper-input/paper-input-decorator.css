@@ -16,7 +16,7 @@
 }
 
 polyfill-next-selector {
-  content: '.input-body > :not(.label):not(.cursor)';
+  content: '.input-body > :not(.label)';
 }
 ::content > *,
 ::content > input[is="core-input"] {
@@ -95,26 +95,6 @@ polyfill-next-selector {
   -moz-transform-origin: 0% 0%;
   -webkit-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
-}
-
-.cursor {
-  position: absolute;
-  top: 0.4em;
-  left: 0;
-  width: 1px;
-  height: 1.4em;
-  opacity: 0.4;
-  -moz-transform-origin: 0%;
-  -webkit-transform-origin: 0%;
-  transform-origin: 0%;
-  -webkit-transform: none;
-  transform: none;
-}
-
-.cursor[invisible] {
-  opacity: 0.75;
-  -webkit-transform: translate3d(3em,0,0) scale3d(50,1,1);
-  transform: translate3d(3em,0,0) scale3d(50,1,1);
 }
 
 .underline {

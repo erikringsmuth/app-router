@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       return function(done) {
         assert.equal(s.selected, expectedIndex);
         s[method](wrap);
-        asyncPlatformFlush(done);
+        flush(done);
       }
     }
 

@@ -30,8 +30,7 @@ Theming
 
 - `CoreStyle.g.paperInput.labelColor` - The inline label, floating label, error message and error icon color when the input does not have focus.
 - `CoreStyle.g.paperInput.focusedColor` - The floating label and the underline color when the input has focus.
-- `CoreStyle.g.paperInput.cursorColor` - The cursor color during the focus animation. Typically this is the same as `focusedColor`.
-- `CoreStyle.g.paperInput.invalidColor` - The error message, the error icon, the cursor, the floating label and the underline's color when the input is invalid and has focus.
+- `CoreStyle.g.paperInput.invalidColor` - The error message, the error icon, the floating label and the underline's color when the input is invalid and has focus.
 
 To add custom styling to only some elements, use these selectors:
 
@@ -67,20 +66,14 @@ To add custom styling to only some elements, use these selectors:
         background-color: orange;
     }
 
-    paper-input-decorator /deep/ .cursor {
-        /* cursor color during the focus transition */
-        background-color: orange;
-    }
-
     paper-input-decorator.invalid[focused] /deep/ .floated-label .label-text,
     paper-input-decorator[focused] /deep/ .error {
         /* floating label, error message nad error icon color when the input is invalid and focused */
         color: salmon;
     }
 
-    paper-input-decorator.invalid /deep/ .focused-underline,
-    paper-input-decorator.invalid /deep/ .cursor {
-        /* line and cursor color when the input is invalid and focused */
+    paper-input-decorator.invalid /deep/ .focused-underline {
+        /* line and color when the input is invalid and focused */
         background-color: salmon;
     }
 
@@ -88,6 +81,36 @@ Form submission
 ---------------
 
 You can use inputs decorated with this element in a `form` as usual.
+
+Validation
+----------
+
+Because you provide the `input` element to `paper-input-decorator`, you can use any validation library
+or the <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation">HTML5 Constraints Validation API</a>
+to implement validation. Set the `isInvalid` attribute when the input is validated, and provide an
+error message in the `error` attribute.
+
+Example:
+
+    <paper-input-decorator id="paper1" error="Value must start with a number!">
+        <input id="input1" is="core-input" pattern="^[0-9].*">
+    </paper-input-decorator>
+    <button onclick="validate()"></button>
+    <script>
+        function validate() {
+            var decorator = document.getElementById('paper1');
+            var input = document.getElementById('input1');
+            decorator.isInvalid = !input.validity.valid;
+        }
+    </script>
+
+Example to validate as the user types:
+
+    <template is="auto-binding">
+        <paper-input-decorator id="paper2" error="Value must start with a number!" isInvalid="{{!$.input2.validity.valid}}">
+            <input id="input2" is="core-input" pattern="^[0-9].*">
+        </paper-input-decorator>
+    </template>
 
 Accessibility
 -------------
@@ -137,18 +160,13 @@ conflict with this element.
   background-color: {{g.paperInput.focusedColor}};
 }
 
-.cursor {
-  background-color: {{g.paperInput.cursorColor}};
-}
-
 :host(.invalid) .floated-label .label-text,
 .error {
   color: {{g.paperInput.invalidColor}};
 }
 
 :host(.invalid) .unfocused-underline,
-:host(.invalid) .focused-underline,
-:host(.invalid) .cursor {
+:host(.invalid) .focused-underline {
   background-color: {{g.paperInput.invalidColor}};
 }
 
@@ -157,7 +175,8 @@ conflict with this element.
 <polymer-element name="paper-input-decorator" layout vertical
   on-transitionEnd="{{transitionEndAction}}" on-webkitTransitionEnd="{{transitionEndAction}}"
   on-input="{{inputAction}}"
-  on-down="{{downAction}}">
+  on-down="{{downAction}}"
+  on-tap="{{tapAction}}">
 
   <template>
 
@@ -176,15 +195,13 @@ conflict with this element.
         <span id="labelText" class="label-text" invisible?="{{!_labelVisible}}" animated?="{{labelAnimated}}">{{label}}</span>
       </div>
 
-      <div class="cursor" invisible?="{{!cursorAnimated}}" animated?="{{cursorAnimated}}"></div>
-
       <content></content>
 
     </div>
 
     <div id="underline" class="underline" relative>
       <div class="unfocused-underline" fit invisible?="{{disabled}}"></div>
-      <div id="focusedUnderline" class="focused-underline" fit invisible?="{{!focused}}" animated?="{{underlineAnimated}}"></div>
+      <div id="focusedUnderline" class="focused-underline" fit invisible?="{{!underlineVisible}}" animated?="{{underlineAnimated}}"></div>
     </div>
 
     <div class="error" layout horizontal center hidden?="{{!isInvalid}}">
@@ -201,7 +218,6 @@ conflict with this element.
     var paperInput = CoreStyle.g.paperInput = CoreStyle.g.paperInput || {};
 
     paperInput.labelColor = '#757575';
-    paperInput.cursorColor = '#4059a9';
     paperInput.focusedColor = '#4059a9';
     paperInput.invalidColor = '#d34336';
 
@@ -260,6 +276,17 @@ conflict with this element.
         isInvalid: false,
 
         /**
+         * Set this property to true to validate the input as the user types.
+         * This will not validate when changing the input programmatically; call
+         * `validate()` instead.
+         *
+         * @attribute autoValidate
+         * @type boolean
+         * @default false
+         */
+        autoValidate: false,
+
+        /**
          * The message to display if the input value fails validation. If this
          * is unset or the empty string, a default message is displayed depending
          * on the type of validation error.
@@ -311,7 +338,7 @@ conflict with this element.
 
       animateFloatingLabel: function() {
         if (!this.floatingLabel || this.labelAnimated) {
-          return;
+          return false;
         }
 
         if (!this.$.labelText.cachedTransform) {
@@ -321,7 +348,7 @@ conflict with this element.
         // If there's still no cached transform, the input is invisible so don't
         // do the animation.
         if (!this.$.labelText.cachedTransform) {
-          return;
+          return false;
         }
 
         this.labelAnimated = true;
@@ -345,12 +372,47 @@ conflict with this element.
           this.input.placeholder = '';
         }
 
+        return true;
+      },
+
+      animateUnderline: function(e) {
+        if (this.focused) {
+          var rect = this.$.underline.getBoundingClientRect();
+          var right = e.x - rect.left;
+          this.$.focusedUnderline.style.mozTransformOrigin = right + 'px';
+          this.$.focusedUnderline.style.webkitTransformOrigin = right + 'px ';
+          this.$.focusedUnderline.style.transformOriginX = right + 'px';
+
+          // Animations only run when the user interacts with the input
+          this.underlineAnimated = true;
+        }
+      },
+
+      /**
+       * Validate the input using HTML5 Constraints.
+       *
+       * @method validate
+       * @return {boolean} True if the input is valid.
+       */
+      validate: function() {
+        this.isInvalid = !this.input.validity.valid;
+        return this.input.validity.valid;
       },
 
       _labelVisibleChanged: function(old) {
         // do not do the animation on first render
         if (old !== undefined) {
-          this.animateFloatingLabel();
+          if (!this.animateFloatingLabel()) {
+            this.updateInputLabel(this.input, this.label);
+          }
+        }
+      },
+
+      labelVisibleChanged: function() {
+        if (this.labelVisible === 'true') {
+          this.labelVisible = true;
+        } else if (this.labelVisible === 'false') {
+          this.labelVisible = false;
         }
       },
 
@@ -366,12 +428,21 @@ conflict with this element.
 
       focusedChanged: function() {
         this.updateLabelVisibility(this.input && this.input.value);
+        if (this.lastEvent) {
+          this.animateUnderline(this.lastEvent);
+          this.lastEvent = null;
+        }
+        this.underlineVisible = this.focused;
       },
 
       inputChanged: function(old) {
         if (this.input) {
           this.updateLabelVisibility(this.input.value);
           this.updateInputLabel(this.input, this.label);
+
+          if (this.autoValidate) {
+            this.validate();
+          }
         }
         if (old) {
           this.updateInputLabel(old, '');
@@ -382,7 +453,7 @@ conflict with this element.
         this.focused = true;
       },
 
-      blurAction: function(e) {
+      blurAction: function() {
         this.focused = false;
       },
 
@@ -412,11 +483,25 @@ conflict with this element.
         }
       },
 
-      inputAction: function(e) {
-        this.updateLabelVisibility(e.target.value);
+      inputAction: function() {
+        this.updateLabelVisibility(this.input.value);
+        if (this.autoValidate) {
+          this.validate();
+        }
       },
 
       downAction: function(e) {
+        // eat the event and do nothing if already focused
+        if (e.target !== this.input && this.focused) {
+          e.preventDefault();
+          return;
+        }
+        // cache the event here because "down" fires before "focus" when tapping on
+        // the input and the underline animation runs on focus change
+        this.lastEvent = e;
+      },
+
+      tapAction: function(e) {
         if (this.disabled) {
           return;
         }
@@ -429,30 +514,10 @@ conflict with this element.
           this.input.focus();
           e.preventDefault();
         }
-
-        // The underline spills from the tap location
-        var rect = this.$.underline.getBoundingClientRect();
-        var right = e.x - rect.left;
-        this.$.focusedUnderline.style.mozTransformOrigin = right + 'px';
-        this.$.focusedUnderline.style.webkitTransformOrigin = right + 'px ';
-        this.$.focusedUnderline.style.transformOriginX = right + 'px';
-
-        // Animations only run when the user interacts with the input
-        this.underlineAnimated = true;
-
-        // Cursor animation only runs if the input is empty
-        if (this._labelVisible) {
-          this.cursorAnimated = true;
-        }
-        // Handle interrupted animation
-        this.async(function() {
-          this.transitionEndAction();
-        }, null, 250);
       },
 
       transitionEndAction: function() {
         this.underlineAnimated = false;
-        this.cursorAnimated = false;
         this.labelAnimated = false;
         if (this._labelVisible) {
           this.input.placeholder = this.label;

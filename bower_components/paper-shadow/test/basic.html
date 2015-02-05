@@ -42,12 +42,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var fake = new Fake();
 
     test('default', function() {
-      assert.notEqual(getComputedStyle(s1.$['shadow-top'])['box-shadow'], 'none');
+      assert.notEqual(getComputedStyle(s1.$['shadow-bottom'])['box-shadow'], 'none');
     });
 
     test('shadows are pointer-events: none', function(done) {
       var foo = document.getElementById('foo');
-      PolymerGestures.addEventListener(document, 'tap', function(e) {
+      PolymerGestures.addEventListener(wrap(document), 'tap', function(e) {
         assert.strictEqual(e.target, foo);
         done();
       });

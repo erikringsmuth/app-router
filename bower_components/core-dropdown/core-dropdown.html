@@ -140,9 +140,11 @@ not scroll with its container.
        * The horizontal alignment of the popup relative to `relatedTarget`. `left`
        * means the left edges are aligned together. `right` means the right edges
        * are aligned together.
+       * 
+       * Accepted values: 'left', 'right'
        *
        * @attribute halign
-       * @type 'left' | 'right'
+       * @type String
        * @default 'left'
        */
       halign: 'left',
@@ -152,8 +154,10 @@ not scroll with its container.
        * the top edges are aligned together. `bottom` means the bottom edges are
        * aligned together.
        *
+       * Accepted values: 'top', 'bottom'
+       *
        * @attribute valign
-       * @type 'top' | 'bottom'
+       * @type String
        * @default 'top'
        */
       valign: 'top',
@@ -191,6 +195,8 @@ not scroll with its container.
         style[dims.position.v] = null;
         dims.position.v_by = null;
       }
+      style.width = null;
+      style.height = null;
       this.super();
     },
 

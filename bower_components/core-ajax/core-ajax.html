@@ -100,7 +100,7 @@ element.
      * Parameters to send to the specified URL, as JSON.
      *
      * @attribute params
-     * @type string (JSON)
+     * @type string
      * @default ''
      */
     params: '',
@@ -347,6 +347,14 @@ element.
       }
     },
 
+    getParams: function(params) {
+      params = this.params || params;
+      if (params && typeof(params) == 'string') {
+        params = JSON.parse(params);
+      }
+      return params;
+    },
+
     /**
      * Performs an Ajax request to the specified URL.
      *
@@ -356,10 +364,7 @@ element.
       var args = this.xhrArgs || {};
       // TODO(sjmiles): we may want XHR to default to POST if body is set
       args.body = this.body || args.body;
-      args.params = this.params || args.params;
-      if (args.params && typeof(args.params) == 'string') {
-        args.params = JSON.parse(args.params);
-      }
+      args.params = this.getParams(args.params);
       args.headers = this.headers || args.headers || {};
       if (args.headers && typeof(args.headers) == 'string') {
         args.headers = JSON.parse(args.headers);
@@ -367,7 +372,12 @@ element.
       var hasContentType = Object.keys(args.headers).some(function (header) {
         return header.toLowerCase() === 'content-type';
       });
-      if (!hasContentType && this.contentType) {
+      // No Content-Type should be specified if sending `FormData`.  
+      // The UA must set the Content-Type w/ a calculated  multipart boundary ID.
+      if (args.body instanceof FormData) {
+        delete args.headers['Content-Type'];
+      } 
+      else if (!hasContentType && this.contentType) {
         args.headers['Content-Type'] = this.contentType;
       }
       if (this.handleAs === 'arraybuffer' || this.handleAs === 'blob' ||
@@ -398,6 +408,20 @@ element.
         }
       }
       return this.activeRequest;
+    },
+
+    /**
+     * Aborts the current active request if there is one and resets internal
+     * state appropriately.
+     *
+     * @method abort
+     */
+    abort: function() {
+      if (!this.activeRequest) return;
+      this.activeRequest.abort();
+      this.activeRequest = null;
+      this.progress = {};
+      this.loading = false;
     }
 
   });

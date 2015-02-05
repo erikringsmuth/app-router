@@ -61,7 +61,7 @@ The above will style `Topic1` and `Topic2` to have font color red.
 <link rel="import" href="../core-menu/core-menu.html">
 <link rel="import" href="../core-collapse/core-collapse.html">
 
-<polymer-element name="core-submenu" attributes="selected selectedItem label icon src valueattr">
+<polymer-element name="core-submenu" attributes="selected selectedItem selectedAttribute label icon src valueattr">
 <template>
 
   <link rel="stylesheet" href="core-submenu.css">
@@ -70,7 +70,7 @@ The above will style `Topic1` and `Topic2` to have font color red.
     <content select=".item-content"></content>
   </core-item>
 
-  <core-menu id="submenu" selected="{{selected}}" selectedItem="{{selectedItem}}" valueattr="{{valueattr}}">
+  <core-menu id="submenu" selected="{{selected}}" selectedItem="{{selectedItem}}" selectedAttribute="{{selectedAttribute}}" valueattr="{{valueattr}}">
     <content></content>
   </core-menu>
 

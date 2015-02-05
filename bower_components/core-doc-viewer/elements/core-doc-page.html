@@ -15,6 +15,8 @@
 <link rel="import" href="../../prettify-element/prettify-import.html">
 <link rel="import" href="../../context-free-parser/context-free-parser.html">
 
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700|Source+Code+Pro' rel='stylesheet' type='text/css'>
+
 <!--
 
 Displays formatted source documentation scraped from input urls.
@@ -43,10 +45,38 @@ Displays formatted source documentation scraped from input urls.
           <span layout horizontal center hidden?="{{!data.version}}"><core-icon icon="info-outline"></core-icon>Version: {{data.version}}</span>
         </p>
 
-        <template if="{{data.extends}}">
-          <section class="top">
-            <h3 id="{{data.name}}.extends">Extends: <a href="#{{data.extends}}">{{data.extends}}</a></h3>
-          </section>
+        <template bind="{{data as data}}" if="{{data.extends || data.mixins}}">
+          <div class="inheritance">
+            <template if="{{data.extends}}">
+              <section class="top extends" layout horizontal center>
+                <h3 id="{{data.name}}.extends">Extends:</h3>
+                <template repeat="{{e, i in data.extends}}">
+                  <div>
+                    <template if="{{e.url}}">
+                      <a href="{{e.url}}">{{e.name}}</a>
+                    </template>
+                    <template if="{{!e.url}}"><a href="#{{e.name}}">{{e.name}}</a></template>
+                    <span hidden?="{{i == data.extends.length - 1}}">,</span>
+                  </div>
+                </template>
+              </section>
+            </template>
+
+            <template if="{{data.mixins}}">
+              <section class="top mixins" layout horizontal center>
+                <h3 id="{{data.name}}.mixins">Mixins:</h3>
+                <template repeat="{{e, i in data.mixins}}">
+                  <div>
+                    <template if="{{e.url}}">
+                      <a href="{{e.url ? e.url : e.name}}">{{e.name}}</a>
+                    </template>
+                    <template if="{{!e.url}}"><span>{{e.name}}</span></template>
+                    <span hidden?="{{i == data.mixins.length - 1}}">,</span>
+                  </div>
+                </template>
+              </section>
+            </template>
+          </div>
         </template>
 
         <template if="{{data.description}}">
@@ -176,6 +206,11 @@ Displays formatted source documentation scraped from input urls.
           var elementToFocus = this.shadowRoot.getElementById(window.location.hash.slice(1));
           if (elementToFocus) {
             elementToFocus.scrollIntoView();
+          }
+          else {
+            var viewer = this.$.panel.scroller;
+            viewer.scrollTop = 0;
+            viewer.scrollLeft = 0;
           }
         });
       }

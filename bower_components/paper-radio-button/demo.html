@@ -25,17 +25,12 @@
     body {
       font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
       margin: 0;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
       -webkit-tap-highlight-color: rgba(0,0,0,0);
       -webkit-touch-callout: none;
     }
     
     .label {
       height: 40px;
-      color: #4285f4;
       font-size: 20px;
     }
     
@@ -49,6 +44,10 @@
     
     paper-radio-button.blue::shadow #onRadio {
       background-color: #4285f4;
+    }
+
+    paper-radio-button[checked].blue::shadow #offRadio {
+      border-color: #4285f4;
     }
     
   </style>
@@ -64,6 +63,16 @@
   <section>
     <div class="label">Radio button (toggles)</div>
     <paper-radio-button toggles></paper-radio-button>
+  </section>
+
+  <section>
+    <div class="label">Radio button (disabled)</div>
+    <paper-radio-button disabled toggles></paper-radio-button>
+  </section>
+
+  <section>
+    <div class="label">Radio button (checked, disabled)</div>
+    <paper-radio-button checked disabled toggles></paper-radio-button>
   </section>
   
   <section>

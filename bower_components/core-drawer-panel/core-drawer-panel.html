@@ -9,14 +9,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!--
 `core-drawer-panel` contains a drawer panel and a main panel.  The drawer
-and the main panel are side-by-side with drawer on the left.  When browser
+and the main panel are side-by-side with drawer on the left.  When the browser
 window size is smaller than the `responsiveWidth`, `core-drawer-panel`
 changes to narrow layout.  In narrow layout, the drawer will be stacked on top
-of the main panel.  The drawer will be slided in/out to hide/reveal the main
+of the main panel.  The drawer will slide in/out to hide/reveal the main
 panel.
 
-Use the attribute `drawer` to indicate the element is a drawer panel and
-`main` to indicate is a main panel.
+Use the attribute `drawer` to indicate that the element is the drawer panel and
+`main` to indicate that the element is the main panel.
 
 Example:
 
@@ -90,6 +90,7 @@ To position the drawer to the right, add `rightDrawer` attribute.
     <div id="main" _style="left: {{ narrow || rightDrawer ? '0' : drawerWidth }}; right: {{ rightDrawer ? (narrow ? '' : drawerWidth) : '' }};">
       <content select="[main]"></content>
       <div id="scrim" on-tap="{{togglePanel}}"></div>
+      <div id="edgeSwipeOverlay" hidden?="{{!narrow || disableEdgeSwipe}}"></div>
     </div>
 
     <div id="drawer" _style="width: {{ drawerWidth }}">
@@ -109,6 +110,19 @@ To position the drawer to the right, add `rightDrawer` attribute.
      * @event core-responsive-change
      * @param {Object} detail
      * @param {boolean} detail.narrow true if the panel is in narrow layout.
+     */
+     
+    /**
+     * Fired when the selected panel changes.
+     * 
+     * Listening for this event is an alternative to observing changes in the `selected` attribute.
+     * This event is fired both when a panel is selected and deselected.
+     * The `isSelected` detail property contains the selection state.
+     * 
+     * @event core-select
+     * @param {Object} detail
+     * @param {boolean} detail.isSelected true for selection and false for deselection
+     * @param {Object} detail.item the panel that the event refers to
      */
 
     publish: {
@@ -186,7 +200,16 @@ To position the drawer to the right, add `rightDrawer` attribute.
        * @type boolean
        * @default false
        */
-      forceNarrow: false
+      forceNarrow: false,
+      
+      /**
+       * If true, swipe from the edge is disable.
+       *
+       * @attribute disableEdgeSwipe
+       * @type boolean
+       * @default false
+       */
+      disableEdgeSwipe: false
     },
 
     eventDelegates: {
@@ -314,9 +337,10 @@ To position the drawer to the right, add `rightDrawer` attribute.
     },
 
     isEdgeTouch: function(e) {
-      return this.swipeAllowed() && (this.rightDrawer ?
-        e.pageX >= this.offsetWidth - this.edgeSwipeSensitivity :
-        e.pageX <= this.edgeSwipeSensitivity);
+      return !this.disableEdgeSwipe && this.swipeAllowed() &&
+        (this.rightDrawer ?
+          e.pageX >= this.offsetWidth - this.edgeSwipeSensitivity :
+          e.pageX <= this.edgeSwipeSensitivity);
     },
 
     trackStart : function(e) {

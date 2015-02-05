@@ -2,9 +2,13 @@
   "name": "core-icons",
   "private": true,
   "dependencies": {
-    "core-icon": "Polymer/core-icon#^0.5.0",
-    "core-iconset-svg": "Polymer/core-iconset-svg#^0.5.0",
-    "polymer": "Polymer/polymer#^0.5.0"
+    "core-icon": "Polymer/core-icon#^0.5",
+    "core-iconset-svg": "Polymer/core-iconset-svg#^0.5",
+    "polymer": "Polymer/polymer#^0.5"
   },
-  "version": "0.5.1"
+  "ignore": [
+    "util",
+    "update-icons.sh"
+  ],
+  "version": "0.5.4"
 }

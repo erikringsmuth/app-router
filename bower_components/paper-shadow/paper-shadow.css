@@ -26,41 +26,41 @@ html /deep/ paper-shadow::shadow #shadow-top[animated] {
 }
 
 html /deep/ .paper-shadow-top-z-1 {
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  box-shadow: none;
 }
 
 html /deep/ .paper-shadow-bottom-z-1 {
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
 }
 
 html /deep/ .paper-shadow-top-z-2 {
-  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 html /deep/ .paper-shadow-bottom-z-2 {
-  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3);
 }
 
 html /deep/ .paper-shadow-top-z-3 {
-  box-shadow: 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 11px 7px 0 rgba(0, 0, 0, 0.19);
 }
 
 html /deep/ .paper-shadow-bottom-z-3 {
-  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+  box-shadow: 0 13px 25px 0 rgba(0, 0, 0, 0.3);
 }
 
 html /deep/ .paper-shadow-top-z-4 {
-  box-shadow: 0 25px 55px 0 rgba(0, 0, 0, 0.21);
+  box-shadow: 0 14px 12px 0 rgba(0, 0, 0, 0.17);
 }
 
 html /deep/ .paper-shadow-bottom-z-4 {
-  box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22);
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.3);
 }
 
 html /deep/ .paper-shadow-top-z-5 {
-  box-shadow: 0 40px 77px 0 rgba(0, 0, 0, 0.22);
+  box-shadow: 0 17px 17px 0 rgba(0, 0, 0, 0.15);
 }
 
 html /deep/ .paper-shadow-bottom-z-5 {
-  box-shadow: 0 27px 24px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 27px 55px 0 rgba(0, 0, 0, 0.3);
 }

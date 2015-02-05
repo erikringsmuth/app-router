@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-transition/core-transition.html">
+<link rel="import" href="../core-resizable/core-resizable.html">
 <link rel="import" href="core-key-helper.html">
 <link rel="import" href="core-overlay-layer.html">
 
@@ -61,6 +62,7 @@ that, for example, a drop shadow is always visible around the overlay.
 
 @group Core Elements
 @element core-overlay
+@mixins Polymer.CoreResizer https://github.com/polymer/core-resizable
 @homepage github.io
 -->
 <!--
@@ -115,7 +117,7 @@ object like this: `{v: 'top', h: 'right'}`.
 <script>
 (function() {
 
-  Polymer('core-overlay', {
+  Polymer(Polymer.mixin({
 
     publish: {
       /**
@@ -236,7 +238,19 @@ object like this: `{v: 'top', h: 'right'}`.
       'keydown': 'keydownHandler',
       'core-transitionend': 'transitionend'
     },
-    
+
+    attached: function() {
+      this.resizerAttachedHandler();
+    },
+
+    detached: function() {
+      this.resizerDetachedHandler();
+    },
+
+    resizerShouldNotify: function() {
+      return this.opened;
+    },
+
     registerCallback: function(element) {
       this.layer = document.createElement('core-overlay-layer');
       this.keyHelper = document.createElement('core-key-helper');
@@ -387,6 +401,7 @@ object like this: `{v: 'top', h: 'right'}`.
     // tasks which cause the overlay to actually open; typically play an
     // animation
     renderOpened: function() {
+      this.notifyResize();
       var transition = this.getTransition();
       if (transition) {
         transition.go(this.target, {opened: this.opened});
@@ -675,8 +690,9 @@ object like this: `{v: 'top', h: 'right'}`.
         };
       }
       return this[bound];
-    },
-  });
+    }
+
+  }, Polymer.CoreResizer));
 
   // TODO(sorvell): This should be an element with private state so it can
   // be independent of overlay.

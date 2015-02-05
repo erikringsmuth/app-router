@@ -24,7 +24,7 @@ core-selector > #drawer {
   height: 100%;
   will-change: transform;
   box-sizing: border-box;
-  -mox-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
 .transition > #drawer {
@@ -38,11 +38,6 @@ right-drawer: make drawer on the right side
 .right-drawer > #drawer {
   left: auto;
   right: 0;
-}
-
-.right-drawer.transition > #drawer {
-  transition: -webkit-transform ease-in-out 0.3s, width ease-in-out 0.3s;
-  transition: transform ease-in-out 0.3s, width ease-in-out 0.3s;
 }
 
 polyfill-next-selector { content: ':host [drawer]'; }
@@ -90,6 +85,19 @@ polyfill-next-selector { content: '#main > [main]'; }
   visibility: hidden;
   opacity: 0;
   transition: opacity ease-in-out 0.38s, visibility ease-in-out 0.38s;
+}
+
+#edgeSwipeOverlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+}
+
+.right-drawer > #main > #edgeSwipeOverlay {
+  right: 0;
+  left: auto;
 }
 
 /*

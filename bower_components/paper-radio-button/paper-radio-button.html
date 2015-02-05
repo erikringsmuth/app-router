@@ -32,7 +32,11 @@ To change the radio checked color:
     paper-radio-button::shadow #onRadio {
       background-color: #4285f4;
     }
-    
+
+    paper-radio-button[checked]::shadow #offRadio {
+      border-color: #4285f4;
+    }
+
 To change the ink color for unchecked state:
 
     paper-radio-button::shadow #ink {
@@ -133,6 +137,9 @@ To change the radio unchecked color:
     },
     
     tap: function() {
+      if (this.disabled) {
+        return;
+      }
       var old = this.checked;
       this.toggle();
       if (this.checked !== old) {
@@ -145,8 +152,7 @@ To change the radio unchecked color:
     },
     
     checkedChanged: function() {
-      this.$.onRadio.classList.toggle('fill', this.checked);
-      this.setAttribute('aria-checked', this.checked ? 'true': 'false');
+      this.setAttribute('aria-checked', this.checked ? 'true' : 'false');
       this.fire('core-change');
     },
     

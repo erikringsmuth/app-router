@@ -64,6 +64,13 @@ Example:
 
     },
 
+    /**
+     * Set the z-depth of the shadow. This should be used after element
+     * creation instead of setting the z property directly.
+     *
+     * @method setZ
+     * @param {Number} newZ
+     */
     setZ: function(newZ) {
       if (this.z !== newZ) {
         this.$['shadow-bottom'].classList.remove('paper-shadow-bottom-z-' + this.z);

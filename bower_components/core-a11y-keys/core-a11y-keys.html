@@ -222,8 +222,8 @@ Keys Syntax Grammar:
     }
 
     function keyboardEventToKey(ev) {
-      // fall back from .key, to .keyIdentifier, and then to .keyCode
-      var normalizedKey = transformKey(ev.key) || transformKeyIdentifier(ev.keyIdentifier) || transformKeyCode(ev.keyCode) || '';
+      // fall back from .key, to .keyIdentifier, to .keyCode, and then to .detail.key to support artificial keyboard events
+      var normalizedKey = transformKey(ev.key) || transformKeyIdentifier(ev.keyIdentifier) || transformKeyCode(ev.keyCode) || transformKey(ev.detail.key) || '';
       return {
         shift: ev.shiftKey,
         ctrl: ev.ctrlKey,
@@ -303,10 +303,10 @@ Keys Syntax Grammar:
       },
       publish: {
         /**
-         * The set of key combinations to listen for.
+         * The set of key combinations that will be matched (in keys syntax).
          *
          * @attribute keys
-         * @type string (keys syntax)
+         * @type string
          * @default ''
          */
         keys: '',

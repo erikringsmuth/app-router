@@ -50,25 +50,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   border-radius: 50%;
   border: solid 2px;
   border-color: #5a5a5a;
+  transition: border-color 0.28s;
+}
+
+:host([checked]) #offRadio {
+  border-color: #009688;
 }
 
 #onRadio {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 16px;
-  height: 16px;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background-color: #0f9d58;
+  background-color: #009688;
   -webkit-transform: scale(0);
   transform: scale(0);
   transition: -webkit-transform ease 0.28s;
   transition: transform ease 0.28s;
 }
 
-#onRadio.fill {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+:host([checked]) #onRadio {
+  -webkit-transform: scale(1);
+  transform: scale(1);
 }
 
 #radioLabel {
@@ -89,16 +94,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   pointer-events: none;
 }
 
+:host([disabled]) #offRadio,
 :host([disabled]) #onRadio {
-  display: none;
+  opacity: 0.33;
 }
 
 :host([disabled]) #offRadio {
-  opacity: 0.33;
   border-color: #5a5a5a;
 }
 
-:host([disabled][checked]) #offRadio {
-  opacity: 0.33;
+:host([disabled][checked]) #onRadio {
   background-color: #5a5a5a;
 }

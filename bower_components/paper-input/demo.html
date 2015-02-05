@@ -50,6 +50,16 @@
       max-width: 80%;
     }
 
+    @media only screen and (min-width : 320px) {
+      paper-input {
+        width: 100%;
+      }
+
+      paper-input-decorator {
+        max-width: 100%;
+      }
+    }
+
     paper-input.narrow {
       width: 150px;
     }
@@ -83,17 +93,12 @@
       background-color: #0f9d58;
     }
 
-    .custom /deep/ .cursor {
-      background-color: #1a237e;
-    }
-
     .custom.invalid /deep/ .floated-label .label-text,
     .custom /deep/ .error {
       color: #f06292;
     }
 
-    .custom.invalid /deep/ .focused-underline,
-    .custom.invalid /deep/ .cursor {
+    .custom.invalid /deep/ .focused-underline {
       background-color: #f06292;
     }
 
@@ -117,6 +122,10 @@
     <br>
 
     <paper-input label="floating label" floatingLabel></paper-input>
+
+    <br>
+
+    <paper-input label="disabled" disabled></paper-input>
 
   </section>
 
@@ -154,24 +163,13 @@
 
   </section>
 
-  <section id="validate">
+  <section>
 
-    <div>Validation</div>
+    <div>Auto-Validation</div>
 
-    <button onclick="validateAll()">click me to validate all</button>
-
-    <paper-input-decorator label="required" floatingLabel error="input is required!">
+    <paper-input-decorator label="required" floatingLabel error="input is required!" autoValidate>
       <input is="core-input" required>
     </paper-input-decorator>
-
-    <script>
-      function validateAll() {
-        var $d = document.getElementById('validate').querySelectorAll('paper-input-decorator');
-        Array.prototype.forEach.call($d, function(d) {
-          d.isInvalid = !d.querySelector('input').validity.valid;
-        });
-      }
-    </script>
 
   </section>
 
@@ -190,6 +188,14 @@
     </paper-input-decorator>
 
   </section>
+
+  <script>
+
+    document.body.addEventListener('change', function(e) {
+      console.log('change', e.target);
+    });
+
+  </script>
 
 </body>
 </html>

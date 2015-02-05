@@ -111,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // selecting the same value shouldn't fire core-select
           selectEventCounter = 0;
           s2.selected = 'item5';
-          asyncPlatformFlush(function() {
+          flush(function() {
             assert.equal(selectEventCounter, 0);
             done();
           });

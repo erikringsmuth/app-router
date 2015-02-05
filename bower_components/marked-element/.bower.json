@@ -3,17 +3,17 @@
   "private": true,
   "dependencies": {
     "marked": "*",
-    "polymer": "Polymer/polymer#^0.5.0"
+    "polymer": "Polymer/polymer#^0.5"
   },
-  "version": "0.5.1",
+  "version": "0.5.4",
   "homepage": "https://github.com/PolymerLabs/marked-element",
-  "_release": "0.5.1",
+  "_release": "0.5.4",
   "_resolution": {
     "type": "version",
-    "tag": "0.5.1",
-    "commit": "02c950325d999dfce7e84b026d44524116f6b62d"
+    "tag": "0.5.4",
+    "commit": "8c8829e82ee3023fb280c789febbc871260f9720"
   },
   "_source": "git://github.com/PolymerLabs/marked-element.git",
-  "_target": "^0.5.0",
+  "_target": "^0.5",
   "_originalSource": "PolymerLabs/marked-element"
 }
