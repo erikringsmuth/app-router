@@ -1,5 +1,5 @@
 ## Router for Web Components
-> Works with [Polymer](http://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively.
+> Works with [Polymer](https://www.polymer-project.org/), [X-Tag](http://www.x-tags.org/), and natively.
 >
 > [erikringsmuth.github.io/app-router](https://erikringsmuth.github.io/app-router/)
 
@@ -45,7 +45,7 @@ Click links or call `router.go()`.
 
 ```html
 <!-- hashchange -->
-<a href="/#/home">Home</a>
+<a href="#/home">Home</a>
 
 <!-- pushState() -->
 <a is="pushstate-anchor" href="/home">Home</a>
@@ -59,7 +59,7 @@ Click links or call `router.go()`.
 The router listens to `popstate` and `hashchange` events. Changing the URL will find the first `app-route` that matches, load the element or template, and replace the current view.
 
 #### hashchange
-Clicking `<a href="/#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript. Hash paths `/#/home` match routes without the hash `<app-route path="/home">`.
+Clicking `<a href="#/home">Home</a>` will fire a `hashchange` event and tell the router to load the first route that matches `/home`. You don't need to handle the event in your Javascript. Hash paths `#/home` match routes without the hash `<app-route path="/home">`.
 
 #### pushState
 You can use the [pushstate-anchor](https://github.com/erikringsmuth/pushstate-anchor) or [html5-history-anchor](https://github.com/erikringsmuth/html5-history-anchor) to extend `<a>` tags with the HTML5 history API.
