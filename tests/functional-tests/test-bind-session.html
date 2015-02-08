@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/src/app-router.html">
+  </head>
+  <body>
+
+    <polymer-element name="user-session" attributes="session">
+      <template>
+      </template>
+      <script>
+        Polymer({
+          session: {
+            userId: null,
+            userName: null
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <polymer-element name="login-page" attributes="router session">
+      <template>
+        <button on-click="{{login}}">Log In</button>
+      </template>
+      <script>
+        Polymer({
+          login: function() {
+            this.session.userId = '12345';
+            this.session.userName = 'Jon Doe';
+            this.router.go('/');
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <polymer-element name="home-page" attributes="router session">
+      <template>
+        <p>ID: {{session.userId}}</p>
+        <p>Name: {{session.userName}}</p>
+        <button on-click="{{logout}}">Log Out</button>
+      </template>
+      <script>
+        Polymer({
+          logout: function() {
+            this.session.userId = null;
+            this.session.userName = null;
+            this.router.go('/');
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <polymer-element name="demo-app">
+      <template>
+        <!-- bind the session object to demo-app -->
+        <user-session session="{{session}}"></user-session>
+
+        <app-router id="router" on-state-change="{{stateChange}}">
+          <app-route path="/" element="home-page" bindRouter on-before-data-binding="{{bindSession}}"></app-route>
+          <app-route path="/login" element="login-page" bindRouter on-before-data-binding="{{bindSession}}"></app-route>
+          <app-route path="*" redirect="/"></app-route>
+        </app-router>
+
+      </template>
+      <script>
+        Polymer({
+          stateChange: function(event) {
+            // redirect to the login page if not signed in
+            if (!this.session.userId && event.detail.path !== '/login') {
+              event.preventDefault();
+              //this.$.router.go('/login');
+              this.querySelector('::shadow app-router').go('/login');
+            }
+          },
+          bindSession: function(event) {
+            // update the route's model before it's bound to the home-page or login-page
+            event.detail.model.session = this.session;
+          }
+        });
+      </script>
+    </polymer-element>
+
+    <demo-app></demo-app>
+
+  </body>
+</html>
