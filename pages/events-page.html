@@ -94,7 +94,7 @@
     &lt;!-- bind the session object to demo-app --&gt;
     &lt;user-session session="{{'\{{session}\}'}}"&gt;&lt;/user-session&gt;
 
-    &lt;app-router id="router" on-state-change="{{'\{{stateChange}\}'}}"&gt;
+    &lt;app-router on-state-change="{{'\{{stateChange}\}'}}"&gt;
       &lt;app-route path="/" import="/pages/home-page.html" on-before-data-binding="{{'\{{bindSession}\}'}}"&gt;&lt;/app-route&gt;
       &lt;app-route path="/login" import="/pages/login-page.html" on-before-data-binding="{{'\{{bindSession}\}'}}"&gt;&lt;/app-route&gt;
       &lt;app-route path="*" import="/pages/not-found-page.html"&gt;&lt;/app-route&gt;
@@ -105,9 +105,9 @@
     Polymer('demo-app', {
       stateChange: function(event) {
         // redirect to the login page if not signed in
-        if (!this.session && event.detail.path !== '/login') {
+        if (!this.session.isSignedIn && event.detail.path !== '/login') {
           event.preventDefault();
-          this.$.router.go('/login');
+          this.querySelector('::shadow app-router').go('/login');
         }
       },
       bindSession: function(event) {
