@@ -355,7 +355,10 @@
   function transitionAnimationEnd(previousRoute) {
     if (previousRoute) {
       previousRoute.transitionAnimationInProgress = false;
-      removeRouteContent(previousRoute);
+      // ensure previous route has not been re-activated before transition end
+      if (!previousRoute.getAttribute('active')) {
+        removeRouteContent(previousRoute);
+      }
     }
   }
 
@@ -559,7 +562,7 @@
       if (routePath.charAt(0) !== '/') {
         routePath = '/**/' + routePath;
       }
-    
+
       // get path variables
       // urlPath '/customer/123'
       // routePath '/customer/:id'
