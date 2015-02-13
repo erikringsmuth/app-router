@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/src/app-router.html">
+    <link rel="import" href="/bower_components/core-animated-pages/core-animated-pages.html">
+    <style>
+      app-router {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+
+    <p>Test async import.</p>
+    <ul>
+      <li><a href="#/">Start</a></li>
+      <li><a href="#/big-element1">/big-element1</a></li>
+      <li><a href="#/big-element2">/big-element2</a></li>
+    </ul>
+
+    <app-router core-animated-pages transitions="cross-fade-all">
+      <app-route path="/">
+        <template>
+          <div>
+            <h2>Start page</h2>
+          </div>
+        </template>
+      </app-route>
+      <app-route path="/big-element1" import="pages/big-element-1.html" element="big-element-1"></app-route>
+      <app-route path="/big-element2" import="pages/big-element-2.html" element="big-element-2"></app-route>
+    </app-router>
+
+  </body>
+</html>

@@ -212,7 +212,7 @@
     // update the references to the activeRoute and previousRoute. if you switch between routes quickly you may go to a
     // new route before the previous route's transition animation has completed. if that's the case we need to remove
     // the previous route's content before we replace the reference to the previous route.
-    if (router.previousRoute && router.previousRoute.transitionAnimationInProgress) {
+    if (router.previousRoute && (router.previousRoute.transitionAnimationInProgress || router.activeRoute.importInProgress)) {
       transitionAnimationEnd(router.previousRoute);
     }
     if (router.activeRoute) {
@@ -240,26 +240,28 @@
   function importAndActivate(router, importUri, route, url, eventDetail) {
     var importLink;
     function importLoadedCallback() {
+      route.importInProgress = false;
+      importedURIs[importUri]  = 'loaded';
       activateImport(router, importLink, importUri, route, url, eventDetail);
     }
 
     if (!importedURIs.hasOwnProperty(importUri)) {
       // hasn't been imported yet
-      importedURIs[importUri] = true;
+      importedURIs[importUri] = 'loading';
       importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
       importLink.addEventListener('load', importLoadedCallback);
+      route.importInProgress = true;
       document.head.appendChild(importLink);
     } else {
       // previously imported. this is an async operation and may not be complete yet.
       importLink = document.querySelector('link[href="' + importUri + '"]');
-      if (importLink.import) {
-        // import complete
-        importLoadedCallback();
-      } else {
-        // wait for `onload`
+      if (importedURIs[importUri] === 'loading') {
+        route.importInProgress = true;
         importLink.addEventListener('load', importLoadedCallback);
+      } else {
+        activateImport(router, importLink, importUri, route, url, eventDetail);
       }
     }
   }
