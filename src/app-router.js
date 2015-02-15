@@ -241,23 +241,24 @@
     var importLink;
     function importLoadedCallback() {
       route.importInProgress = false;
-      importedURIs[importUri]  = 'loaded';
+      importLink.loaded = true;
       activateImport(router, importLink, importUri, route, url, eventDetail);
     }
 
     if (!importedURIs.hasOwnProperty(importUri)) {
       // hasn't been imported yet
-      importedURIs[importUri] = 'loading';
+      importedURIs[importUri] = true;
       importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
       importLink.addEventListener('load', importLoadedCallback);
+      importLink.loaded = false;
       route.importInProgress = true;
       document.head.appendChild(importLink);
     } else {
       // previously imported. this is an async operation and may not be complete yet.
       importLink = document.querySelector('link[href="' + importUri + '"]');
-      if (importedURIs[importUri] === 'loading') {
+      if (!importLink.loaded) {
         route.importInProgress = true;
         importLink.addEventListener('load', importLoadedCallback);
       } else {
