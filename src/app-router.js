@@ -372,7 +372,7 @@
       while (node) {
         var nodeToRemove = node;
         node = node.nextSibling;
-        if (nodeToRemove.tagName !== 'TEMPLATE') {
+        if (nodeToRemove.tagName !== 'TEMPLATE' || route.hasAttribute('import')) {
           route.removeChild(nodeToRemove);
         }
       }
