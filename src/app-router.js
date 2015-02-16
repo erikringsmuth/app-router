@@ -247,7 +247,6 @@
 
     if (!importedURIs.hasOwnProperty(importUri)) {
       // hasn't been imported yet
-      importedURIs[importUri] = true;
       importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
@@ -255,9 +254,10 @@
       importLink.loaded = false;
       route.importInProgress = true;
       document.head.appendChild(importLink);
+      importedURIs[importUri] = importLink;
     } else {
       // previously imported. this is an async operation and may not be complete yet.
-      importLink = document.querySelector('link[href="' + importUri + '"]');
+      importLink = importedURIs[importUri];
       if (!importLink.loaded) {
         route.importInProgress = true;
         importLink.addEventListener('load', importLoadedCallback);
