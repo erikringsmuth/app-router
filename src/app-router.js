@@ -232,6 +232,8 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
+      // mark the route as an inline template so we know how to clean it up when we remove the route's content
+      route.isInlineTemplate = true;
       activateTemplate(router, route.firstElementChild, route, url, eventDetail);
     }
   }
@@ -365,16 +367,20 @@
     }
   }
 
-  // Remove the route's content (but not the <template> if it exists)
+  // Remove the route's content
   function removeRouteContent(route) {
     if (route) {
       var node = route.firstChild;
+
+      // don't remove an inline <template>
+      if (route.isInlineTemplate) {
+        node = route.querySelector('template').nextSibling;
+      }
+
       while (node) {
         var nodeToRemove = node;
         node = node.nextSibling;
-        if (nodeToRemove.tagName !== 'TEMPLATE' || route.hasAttribute('import')) {
-          route.removeChild(nodeToRemove);
-        }
+        route.removeChild(nodeToRemove);
       }
     }
   }
