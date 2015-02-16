@@ -1,0 +1,17 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<template>
+	<template is="auto-binding">
+  		<h2>Auto-binding template</h2>
+  		<span>There is currently {{ templateCount }} auto-binding templates in this route.
+	</template>
+	<script>
+(function () {
+	var template = document.currentScript.parentElement.querySelector('template[is="auto-binding"]');
+	// there should be only one auto-binding template
+	var templates = document.currentScript.parentElement.querySelectorAll('template[is="auto-binding"]');
+	var template = templates[templates.length - 1];
+	template.templateCount = templates.length;
+})();
+
+	</script>
+</template>
