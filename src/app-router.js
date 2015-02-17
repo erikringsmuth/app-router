@@ -78,7 +78,9 @@
       // when a transition finishes, remove the previous route's content. there is a temporary overlap where both
       // the new and old route's content is in the DOM to animate the transition.
       router.coreAnimatedPages.addEventListener('core-animated-pages-transition-end', function() {
-        transitionAnimationEnd(router.previousRoute);
+        if (router.previousRoute && !router.previousRoute.hasAttribute('active')) {
+          removeRouteContent(router.previousRoute);
+        }
       });
     }
 
@@ -310,12 +312,7 @@
 
   // Replace the active route's content with the new element
   function activateElement(router, element, url, eventDetail) {
-    // update the references to the activeRoute and previousRoute. if you switch between routes quickly you may go to a
-    // new route before the previous route's transition animation has completed. if that's the case we need to remove
-    // the previous route's content before we replace the reference to the previous route.
-    if (router.previousRoute && router.previousRoute.transitionAnimationInProgress) {
-      transitionAnimationEnd(router.previousRoute);
-    }
+    // update references to the activeRoute, previousRoute, and loadingRoute
     router.previousRoute = router.activeRoute;
     router.activeRoute = router.loadingRoute;
     router.loadingRoute = null;
@@ -324,8 +321,9 @@
     }
     router.activeRoute.setAttribute('active', 'active');
 
-    // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
-    // otherwise we can remove the old route's content right away.
+    // remove the old route's content before loading the new route
+    // note: core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the
+    // transition, otherwise we can remove the old route's content right away.
     // UNLESS
     // if the route we're navigating to matches the same app-route (ex: path="/article/:id" navigating from /article/0 to
     // /article/1), then we have to simply replace the route's content instead of animating a transition.
@@ -339,13 +337,7 @@
     // animate the transition if core-animated-pages are being used
     if (router.hasAttribute('core-animated-pages')) {
       router.coreAnimatedPages.selected = router.activeRoute.getAttribute('path');
-
-      // we already wired up transitionAnimationEnd() in init()
-
-      // use to check if the previous route has finished animating before being removed
-      if (router.previousRoute) {
-        router.previousRoute.transitionAnimationInProgress = true;
-      }
+      // the 'core-animated-pages-transition-end' event handler in init() will clean up the previousRoute
     }
 
     // scroll to the URL hash if it's present
@@ -355,17 +347,6 @@
 
     fire('activate-route-end', eventDetail, router);
     fire('activate-route-end', eventDetail, eventDetail.route);
-  }
-
-  // Call when the previousRoute has finished the transition animation out
-  function transitionAnimationEnd(previousRoute) {
-    if (previousRoute) {
-      previousRoute.transitionAnimationInProgress = false;
-      // ensure previous route has not been re-activated before transition end
-      if (!previousRoute.getAttribute('active')) {
-        removeRouteContent(previousRoute);
-      }
-    }
   }
 
   // Remove the route's content
