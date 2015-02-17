@@ -209,18 +209,8 @@
       return;
     }
 
-    // update the references to the activeRoute and previousRoute. if you switch between routes quickly you may go to a
-    // new route before the previous route's transition animation has completed. if that's the case we need to remove
-    // the previous route's content before we replace the reference to the previous route.
-    if (router.previousRoute && (router.previousRoute.transitionAnimationInProgress || router.activeRoute.importInProgress)) {
-      transitionAnimationEnd(router.previousRoute);
-    }
-    if (router.activeRoute) {
-      router.activeRoute.removeAttribute('active');
-    }
-    router.previousRoute = router.activeRoute;
-    router.activeRoute = route;
-    router.activeRoute.setAttribute('active', 'active');
+    // keep track of the route currently being loaded
+    router.loadingRoute = route;
 
     // import custom element or template
     if (route.hasAttribute('import')) {
@@ -242,7 +232,6 @@
   function importAndActivate(router, importUri, route, url, eventDetail) {
     var importLink;
     function importLoadedCallback() {
-      route.importInProgress = false;
       importLink.loaded = true;
       activateImport(router, importLink, importUri, route, url, eventDetail);
     }
@@ -254,14 +243,12 @@
       importLink.setAttribute('href', importUri);
       importLink.addEventListener('load', importLoadedCallback);
       importLink.loaded = false;
-      route.importInProgress = true;
       document.head.appendChild(importLink);
       importedURIs[importUri] = importLink;
     } else {
       // previously imported. this is an async operation and may not be complete yet.
       importLink = importedURIs[importUri];
       if (!importLink.loaded) {
-        route.importInProgress = true;
         importLink.addEventListener('load', importLoadedCallback);
       } else {
         activateImport(router, importLink, importUri, route, url, eventDetail);
@@ -272,7 +259,7 @@
   // Activate the imported custom element or template
   function activateImport(router, importLink, importUri, route, url, eventDetail) {
     // make sure the user didn't navigate to a different route while it loaded
-    if (route.hasAttribute('active')) {
+    if (route === router.loadingRoute) {
       if (route.hasAttribute('template')) {
         // template
         activateTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
@@ -323,6 +310,20 @@
 
   // Replace the active route's content with the new element
   function activateElement(router, element, url, eventDetail) {
+    // update the references to the activeRoute and previousRoute. if you switch between routes quickly you may go to a
+    // new route before the previous route's transition animation has completed. if that's the case we need to remove
+    // the previous route's content before we replace the reference to the previous route.
+    if (router.previousRoute && router.previousRoute.transitionAnimationInProgress) {
+      transitionAnimationEnd(router.previousRoute);
+    }
+    router.previousRoute = router.activeRoute;
+    router.activeRoute = router.loadingRoute;
+    router.loadingRoute = null;
+    if (router.previousRoute) {
+      router.previousRoute.removeAttribute('active');
+    }
+    router.activeRoute.setAttribute('active', 'active');
+
     // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
     // otherwise we can remove the old route's content right away.
     // UNLESS
