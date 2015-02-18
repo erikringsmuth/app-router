@@ -291,7 +291,10 @@
   // Create an instance of the template
   function activateTemplate(router, template, route, url, eventDetail) {
     var templateInstance;
-    if ('createInstance' in template) {
+    if (template.getAttribute('is') === 'auto-binding') {
+      template.params = createModel(router, route, url, eventDetail).params;
+      templateInstance = template;
+    } else if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
       var model = createModel(router, route, url, eventDetail);
