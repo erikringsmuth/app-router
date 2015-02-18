@@ -259,6 +259,7 @@
         activateImport(router, importLink, importUri, route, url, eventDetail);
       }
     }
+    route.importLink = importLink;
   }
 
   // Activate the imported custom element or template
@@ -278,19 +279,17 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var model = createModel(router, route, url, eventDetail);
-    for (var property in model) {
-      if (model.hasOwnProperty(property)) {
-        customElement[property] = model[property];
-      }
-    }
+    customElement.params = createModel(router, route, url, eventDetail).params;
     activateElement(router, customElement, url, eventDetail);
   }
 
   // Create an instance of the template
   function activateTemplate(router, template, route, url, eventDetail) {
     var templateInstance;
-    if ('createInstance' in template) {
+    if (template.getAttribute('is') === 'auto-binding') {
+      template.params = createModel(router, route, url, eventDetail).params;
+      templateInstance = template;
+    } else if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
       var model = createModel(router, route, url, eventDetail);
@@ -303,7 +302,9 @@
 
   // Create the route's model
   function createModel(router, route, url, eventDetail) {
-    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'), router.getAttribute('typecast') === 'auto');
+    var model = {
+      params: utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'), router.getAttribute('typecast') === 'auto')
+    };
     if (route.hasAttribute('bindRouter') || router.hasAttribute('bindRouter')) {
       model.router = router;
     }
