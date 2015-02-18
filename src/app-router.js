@@ -279,12 +279,7 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var model = createModel(router, route, url, eventDetail);
-    for (var property in model) {
-      if (model.hasOwnProperty(property)) {
-        customElement[property] = model[property];
-      }
-    }
+    customElement.params = createModel(router, route, url, eventDetail).params;
     activateElement(router, customElement, url, eventDetail);
   }
 
