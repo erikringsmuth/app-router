@@ -259,6 +259,7 @@
         activateImport(router, importLink, importUri, route, url, eventDetail);
       }
     }
+    route.importLink = importLink;
   }
 
   // Activate the imported custom element or template
