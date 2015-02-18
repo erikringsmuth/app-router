@@ -304,7 +304,9 @@
 
   // Create the route's model
   function createModel(router, route, url, eventDetail) {
-    var model = utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'), router.getAttribute('typecast') === 'auto');
+    var model = {
+      params: utilities.routeArguments(route.getAttribute('path'), url.path, url.search, route.hasAttribute('regex'), router.getAttribute('typecast') === 'auto')
+    };
     if (route.hasAttribute('bindRouter') || router.hasAttribute('bindRouter')) {
       model.router = router;
     }
