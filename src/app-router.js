@@ -263,6 +263,9 @@
 
   // Activate the imported custom element or template
   function activateImport(router, importLink, importUri, route, url, eventDetail) {
+    // allow referencing the route's import link in the activate-route-end callback
+    route.importLink = importLink;
+
     // make sure the user didn't navigate to a different route while it loaded
     if (route === router.loadingRoute) {
       if (route.hasAttribute('template')) {

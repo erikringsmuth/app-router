@@ -2,6 +2,7 @@
 
 #### v2.4.2
 - Fixing bug where navigating multiple times before any page finishes importing will lose the reference to the currently loaded route (`previousRoute`) before it is removed from the DOM.
+- Adding `route.importLink` reference.
 
 #### v2.4.1
 - Fixed bug where navigating to the same link twice with `core-animated-pages` would remove the page after 5 seconds.
