@@ -298,8 +298,8 @@
     var templateInstance;
     if (template.getAttribute('is') === 'auto-binding') {
       var model = createModel(router, route, url, eventDetail);
-      injectModelProperties(template, model);
-      templateInstance = template;
+      templateInstance = document.importNode(template, true);
+      injectModelProperties(templateInstance, model);
     } else if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
