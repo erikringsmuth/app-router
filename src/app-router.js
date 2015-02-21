@@ -225,7 +225,15 @@
     // if we're on the same route and `onUrlChange="updateModel"` then update the model but don't replace the page content
     if (route === router.activeRoute && route.getAttribute('onUrlChange') === 'updateModel') {
       var model = createModel(router, route, url, eventDetail);
-      setObjectProperties(route.lastElementChild.templateInstance.model, model);
+
+      if (route.hasAttribute('template') || route.isInlineTemplate) {
+        // update the template model
+        setObjectProperties(route.lastElementChild.templateInstance.model, model);
+      } else {
+        // update the custom element model
+        setObjectProperties(route.firstElementChild, model);
+      }
+
       fire('activate-route-end', eventDetail, router);
       fire('activate-route-end', eventDetail, eventDetail.route);
       return;
