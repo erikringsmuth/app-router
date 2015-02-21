@@ -217,15 +217,17 @@
     // keep track of the route currently being loaded
     router.loadingRoute = route;
 
-    // Update model instead of re-rendering if we're on the same route
-    if (router.activeRoute && router.activeRoute === route && route.firstElementChild) {
-      var model = createModel(router, route, url, eventDetail);
-      for (var property in model) {
-        if (model.hasOwnProperty(property)) {
-          route.firstElementChild[property] = model[property];
-        }
+    // optionally update model instead of re-rendering if we're on the same route
+    if (route === router.activeRoute && route.hasAttribute('onUrlChange')) {
+      var operation = route.getAttribute('onUrlChange');
+      if (operation === 'noop') {
+        // don't reload the new route and don't update the model
+        return;
+      } else if (operation === 'updateModel') {
+        var model = createModel(router, route, url, eventDetail);
+        setObjectProperties(route.lastElementChild.templateInstance.model, model);
+        return;
       }
-      return;
     }
 
     // import custom element or template
@@ -293,11 +295,7 @@
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
     var model = createModel(router, route, url, eventDetail);
-    for (var property in model) {
-      if (model.hasOwnProperty(property)) {
-        customElement[property] = model[property];
-      }
-    }
+    setObjectProperties(customElement, model);
     activateElement(router, customElement, url, eventDetail);
   }
 
@@ -325,6 +323,15 @@
     fire('before-data-binding', eventDetail, router);
     fire('before-data-binding', eventDetail, eventDetail.route);
     return eventDetail.model;
+  }
+
+  // Copy properties from one object to another
+  function setObjectProperties(object, model) {
+    for (var property in model) {
+      if (model.hasOwnProperty(property)) {
+        object[property] = model[property];
+      }
+    }
   }
 
   // Replace the active route's content with the new element
