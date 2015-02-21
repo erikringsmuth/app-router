@@ -25,21 +25,24 @@
     <app-router>
       <app-route path="/reload/:num">
         <template>
-          <h2>onUrlChange="reload", input should reset</h2>
+          <h2>onUrlChange="reload"</h2>
+          <p>expected: num should update and input should reset</p>
           <p>num: {{num}}</p>
           <label>input</label> <input type="text">
         </template>
       </app-route>
       <app-route path="/updateModel/:num" onUrlChange="updateModel">
         <template>
-          <h2>onUrlChange="updateModel", input should not reset</h2>
+          <h2>onUrlChange="updateModel"</h2>
+          <p>expected: num should update but input should not reset</p>
           <p>num: {{num}}</p>
           <label>input</label> <input type="text">
         </template>
       </app-route>
       <app-route path="/noop/:num" onUrlChange="noop">
         <template>
-          <h2>onUrlChange="noop", num should not change and input should not reset</h2>
+          <h2>onUrlChange="noop"</h2>
+          <p>expected: num should not update and input should not reset</p>
           <p>num: {{num}}</p>
           <label>input</label> <input type="text">
         </template>
