@@ -78,7 +78,12 @@
       // when a transition finishes, remove the previous route's content. there is a temporary overlap where both
       // the new and old route's content is in the DOM to animate the transition.
       router.coreAnimatedPages.addEventListener('core-animated-pages-transition-end', function() {
-        transitionAnimationEnd(router.previousRoute);
+        // with core-animated-pages, navigating to the same route twice quickly will set the new route to both the
+        // activeRoute and the previousRoute before the animation finishes. we don't want to delete the route content
+        // if it's actually the active route.
+        if (router.previousRoute && !router.previousRoute.hasAttribute('active')) {
+          removeRouteContent(router.previousRoute);
+        }
       });
     }
 
@@ -209,18 +214,8 @@
       return;
     }
 
-    // update the references to the activeRoute and previousRoute. if you switch between routes quickly you may go to a
-    // new route before the previous route's transition animation has completed. if that's the case we need to remove
-    // the previous route's content before we replace the reference to the previous route.
-    if (router.previousRoute && router.previousRoute.transitionAnimationInProgress) {
-      transitionAnimationEnd(router.previousRoute);
-    }
-    if (router.activeRoute) {
-      router.activeRoute.removeAttribute('active');
-    }
-    router.previousRoute = router.activeRoute;
-    router.activeRoute = route;
-    router.activeRoute.setAttribute('active', 'active');
+    // keep track of the route currently being loaded
+    router.loadingRoute = route;
 
     // import custom element or template
     if (route.hasAttribute('import')) {
@@ -232,6 +227,8 @@
     }
     // inline template
     else if (route.firstElementChild && route.firstElementChild.tagName === 'TEMPLATE') {
+      // mark the route as an inline template so we know how to clean it up when we remove the route's content
+      route.isInlineTemplate = true;
       activateTemplate(router, route.firstElementChild, route, url, eventDetail);
     }
   }
@@ -240,34 +237,37 @@
   function importAndActivate(router, importUri, route, url, eventDetail) {
     var importLink;
     function importLoadedCallback() {
+      importLink.loaded = true;
       activateImport(router, importLink, importUri, route, url, eventDetail);
     }
 
     if (!importedURIs.hasOwnProperty(importUri)) {
       // hasn't been imported yet
-      importedURIs[importUri] = true;
       importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
       importLink.addEventListener('load', importLoadedCallback);
+      importLink.loaded = false;
       document.head.appendChild(importLink);
+      importedURIs[importUri] = importLink;
     } else {
       // previously imported. this is an async operation and may not be complete yet.
-      importLink = document.querySelector('link[href="' + importUri + '"]');
-      if (importLink.import) {
-        // import complete
-        importLoadedCallback();
-      } else {
-        // wait for `onload`
+      importLink = importedURIs[importUri];
+      if (!importLink.loaded) {
         importLink.addEventListener('load', importLoadedCallback);
+      } else {
+        activateImport(router, importLink, importUri, route, url, eventDetail);
       }
     }
   }
 
   // Activate the imported custom element or template
   function activateImport(router, importLink, importUri, route, url, eventDetail) {
+    // allow referencing the route's import link in the activate-route-end callback
+    route.importLink = importLink;
+
     // make sure the user didn't navigate to a different route while it loaded
-    if (route.hasAttribute('active')) {
+    if (route === router.loadingRoute) {
       if (route.hasAttribute('template')) {
         // template
         activateTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
@@ -318,11 +318,25 @@
 
   // Replace the active route's content with the new element
   function activateElement(router, element, url, eventDetail) {
-    // core-animated-pages temporarily needs the old and new route in the DOM at the same time to animate the transition,
-    // otherwise we can remove the old route's content right away.
-    // UNLESS
-    // if the route we're navigating to matches the same app-route (ex: path="/article/:id" navigating from /article/0 to
-    // /article/1), then we have to simply replace the route's content instead of animating a transition.
+    // when using core-animated-pages, the router doesn't remove the previousRoute's content right away. if you
+    // navigate between 3 routes quickly (ex: /a -> /b -> /c) you might set previousRoute to '/b' before '/a' is
+    // removed from the DOM. this verifies old content is removed before switching the reference to previousRoute.
+    removeRouteContent(router.previousRoute);
+
+    // update references to the activeRoute, previousRoute, and loadingRoute
+    router.previousRoute = router.activeRoute;
+    router.activeRoute = router.loadingRoute;
+    router.loadingRoute = null;
+    if (router.previousRoute) {
+      router.previousRoute.removeAttribute('active');
+    }
+    router.activeRoute.setAttribute('active', 'active');
+
+    // remove the old route's content before loading the new route. core-animated-pages temporarily needs the old and
+    // new route in the DOM at the same time to animate the transition, otherwise we can remove the old route's content
+    // right away. there is one exception for core-animated-pages where the route we're navigating to matches the same
+    // route (ex: path="/article/:id" navigating from /article/0 to /article/1). in this case we have to simply replace
+    // the route's content instead of animating a transition.
     if (!router.hasAttribute('core-animated-pages') || eventDetail.route === eventDetail.oldRoute) {
       removeRouteContent(router.previousRoute);
     }
@@ -333,13 +347,7 @@
     // animate the transition if core-animated-pages are being used
     if (router.hasAttribute('core-animated-pages')) {
       router.coreAnimatedPages.selected = router.activeRoute.getAttribute('path');
-
-      // we already wired up transitionAnimationEnd() in init()
-
-      // use to check if the previous route has finished animating before being removed
-      if (router.previousRoute) {
-        router.previousRoute.transitionAnimationInProgress = true;
-      }
+      // the 'core-animated-pages-transition-end' event handler in init() will call removeRouteContent() on the previousRoute
     }
 
     // scroll to the URL hash if it's present
@@ -351,24 +359,20 @@
     fire('activate-route-end', eventDetail, eventDetail.route);
   }
 
-  // Call when the previousRoute has finished the transition animation out
-  function transitionAnimationEnd(previousRoute) {
-    if (previousRoute) {
-      previousRoute.transitionAnimationInProgress = false;
-      removeRouteContent(previousRoute);
-    }
-  }
-
-  // Remove the route's content (but not the <template> if it exists)
+  // Remove the route's content
   function removeRouteContent(route) {
     if (route) {
       var node = route.firstChild;
+
+      // don't remove an inline <template>
+      if (route.isInlineTemplate) {
+        node = route.querySelector('template').nextSibling;
+      }
+
       while (node) {
         var nodeToRemove = node;
         node = node.nextSibling;
-        if (nodeToRemove.tagName !== 'TEMPLATE') {
-          route.removeChild(nodeToRemove);
-        }
+        route.removeChild(nodeToRemove);
       }
     }
   }
@@ -559,7 +563,7 @@
       if (routePath.charAt(0) !== '/') {
         routePath = '/**/' + routePath;
       }
-    
+
       // get path variables
       // urlPath '/customer/123'
       // routePath '/customer/:id'
