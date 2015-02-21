@@ -202,6 +202,11 @@
       return;
     }
 
+    // if we're on the same route and `onUrlChange="noop"` then don't reload the route or update the model
+    if (route === router.activeRoute && route.getAttribute('onUrlChange') === 'noop') {
+      return;
+    }
+
     var eventDetail = {
       path: url.path,
       route: route,
@@ -217,17 +222,13 @@
     // keep track of the route currently being loaded
     router.loadingRoute = route;
 
-    // optionally update model instead of re-rendering if we're on the same route
-    if (route === router.activeRoute && route.hasAttribute('onUrlChange')) {
-      var operation = route.getAttribute('onUrlChange');
-      if (operation === 'noop') {
-        // don't reload the new route and don't update the model
-        return;
-      } else if (operation === 'updateModel') {
-        var model = createModel(router, route, url, eventDetail);
-        setObjectProperties(route.lastElementChild.templateInstance.model, model);
-        return;
-      }
+    // if we're on the same route and `onUrlChange="updateModel"` then update the model but don't replace the page content
+    if (route === router.activeRoute && route.getAttribute('onUrlChange') === 'updateModel') {
+      var model = createModel(router, route, url, eventDetail);
+      setObjectProperties(route.lastElementChild.templateInstance.model, model);
+      fire('activate-route-end', eventDetail, router);
+      fire('activate-route-end', eventDetail, eventDetail.route);
+      return;
     }
 
     // import custom element or template
