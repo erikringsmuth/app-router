@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### 2.5.0
+- Adding `onUrlChange="reload|updateModel|noop"` attribute to `<app-route>`. This is useful when you have nested routers and you only want to change the inner most route.
+
 #### v2.4.2
 - Fixing bug where navigating multiple times before any page finishes importing will lose the reference to the currently loaded route (`previousRoute`) before it is removed from the DOM.
 - Adding `route.importLink` reference.

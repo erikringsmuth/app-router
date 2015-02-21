@@ -5,11 +5,11 @@
   var isIE = 'ActiveXObject' in window;
   var previousUrl = {};
 
-  // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [shadow]></app-router>
+  // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [typecast="auto|string"] [bindRouter]></app-router>
   var AppRouter = Object.create(HTMLElement.prototype);
   AppRouter.util = utilities;
 
-  // <app-route path="/path" [import="/page/cust-el.html"] [element="cust-el"] [template]></app-route>
+  // <app-route [path="/path"] [import="/page/cust-el.html"] [element="cust-el"] [template] [regex] [redirect] [onUrlChange="reload|updateModel|noop"] [bindRouter]></app-route>
   document.registerElement('app-route', {
     prototype: Object.create(HTMLElement.prototype)
   });
@@ -202,6 +202,11 @@
       return;
     }
 
+    // if we're on the same route and `onUrlChange="noop"` then don't reload the route or update the model
+    if (route === router.activeRoute && route.getAttribute('onUrlChange') === 'noop') {
+      return;
+    }
+
     var eventDetail = {
       path: url.path,
       route: route,
@@ -216,6 +221,23 @@
 
     // keep track of the route currently being loaded
     router.loadingRoute = route;
+
+    // if we're on the same route and `onUrlChange="updateModel"` then update the model but don't replace the page content
+    if (route === router.activeRoute && route.getAttribute('onUrlChange') === 'updateModel') {
+      var model = createModel(router, route, url, eventDetail);
+
+      if (route.hasAttribute('template') || route.isInlineTemplate) {
+        // update the template model
+        setObjectProperties(route.lastElementChild.templateInstance.model, model);
+      } else {
+        // update the custom element model
+        setObjectProperties(route.firstElementChild, model);
+      }
+
+      fire('activate-route-end', eventDetail, router);
+      fire('activate-route-end', eventDetail, eventDetail.route);
+      return;
+    }
 
     // import custom element or template
     if (route.hasAttribute('import')) {
@@ -282,11 +304,7 @@
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
     var model = createModel(router, route, url, eventDetail);
-    for (var property in model) {
-      if (model.hasOwnProperty(property)) {
-        customElement[property] = model[property];
-      }
-    }
+    setObjectProperties(customElement, model);
     activateElement(router, customElement, url, eventDetail);
   }
 
@@ -314,6 +332,15 @@
     fire('before-data-binding', eventDetail, router);
     fire('before-data-binding', eventDetail, eventDetail.route);
     return eventDetail.model;
+  }
+
+  // Copy properties from one object to another
+  function setObjectProperties(object, model) {
+    for (var property in model) {
+      if (model.hasOwnProperty(property)) {
+        object[property] = model[property];
+      }
+    }
   }
 
   // Replace the active route's content with the new element
