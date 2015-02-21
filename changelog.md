@@ -1,6 +1,6 @@
 ## app-router change log
 
-#### master
+#### 2.5.0
 - Adding `onUrlChange="reload|updateModel|noop"` attribute to `<app-route>`. This is useful when you have nested routers and you only want to change the inner most route.
 
 #### v2.4.2
