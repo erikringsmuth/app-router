@@ -5,11 +5,11 @@
   var isIE = 'ActiveXObject' in window;
   var previousUrl = {};
 
-  // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [shadow]></app-router>
+  // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [typecast="auto|string"] [bindRouter]></app-router>
   var AppRouter = Object.create(HTMLElement.prototype);
   AppRouter.util = utilities;
 
-  // <app-route path="/path" [import="/page/cust-el.html"] [element="cust-el"] [template]></app-route>
+  // <app-route [path="/path"] [import="/page/cust-el.html"] [element="cust-el"] [template] [regex] [redirect] [onUrlChange="reload|updateModel|noop"] [bindRouter]></app-route>
   document.registerElement('app-route', {
     prototype: Object.create(HTMLElement.prototype)
   });
