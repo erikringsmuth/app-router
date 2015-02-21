@@ -217,6 +217,17 @@
     // keep track of the route currently being loaded
     router.loadingRoute = route;
 
+    // Update model instead of re-rendering if we're on the same route
+    if (router.activeRoute && router.activeRoute === route && route.firstElementChild) {
+      var model = createModel(router, route, url, eventDetail);
+      for (var property in model) {
+        if (model.hasOwnProperty(property)) {
+          route.firstElementChild[property] = model[property];
+        }
+      }
+      return;
+    }
+
     // import custom element or template
     if (route.hasAttribute('import')) {
       importAndActivate(router, route.getAttribute('import'), route, url, eventDetail);
