@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/src/app-router.html">
+  </head>
+  <body>
+
+    <p>Test importing a template by its id</p>
+    <ul>
+      <li><a href="#/">Start page</a></li>
+      <li><a href="#/template1">/template1</a></li>
+      <li><a href="#/template2">/template2</a></li>
+    </ul>
+
+    <p>Template1 and template2 are defined in the same import</p>
+
+    <app-router>
+      <app-route path="/">
+        <template>
+          This is start page
+        </template>
+      </app-route>
+      <app-route path="/template1" import="pages/multiple-templates.html" template="template1"></app-route>
+      <app-route path="/template2" import="pages/multiple-templates.html" template="template2"></app-route>
+    </app-router>
+
+  </body>
+</html>
