@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app-router</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents.js" debug></script>
+    <link rel="import" href="/src/app-router.html">
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+  </head>
+  <body>
+
+    <p>Test definition of routes inside content tags.</p>
+    <ul>
+      <li><a href="#/child1">/child1</a></li>
+      <li><a href="#/content1">/content1</a></li>
+      <li><a href="#/content2">/content2</a></li>
+      <li><a href="#/child2">/child2</a></li>
+    </ul>
+
+    <polymer-element name="our-routes" noscript>
+      <template>
+        <app-router>
+          <app-route path="/child1" element="child1-page"></app-route>
+          <content></content>
+          <app-route path="/child2" element="child2-page"></app-route>
+        </app-router>
+      </template>
+    </polymer-element>
+
+    <polymer-element name="child1-page" noscript>
+      <template>
+        <h2>child1</h2>
+      </template>
+    </polymer-element>
+
+    <polymer-element name="child2-page" noscript>
+      <template>
+        <h2>child2</h2>
+      </template>
+    </polymer-element>
+
+    <polymer-element name="content1-page" noscript>
+      <template>
+        <h2>content1</h2>
+      </template>
+    </polymer-element>
+
+    <polymer-element name="content2-page" noscript>
+      <template>
+        <h2>content2</h2>
+      </template>
+    </polymer-element>
+
+    <our-routes>
+      <app-route path="/content1" element="content1-page"></app-route>
+      <app-route path="/content2" element="content2-page"></app-route>
+    </our-routes>
+
+  </body>
+</html>

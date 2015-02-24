@@ -182,17 +182,43 @@
       return;
     }
 
-    // find the first matching route
-    var route = router.firstElementChild;
+    var activated = activateMatchingRoute(router, router, url);
+
+    if (activated === null) {
+      fire('not-found', eventDetail, router);
+    }
+  }
+
+  // Find shadow root ancestor of an element
+  function shadowAncestor(element) {
+    while (element.parentNode && (element = element.parentNode)) {
+      if (element.toString() === "[object ShadowRoot]"){
+        return element;
+      }
+    }
+    return null;
+  }
+
+  // Activate the first matching route
+  function activateMatchingRoute(router, element, url) {
+    var route = element.firstElementChild;
     while (route) {
       if (route.tagName === 'APP-ROUTE' && utilities.testRoute(route.getAttribute('path'), url.path, router.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
         activateRoute(router, route, url);
-        return;
+        return route;
+      } else if (route.tagName === 'CONTENT') {
+        var shadow = shadowAncestor(route);
+        if (shadow !== null) {
+          // Check Light DOM app-routes
+          var activated = activateMatchingRoute(router, shadow.host, url);
+          if (activated !== null) {
+            return activated;
+          }
+        }
       }
       route = route.nextSibling;
     }
-
-    fire('not-found', eventDetail, router);
+    return null;
   }
 
   // Activate the route
