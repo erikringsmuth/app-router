@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### master
+- Adding ability to bundle templates and select by ID `<app-route path="/home" import="pages/bundled-templates.html" template="homepage"></app-route>`.
+
 #### 2.5.0
 - Adding `onUrlChange="reload|updateModel|noop"` attribute to `<app-route>`. This is useful when you have nested routers and you only want to change the inner most route.
 

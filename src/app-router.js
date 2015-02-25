@@ -292,8 +292,8 @@
     if (route === router.loadingRoute) {
       if (route.hasAttribute('template')) {
         // template
-        var templateId = route.getAttribute('template'),
-            template;
+        var templateId = route.getAttribute('template');
+        var template;
         if (templateId) {
           template = importLink.import.getElementById(templateId);
         } else {
