@@ -268,6 +268,7 @@
       importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
+      importLink.setAttribute('async', 'async');
       importLink.addEventListener('load', importLoadedCallback);
       importLink.loaded = false;
       document.head.appendChild(importLink);
