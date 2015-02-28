@@ -1,6 +1,6 @@
 ## app-router change log
 
-#### master
+#### 2.6.0
 - Adding ability to bundle templates and select by ID `<app-route path="/home" import="pages/bundled-templates.html" template="homepage"></app-route>`.
 - Adding `async` flag to `<app-route>` HTML imports. By default HTML imports block rendering of the page. The router waits for the link's `load` event to fire before using the imported document so this will speed up rendering when navigating between routes.
 
