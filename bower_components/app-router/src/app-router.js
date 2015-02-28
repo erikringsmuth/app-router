@@ -268,6 +268,7 @@
       importLink = document.createElement('link');
       importLink.setAttribute('rel', 'import');
       importLink.setAttribute('href', importUri);
+      importLink.setAttribute('async', 'async');
       importLink.addEventListener('load', importLoadedCallback);
       importLink.loaded = false;
       document.head.appendChild(importLink);
@@ -292,7 +293,14 @@
     if (route === router.loadingRoute) {
       if (route.hasAttribute('template')) {
         // template
-        activateTemplate(router, importLink.import.querySelector('template'), route, url, eventDetail);
+        var templateId = route.getAttribute('template');
+        var template;
+        if (templateId) {
+          template = importLink.import.getElementById(templateId);
+        } else {
+          template = importLink.import.querySelector('template');
+        }
+        activateTemplate(router, template, route, url, eventDetail);
       } else {
         // custom element
         activateCustomElement(router, route.getAttribute('element') || importUri.split('/').slice(-1)[0].replace('.html', ''), route, url, eventDetail);
