@@ -5,11 +5,27 @@
   var isIE = 'ActiveXObject' in window;
   var previousUrl = {};
 
-  // <app-router [init="auto|manual"] [mode="auto|hash|pushstate"] [trailingSlash="strict|ignore"] [typecast="auto|string"] [bindRouter]></app-router>
+  // <app-router 
+  //   init="auto|manual"
+  //   mode="auto|hash|pushstate"
+  //   trailingSlash="strict|ignore"
+  //   typecast="auto|string"
+  //   bindRouter
+  //   ></app-router>
   var AppRouter = Object.create(HTMLElement.prototype);
   AppRouter.util = utilities;
 
-  // <app-route [path="/path"] [import="/page/cust-el.html"] [element="cust-el"] [template] [regex] [redirect] [onUrlChange="reload|updateModel|noop"] [bindRouter]></app-route>
+  // <app-route
+  //   path="/path"
+  //   import="/page/cust-el.html"
+  //   element[="cust-el"]
+  //   template[="template-id"]
+  //   regex
+  //   redirect="/path"
+  //   onUrlChange="reload|updateModel|noop"
+  //   bindRouter
+  //   singleton
+  //   ></app-route>
   document.registerElement('app-route', {
     prototype: Object.create(HTMLElement.prototype)
   });
@@ -82,7 +98,7 @@
         // activeRoute and the previousRoute before the animation finishes. we don't want to delete the route content
         // if it's actually the active route.
         if (router.previousRoute && !router.previousRoute.hasAttribute('active')) {
-          removeRouteContent(router.previousRoute);
+          deactivateRoute(router.previousRoute);
         }
       });
     }
@@ -222,25 +238,13 @@
     // keep track of the route currently being loaded
     router.loadingRoute = route;
 
-    // if we're on the same route and `onUrlChange="updateModel"` then update the model but don't replace the page content
-    if (route === router.activeRoute && route.getAttribute('onUrlChange') === 'updateModel') {
-      var model = createModel(router, route, url, eventDetail);
-
-      if (route.hasAttribute('template') || route.isInlineTemplate) {
-        // update the template model
-        setObjectProperties(route.lastElementChild.templateInstance.model, model);
-      } else {
-        // update the custom element model
-        setObjectProperties(route.firstElementChild, model);
-      }
-
-      fire('activate-route-end', eventDetail, router);
-      fire('activate-route-end', eventDetail, eventDetail.route);
-      return;
+    // if we're on a singleton route that's already been loaded and hidden, or we're on the same route and
+    // `onUrlChange="updateModel"`, then update the model but don't replace the page content
+    if ((route.hasAttribute('singleton') && route.hidden) || (route === router.activeRoute && route.getAttribute('onUrlChange') === 'updateModel')) {
+      updateModelAndActivate(router, route, url, eventDetail);
     }
-
     // import custom element or template
-    if (route.hasAttribute('import')) {
+    else if (route.hasAttribute('import')) {
       importAndActivate(router, route.getAttribute('import'), route, url, eventDetail);
     }
     // pre-loaded custom element
@@ -253,6 +257,21 @@
       route.isInlineTemplate = true;
       activateTemplate(router, route.firstElementChild, route, url, eventDetail);
     }
+  }
+
+  // If we are only hiding and showing the route, update the model and activate the route
+  function updateModelAndActivate(router, route, url, eventDetail) {
+    var model = createModel(router, route, url, eventDetail);
+
+    if (route.hasAttribute('template') || route.isInlineTemplate) {
+      // update the template model
+      setObjectProperties(route.lastElementChild.templateInstance.model, model);
+    } else {
+      // update the custom element model
+      setObjectProperties(route.firstElementChild, model);
+    }
+
+    activateElement(router, null, url, eventDetail);
   }
 
   // Import and activate a custom element or template
@@ -353,10 +372,12 @@
 
   // Replace the active route's content with the new element
   function activateElement(router, element, url, eventDetail) {
+    // all hell breaks loose, don't know how to deal with singleton routes here yet
+
     // when using core-animated-pages, the router doesn't remove the previousRoute's content right away. if you
     // navigate between 3 routes quickly (ex: /a -> /b -> /c) you might set previousRoute to '/b' before '/a' is
     // removed from the DOM. this verifies old content is removed before switching the reference to previousRoute.
-    removeRouteContent(router.previousRoute);
+    deactivateRoute(router.previousRoute);
 
     // update references to the activeRoute, previousRoute, and loadingRoute
     router.previousRoute = router.activeRoute;
@@ -373,16 +394,21 @@
     // route (ex: path="/article/:id" navigating from /article/0 to /article/1). in this case we have to simply replace
     // the route's content instead of animating a transition.
     if (!router.hasAttribute('core-animated-pages') || eventDetail.route === eventDetail.oldRoute) {
-      removeRouteContent(router.previousRoute);
+      deactivateRoute(router.previousRoute);
     }
 
     // add the new content
-    router.activeRoute.appendChild(element);
+    if (element) {
+      router.activeRoute.appendChild(element);
+    } else {
+      // unhide singleton routes
+      router.activeRoute.hidden = false;
+    }
 
     // animate the transition if core-animated-pages are being used
     if (router.hasAttribute('core-animated-pages')) {
       router.coreAnimatedPages.selected = router.activeRoute.getAttribute('path');
-      // the 'core-animated-pages-transition-end' event handler in init() will call removeRouteContent() on the previousRoute
+      // the 'core-animated-pages-transition-end' event handler in init() will call deactivateRoute() on the previousRoute
     }
 
     // scroll to the URL hash if it's present
@@ -395,19 +421,25 @@
   }
 
   // Remove the route's content
-  function removeRouteContent(route) {
+  function deactivateRoute(route) {
     if (route) {
-      var node = route.firstChild;
+      if (route.hasAttribute('singleton')) {
+        // show/hide the route content
+        route.hidden = true;
+      } else {
+        // remove the route content
+        var node = route.firstChild;
 
-      // don't remove an inline <template>
-      if (route.isInlineTemplate) {
-        node = route.querySelector('template').nextSibling;
-      }
+        // don't remove an inline <template>
+        if (route.isInlineTemplate) {
+          node = route.querySelector('template').nextSibling;
+        }
 
-      while (node) {
-        var nodeToRemove = node;
-        node = node.nextSibling;
-        route.removeChild(nodeToRemove);
+        while (node) {
+          var nodeToRemove = node;
+          node = node.nextSibling;
+          route.removeChild(nodeToRemove);
+        }
       }
     }
   }
