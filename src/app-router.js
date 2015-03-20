@@ -268,6 +268,7 @@
         importUri: importUri,
         routeDetail: eventDetail
       };
+      fire('import-error', errorDetail, router);
       fire('import-error', errorDetail, route);
     }
 
