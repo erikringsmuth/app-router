@@ -262,6 +262,14 @@
       importLink.loaded = true;
       activateImport(router, importLink, importUri, route, url, eventDetail);
     }
+    function importErrorCallback(event) {
+      var errorDetail = {
+        errorEvent: event,
+        importUri: importUri,
+        routeDetail: eventDetail
+      };
+      fire('import-error', errorDetail, route);
+    }
 
     if (!importedURIs.hasOwnProperty(importUri)) {
       // hasn't been imported yet
@@ -270,6 +278,7 @@
       importLink.setAttribute('href', importUri);
       importLink.setAttribute('async', 'async');
       importLink.addEventListener('load', importLoadedCallback);
+      importLink.addEventListener('error', importErrorCallback);
       importLink.loaded = false;
       document.head.appendChild(importLink);
       importedURIs[importUri] = importLink;
@@ -278,6 +287,7 @@
       importLink = importedURIs[importUri];
       if (!importLink.loaded) {
         importLink.addEventListener('load', importLoadedCallback);
+        importLink.addEventListener('error', importErrorCallback);
       } else {
         activateImport(router, importLink, importUri, route, url, eventDetail);
       }
