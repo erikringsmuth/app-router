@@ -7,7 +7,7 @@
 
   // <app-router 
   //   init="auto|manual"
-  //   mode="auto|hash|pushstate"
+  //   mode="auto|hash|hashbang|pushstate"
   //   trailingSlash="strict|ignore"
   //   typecast="auto|string"
   //   bindRouter
@@ -51,7 +51,7 @@
       router.setAttribute('trailingSlash', 'strict');
     }
 
-    // mode="auto|hash|pushstate"
+    // mode="auto|hash|hashbang|pushstate"
     if (!router.hasAttribute('mode')) {
       router.setAttribute('mode', 'auto');
     }
@@ -131,8 +131,12 @@
   // }
   AppRouter.go = function(path, options) {
     if (this.getAttribute('mode') !== 'pushstate') {
-      // mode == auto or hash
-      path = '#' + path;
+      // mode == auto, hash or hashbang
+      if (this.getAttribute('mode') === 'hashbang') {
+        path = '#!' + path;
+      } else {
+        path = '#' + path;
+      }
     }
     if (options && options.replace === true) {
       window.history.replaceState(null, null, path);
