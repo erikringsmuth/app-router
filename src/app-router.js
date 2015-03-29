@@ -5,7 +5,7 @@
   var isIE = 'ActiveXObject' in window;
   var previousUrl = {};
 
-  // <app-router 
+  // <app-router
   //   init="auto|manual"
   //   mode="auto|hash|hashbang|pushstate"
   //   trailingSlash="strict|ignore"
@@ -24,7 +24,6 @@
   //   redirect="/path"
   //   onUrlChange="reload|updateModel|noop"
   //   bindRouter
-  //   singleton
   //   ></app-route>
   document.registerElement('app-route', {
     prototype: Object.create(HTMLElement.prototype)
@@ -242,9 +241,8 @@
     // keep track of the route currently being loaded
     router.loadingRoute = route;
 
-    // if we're on a singleton route that's already been loaded and hidden, or we're on the same route and
-    // `onUrlChange="updateModel"`, then update the model but don't replace the page content
-    if ((route.hasAttribute('singleton') && route.hidden) || (route === router.activeRoute && route.getAttribute('onUrlChange') === 'updateModel')) {
+    // if we're on the same route and `onUrlChange="updateModel"` then update the model but don't replace the page content
+    if (route === router.activeRoute && route.getAttribute('onUrlChange') === 'updateModel') {
       updateModelAndActivate(router, route, url, eventDetail);
     }
     // import custom element or template
@@ -275,7 +273,8 @@
       setObjectProperties(route.firstElementChild, model);
     }
 
-    activateElement(router, null, url, eventDetail);
+    fire('activate-route-end', eventDetail, router);
+    fire('activate-route-end', eventDetail, eventDetail.route);
   }
 
   // Import and activate a custom element or template
@@ -376,8 +375,6 @@
 
   // Replace the active route's content with the new element
   function activateElement(router, element, url, eventDetail) {
-    // all hell breaks loose, don't know how to deal with singleton routes here yet
-
     // when using core-animated-pages, the router doesn't remove the previousRoute's content right away. if you
     // navigate between 3 routes quickly (ex: /a -> /b -> /c) you might set previousRoute to '/b' before '/a' is
     // removed from the DOM. this verifies old content is removed before switching the reference to previousRoute.
@@ -402,12 +399,7 @@
     }
 
     // add the new content
-    if (element) {
-      router.activeRoute.appendChild(element);
-    } else {
-      // unhide singleton routes
-      router.activeRoute.hidden = false;
-    }
+    router.activeRoute.appendChild(element);
 
     // animate the transition if core-animated-pages are being used
     if (router.hasAttribute('core-animated-pages')) {
@@ -427,23 +419,18 @@
   // Remove the route's content
   function deactivateRoute(route) {
     if (route) {
-      if (route.hasAttribute('singleton')) {
-        // show/hide the route content
-        route.hidden = true;
-      } else {
-        // remove the route content
-        var node = route.firstChild;
+      // remove the route content
+      var node = route.firstChild;
 
-        // don't remove an inline <template>
-        if (route.isInlineTemplate) {
-          node = route.querySelector('template').nextSibling;
-        }
+      // don't remove an inline <template>
+      if (route.isInlineTemplate) {
+        node = route.querySelector('template').nextSibling;
+      }
 
-        while (node) {
-          var nodeToRemove = node;
-          node = node.nextSibling;
-          route.removeChild(nodeToRemove);
-        }
+      while (node) {
+        var nodeToRemove = node;
+        node = node.nextSibling;
+        route.removeChild(nodeToRemove);
       }
     }
   }
