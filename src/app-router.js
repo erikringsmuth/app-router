@@ -189,6 +189,7 @@
     // don't load a new route if only the hash fragment changed
     if (url.hash !== previousUrl.hash && url.path === previousUrl.path && url.search === previousUrl.search && url.isHashPath === previousUrl.isHashPath) {
       scrollToHash(url.hash);
+      previousUrl = url;
       return;
     }
     previousUrl = url;
