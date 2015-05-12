@@ -166,17 +166,19 @@
     }
   };
 
-  // fire(type, detail, node) - Fire a new CustomEvent(type, detail) on the node
+  // fire(type, detail, node, bubble) - Fire a new CustomEvent(type, detail) on the node
+  //
+  // If bubble is true (default false if undefined) then the event will bubble
   //
   // listen with document.querySelector('app-router').addEventListener(type, function(event) {
   //   event.detail, event.preventDefault()
   // })
-  function fire(type, detail, node) {
+  function fire(type, detail, node, bubble) {
     // create a CustomEvent the old way for IE9/10 support
     var event = document.createEvent('CustomEvent');
 
     // initCustomEvent(type, bubbles, cancelable, detail)
-    event.initCustomEvent(type, false, true, detail);
+    event.initCustomEvent(type, !!bubble, true, detail);
 
     // returns false when event.preventDefault() is called, true otherwise
     return node.dispatchEvent(event);
@@ -201,6 +203,7 @@
     if (!fire('state-change', eventDetail, router)) {
       return;
     }
+    fire('core-signal', {name: 'state-change', data: eventDetail}, router, true);
 
     // find the first matching route
     var route = router.firstElementChild;
@@ -213,6 +216,7 @@
     }
 
     fire('not-found', eventDetail, router);
+    fire('core-signal', {name: 'not-found', data: eventDetail}, router, true);
   }
 
   // Activate the route
@@ -238,6 +242,7 @@
     if (!fire('activate-route-start', eventDetail, route)) {
       return;
     }
+    fire('core-signal', {name: 'activate-route-start', data: eventDetail}, router, true);
 
     // keep track of the route currently being loaded
     router.loadingRoute = route;
@@ -276,6 +281,7 @@
 
     fire('activate-route-end', eventDetail, router);
     fire('activate-route-end', eventDetail, eventDetail.route);
+    fire('core-signal', {name: 'activate-route-end', data: eventDetail}, router, true);
   }
 
   // Import and activate a custom element or template
@@ -362,6 +368,7 @@
     eventDetail.model = model;
     fire('before-data-binding', eventDetail, router);
     fire('before-data-binding', eventDetail, eventDetail.route);
+    fire('core-signal', {name: 'before-data-binding', data: eventDetail}, router, true);
     return eventDetail.model;
   }
 
@@ -415,6 +422,7 @@
 
     fire('activate-route-end', eventDetail, router);
     fire('activate-route-end', eventDetail, eventDetail.route);
+    fire('core-signal', {name: 'activate-route-end', data: eventDetail}, router, true);
   }
 
   // Remove the route's content
