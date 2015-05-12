@@ -2,6 +2,7 @@
 
 #### master
 - Adding `hashbang` mode in addition to the existing `auto`, `hash`, and `pushstate`.
+- Fixed URL change bug when only changing the hash.
 
 #### 2.6.0
 - Adding ability to bundle templates and select by ID `<app-route path="/home" import="pages/bundled-templates.html" template="homepage"></app-route>`.
