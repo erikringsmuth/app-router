@@ -196,7 +196,8 @@
 
     // fire a state-change event on the app-router and return early if the user called event.preventDefault()
     var eventDetail = {
-      path: url.path
+      path: url.path,
+      state: window.history.state
     };
     if (!fire('state-change', eventDetail, router)) {
       return;
@@ -230,7 +231,8 @@
     var eventDetail = {
       path: url.path,
       route: route,
-      oldRoute: router.activeRoute
+      oldRoute: router.activeRoute,
+      state: window.history.state
     };
     if (!fire('activate-route-start', eventDetail, router)) {
       return;
