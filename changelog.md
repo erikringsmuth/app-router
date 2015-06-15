@@ -1,5 +1,8 @@
 ## app-router change log
 
+#### master
+- Adding a new `state` property that references `window.history.state` in the router's lifecycle events.
+
 #### 2.6.1
 - Adding `hashbang` mode in addition to the existing `auto`, `hash`, and `pushstate`.
 - Fixed URL change bug when only changing the hash.
