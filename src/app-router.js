@@ -196,8 +196,7 @@
 
     // fire a state-change event on the app-router and return early if the user called event.preventDefault()
     var eventDetail = {
-      path: url.path,
-      state: window.history.state
+      path: url.path
     };
     if (!fire('state-change', eventDetail, router)) {
       return;
@@ -231,8 +230,7 @@
     var eventDetail = {
       path: url.path,
       route: route,
-      oldRoute: router.activeRoute,
-      state: window.history.state
+      oldRoute: router.activeRoute
     };
     if (!fire('activate-route-start', eventDetail, router)) {
       return;
@@ -268,13 +266,25 @@
   function updateModelAndActivate(router, route, url, eventDetail) {
     var model = createModel(router, route, url, eventDetail);
 
-    if (route.hasAttribute('template') || route.isInlineTemplate) {
-      // update the template model
-      setObjectProperties(route.lastElementChild.templateInstance.model, model);
-    } else {
-      // update the custom element model
-      setObjectProperties(route.firstElementChild, model);
-    }
+    //if (route.hasAttribute('template') || route.isInlineTemplate) {
+    //  // update the template model
+    //  setObjectProperties(route.lastElementChild.templateInstance.model, model);
+    //} else {
+    //  // update the custom element model
+    //  setObjectProperties(route.firstElementChild, model);
+    //}
+    var object = (route.hasAttribute('template') || route.isInlineTemplate) ?
+        route.lastElementChild.templateInstance.model : // update the template model
+        route.firstElementChild; // update the custom element model
+
+    setObjectProperties(object, model);
+
+    // If a model previously had a query parameter set, but was now removed, then bind it as undefined.
+    if (route.model != null)
+        for (var property in route.model)
+            if (!model.hasOwnProperty(property))
+                object[property] = undefined;
+    route.model = model;
 
     fire('activate-route-end', eventDetail, router);
     fire('activate-route-end', eventDetail, eventDetail.route);
@@ -336,8 +346,8 @@
   // Data bind the custom element then activate it
   function activateCustomElement(router, elementName, route, url, eventDetail) {
     var customElement = document.createElement(elementName);
-    var model = createModel(router, route, url, eventDetail);
-    setObjectProperties(customElement, model);
+    route.model = createModel(router, route, url, eventDetail);
+    setObjectProperties(customElement, route.model);
     activateElement(router, customElement, url, eventDetail);
   }
 
@@ -347,8 +357,8 @@
     if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
       // https://github.com/erikringsmuth/app-router/issues/19
-      var model = createModel(router, route, url, eventDetail);
-      templateInstance = template.createInstance(model);
+      route.model = createModel(router, route, url, eventDetail);
+      templateInstance = template.createInstance(route.model);
     } else {
       templateInstance = document.importNode(template.content, true);
     }
