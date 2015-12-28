@@ -196,7 +196,8 @@
 
     // fire a state-change event on the app-router and return early if the user called event.preventDefault()
     var eventDetail = {
-      path: url.path
+      path: url.path,
+      state: window.history.state
     };
     if (!fire('state-change', eventDetail, router)) {
       return;
@@ -230,7 +231,8 @@
     var eventDetail = {
       path: url.path,
       route: route,
-      oldRoute: router.activeRoute
+      oldRoute: router.activeRoute,
+      state: window.history.state
     };
     if (!fire('activate-route-start', eventDetail, router)) {
       return;
@@ -266,13 +268,6 @@
   function updateModelAndActivate(router, route, url, eventDetail) {
     var model = createModel(router, route, url, eventDetail);
 
-    //if (route.hasAttribute('template') || route.isInlineTemplate) {
-    //  // update the template model
-    //  setObjectProperties(route.lastElementChild.templateInstance.model, model);
-    //} else {
-    //  // update the custom element model
-    //  setObjectProperties(route.firstElementChild, model);
-    //}
     var object = (route.hasAttribute('template') || route.isInlineTemplate) ?
         route.lastElementChild.templateInstance.model : // update the template model
         route.firstElementChild; // update the custom element model
