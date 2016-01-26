@@ -182,6 +182,31 @@
     return node.dispatchEvent(event);
   }
 
+  // Find the first matching route from the node's DOM tree, active it and return true.
+  // If no matching route is found from the DOM tree, return false.
+  function findRoutes(router, url, node) {
+    var route = node.firstElementChild;
+    var nodesToSearchRecursively = [];
+    while (route) {
+      if (route.tagName === 'APP-ROUTE' && utilities.testRoute(route.getAttribute('path'), url.path, router.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
+        activateRoute(router, route, url);
+        return true;
+      } else {
+        nodesToSearchRecursively.push(route);
+      }
+      route = route.nextSibling;
+    }
+
+    // If no route has been found, search other nodes recursively
+    for (var routeIndex = 0; routeIndex < nodesToSearchRecursively.length; routeIndex += 1) {
+      if (findRoutes(router, url, nodesToSearchRecursively[routeIndex])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   // Find the first <app-route> that matches the current URL and change the active route
   function stateChange(router) {
     var url = utilities.parseUrl(window.location.href, router.getAttribute('mode'));
@@ -203,17 +228,9 @@
       return;
     }
 
-    // find the first matching route
-    var route = router.firstElementChild;
-    while (route) {
-      if (route.tagName === 'APP-ROUTE' && utilities.testRoute(route.getAttribute('path'), url.path, router.getAttribute('trailingSlash'), route.hasAttribute('regex'))) {
-        activateRoute(router, route, url);
-        return;
-      }
-      route = route.nextSibling;
+    if (!findRoutes(router, url, router)) {
+      fire('not-found', eventDetail, router);
     }
-
-    fire('not-found', eventDetail, router);
   }
 
   // Activate the route
