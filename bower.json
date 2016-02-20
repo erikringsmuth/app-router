@@ -28,5 +28,8 @@
     "webcomponentsjs": "~0.5.4",
     "core-elements": "Polymer/core-elements#~0.5.4",
     "pushstate-anchor": "~0.3.0"
+  },
+  "resolutions": {
+    "webcomponentsjs": "^0.6.0"
   }
 }
