@@ -137,10 +137,11 @@
         path = '#' + path;
       }
     }
+    var currentState = window.history.state;
     if (options && options.replace === true) {
-      window.history.replaceState(null, null, path);
+      window.history.replaceState(currentState, null, path);
     } else {
-      window.history.pushState(null, null, path);
+      window.history.pushState(currentState, null, path);
     }
 
     // dispatch a popstate event
@@ -148,7 +149,7 @@
       var popstateEvent = new PopStateEvent('popstate', {
         bubbles: false,
         cancelable: false,
-        state: {}
+        state: currentState
       });
 
       if ('dispatchEvent_' in window) {
@@ -161,7 +162,7 @@
     } catch(error) {
       // Internet Exploder
       var fallbackEvent = document.createEvent('CustomEvent');
-      fallbackEvent.initCustomEvent('popstate', false, false, { state: {} });
+      fallbackEvent.initCustomEvent('popstate', false, false, { state: currentState });
       window.dispatchEvent(fallbackEvent);
     }
   };
