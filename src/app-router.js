@@ -3,6 +3,7 @@
   var utilities = {};
   var importedURIs = {};
   var isIE = 'ActiveXObject' in window;
+  var isEdge = (!!window.navigator.userAgent.match(/Edge/));
   var previousUrl = {};
 
   // <app-router
@@ -105,9 +106,9 @@
     // listen for URL change events
     router.stateChangeHandler = stateChange.bind(null, router);
     window.addEventListener('popstate', router.stateChangeHandler, false);
-    if (isIE) {
-      // IE bug. A hashchange is supposed to trigger a popstate event, making popstate the only event you
-      // need to listen to. That's not the case in IE so we make another event listener for it.
+    if (isIE || isEdge) {
+      // IE & Edge bug. A hashchange is supposed to trigger a popstate event, making popstate the only event you
+      // need to listen to. That's not the case in IE & Edge so we make another event listener for it.
       window.addEventListener('hashchange', router.stateChangeHandler, false);
     }
 
@@ -118,7 +119,7 @@
   // clean up global event listeners
   AppRouter.detachedCallback = function() {
     window.removeEventListener('popstate', this.stateChangeHandler, false);
-    if (isIE) {
+    if (isIE || isEdge) {
       window.removeEventListener('hashchange', this.stateChangeHandler, false);
     }
   };
