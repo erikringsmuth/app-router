@@ -1,5 +1,6 @@
 {
   "name": "app-router",
+  "version": "2.6.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/erikringsmuth/app-router.git"
