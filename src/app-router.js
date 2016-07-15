@@ -293,6 +293,8 @@
       var errorDetail = {
         errorEvent: event,
         importUri: importUri,
+        route: route,
+        url: url,
         routeDetail: eventDetail
       };
       fire('import-error', errorDetail, router);
