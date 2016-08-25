@@ -461,7 +461,15 @@
     // it will scroll to the top of the page. let the browser finish the current event loop and scroll to the top of the page
     // before we scroll to the element with id or name `middle`.
     setTimeout(function() {
-      var hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
+      var hashElement;
+      try {
+        hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
+      } catch (e) {
+        // DOM exception 12 (unknown selector) is thrown in Safari when using Polymer 1.x Shady DOM mode
+        if (window.Polymer && window.Polymer.Settings && window.Polymer.Settings.dom === 'shady') {
+          hashElement = document.querySelector(hash) || document.querySelector('[name="' + hash.substring(1) + '"]');
+        }
+      }
       if (hashElement && hashElement.scrollIntoView) {
         hashElement.scrollIntoView(true);
       }
