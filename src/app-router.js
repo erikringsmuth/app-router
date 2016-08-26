@@ -465,10 +465,8 @@
       try {
         hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
       } catch (e) {
-        // DOM exception 12 (unknown selector) is thrown in Safari when using Polymer 1.x Shady DOM mode
-        if (window.Polymer && window.Polymer.Settings && window.Polymer.Settings.dom === 'shady') {
-          hashElement = document.querySelector(hash) || document.querySelector('[name="' + hash.substring(1) + '"]');
-        }
+        // DOM exception 12 (unknown selector) is thrown in Firefox, Safari etc. when using Polymer 1.x Shady DOM mode
+        hashElement = document.querySelector(hash) || document.querySelector('[name="' + hash.substring(1) + '"]');
       }
       if (hashElement && hashElement.scrollIntoView) {
         hashElement.scrollIntoView(true);
