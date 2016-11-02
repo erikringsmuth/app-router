@@ -61,6 +61,11 @@
       router.setAttribute('typecast', 'auto');
     }
 
+    // scroll-to-hash="auto|disabled"
+    if (!router.hasAttribute('scroll-to-hash')) {
+      router.setAttribute('scroll-to-hash', 'auto');
+    }
+
     // <app-router core-animated-pages transitions="hero-transition cross-fade">
     if (router.hasAttribute('core-animated-pages')) {
       // use shadow DOM to wrap the <app-route> elements in a <core-animated-pages> element
@@ -190,7 +195,9 @@
 
     // don't load a new route if only the hash fragment changed
     if (url.hash !== previousUrl.hash && url.path === previousUrl.path && url.search === previousUrl.search && url.isHashPath === previousUrl.isHashPath) {
-      scrollToHash(url.hash);
+      if (router.getAttribute('scroll-to-hash') !== 'disabled') {
+        scrollToHash(url.hash);
+      }
       previousUrl = url;
       return;
     }
@@ -424,7 +431,7 @@
     }
 
     // scroll to the URL hash if it's present
-    if (url.hash && !router.hasAttribute('core-animated-pages')) {
+    if (url.hash && !router.hasAttribute('core-animated-pages') && router.getAttribute('scroll-to-hash') !== 'disabled') {
       scrollToHash(url.hash);
     }
 
