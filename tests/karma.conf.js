@@ -47,8 +47,22 @@ module.exports = function(config) {
     //Just testing with Chrome for now because the other browsers have issues
     browsers: ['Chrome'],
 
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true
+    singleRun: false
   });
+
+  // Change some config (Chrome to Chrome Canary) if Running on TravisCI.
+  // See: http://stackoverflow.com/questions/19255976/how-to-make-travis-execute-angular-tests-on-chrome-please-set-env-variable-chr
+  if(process.env.TRAVIS){
+    config.browsers = ['Chrome_travis_ci'];
+    config.singleRun = true;
+  }
 };
