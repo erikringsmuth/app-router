@@ -1,9 +1,10 @@
 'use strict';
+var path = require('path');
 var gulp = require('gulp');
 var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
 var inline = require('gulp-inline');
-var karma = require('gulp-karma');
+var karma = require('karma');
 
 var files = ['src/*.js', 'tests/spec/*.js'];
 
@@ -31,16 +32,11 @@ gulp.task('minify', function() {
     .pipe(gulp.dest('.'));
 });
 
-gulp.task('test', function() {
-  return gulp.src(files)
-    .pipe(karma({
-      configFile: 'tests/karma.conf.js',
+gulp.task('test', function(done) {
+    new karma.Server({
+      configFile:  path.resolve(__dirname, 'tests/karma.conf.js'),
       action: 'run'
-    }))
-    .on('error', function(err) {
-      // make sure failed tests cause gulp to exit non-zero
-      console.log(err);
-    });
+    }, done).start();
 });
 
 // watch
@@ -55,4 +51,4 @@ gulp.task('watch', function() {
 gulp.task('default', ['lint', 'build', 'minify', 'test']);
 
 // Travis CI
-gulp.task('ci', ['lint']);
+gulp.task('ci', ['default']);

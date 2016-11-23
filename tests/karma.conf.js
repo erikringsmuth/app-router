@@ -1,8 +1,9 @@
 // Karma configuration
+const path = require('path');
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: './',
+    basePath: path.resolve(__dirname, '..'),
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -10,7 +11,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'src/*.js ,tests/**/*.js', included: false}
+      {pattern: 'src/*.js'},
+      {pattern: 'tests/spec/*.js'}
     ],
 
     // list of files to exclude
@@ -47,6 +49,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true
   });
 };
