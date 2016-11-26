@@ -363,6 +363,11 @@
 
   // Create an instance of the template
   function activateTemplate(router, template, route, url, eventDetail) {
+    if (template === null) {
+      fire('template-not-found', eventDetail, router);
+      fire('template-not-found', eventDetail, route);
+      return;
+    }
     var templateInstance;
     if ('createInstance' in template) {
       // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
