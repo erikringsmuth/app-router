@@ -389,9 +389,15 @@
 
   // Copy properties from one object to another
   function setObjectProperties(object, model) {
+    var setProperties = typeof object.setAttribute === "function";
+
     for (var property in model) {
       if (model.hasOwnProperty(property)) {
         object[property] = model[property];
+
+        if (setProperties) {
+          object.setAttribute(property, model[property]);
+        }
       }
     }
   }
