@@ -74,48 +74,6 @@
         router.setAttribute('scroll-to-hash', 'auto');
       }
 
-      // <app-router core-animated-pages transitions="hero-transition cross-fade">
-      if (router.hasAttribute('core-animated-pages')) {
-        // use shadow DOM to wrap the <app-route> elements in a <core-animated-pages> element
-        // <app-router>
-        //   # shadowRoot
-        //   <core-animated-pages>
-        //     # content in the light DOM
-        //     <app-route element="home-page">
-        //       <home-page>
-        //       </home-page>
-        //     </app-route>
-        //   </core-animated-pages>
-        // </app-router>
-        router.createShadowRoot();
-        router.coreAnimatedPages = document.createElement('core-animated-pages');
-        router.coreAnimatedPages.appendChild(document.createElement('content'));
-
-        // don't know why it needs to be static, but absolute doesn't display the page
-        router.coreAnimatedPages.style.position = 'static';
-
-        // toggle the selected page using selected="path" instead of selected="integer"
-        router.coreAnimatedPages.setAttribute('valueattr', 'path');
-
-        // pass the transitions attribute from <app-router core-animated-pages transitions="hero-transition cross-fade">
-        // to <core-animated-pages transitions="hero-transition cross-fade">
-        router.coreAnimatedPages.setAttribute('transitions', router.getAttribute('transitions'));
-
-        // set the shadow DOM's content
-        router.shadowRoot.appendChild(router.coreAnimatedPages);
-
-        // when a transition finishes, remove the previous route's content. there is a temporary overlap where both
-        // the new and old route's content is in the DOM to animate the transition.
-        router.coreAnimatedPages.addEventListener('core-animated-pages-transition-end', function() {
-          // with core-animated-pages, navigating to the same route twice quickly will set the new route to both the
-          // activeRoute and the previousRoute before the animation finishes. we don't want to delete the route content
-          // if it's actually the active route.
-          if (router.previousRoute && !router.previousRoute.hasAttribute('active')) {
-            deactivateRoute(router.previousRoute);
-          }
-        });
-      }
-
       // listen for URL change events
       router.stateChangeHandler = stateChange.bind(null, router);
       window.addEventListener('popstate', router.stateChangeHandler, false);
@@ -400,9 +358,6 @@
 
   // Replace the active route's content with the new element
   function activateElement(router, element, url, eventDetail) {
-    // when using core-animated-pages, the router doesn't remove the previousRoute's content right away. if you
-    // navigate between 3 routes quickly (ex: /a -> /b -> /c) you might set previousRoute to '/b' before '/a' is
-    // removed from the DOM. this verifies old content is removed before switching the reference to previousRoute.
     deactivateRoute(router.previousRoute);
 
     // update references to the activeRoute, previousRoute, and loadingRoute
@@ -414,26 +369,16 @@
     }
     router.activeRoute.setAttribute('active', 'active');
 
-    // remove the old route's content before loading the new route. core-animated-pages temporarily needs the old and
-    // new route in the DOM at the same time to animate the transition, otherwise we can remove the old route's content
-    // right away. there is one exception for core-animated-pages where the route we're navigating to matches the same
-    // route (ex: path="/article/:id" navigating from /article/0 to /article/1). in this case we have to simply replace
-    // the route's content instead of animating a transition.
-    if (!router.hasAttribute('core-animated-pages') || eventDetail.route === eventDetail.oldRoute) {
+    // remove the old route's content before loading the new route.
+    if (eventDetail.route !== eventDetail.oldRoute) {
       deactivateRoute(router.previousRoute);
     }
 
     // add the new content
     router.activeRoute.appendChild(element);
 
-    // animate the transition if core-animated-pages are being used
-    if (router.hasAttribute('core-animated-pages')) {
-      router.coreAnimatedPages.selected = router.activeRoute.getAttribute('path');
-      // the 'core-animated-pages-transition-end' event handler in init() will call deactivateRoute() on the previousRoute
-    }
-
     // scroll to the URL hash if it's present
-    if (url.hash && !router.hasAttribute('core-animated-pages') && router.getAttribute('scroll-to-hash') !== 'disabled') {
+    if (url.hash && router.getAttribute('scroll-to-hash') !== 'disabled') {
       scrollToHash(url.hash);
     }
 
