@@ -29,8 +29,6 @@
   //   ></app-router>
   class AppRouter extends HTMLElement {
     connectedCallback() {
-      super.connectedCallback();
-
       if (this.getAttribute('init') !== 'manual') {
         this.init();
       }
