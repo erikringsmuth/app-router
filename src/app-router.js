@@ -6,15 +6,6 @@
   var isEdge = (!!window.navigator.userAgent.match(/Edge/));
   var previousUrl = {};
 
-  // <app-router
-  //   init="auto|manual"
-  //   mode="auto|hash|hashbang|pushstate"
-  //   trailingSlash="strict|ignore"
-  //   typecast="auto|string"
-  //   bindRouter
-  //   ></app-router>
-  var AppRouter = Object.create(HTMLElement.prototype);
-  AppRouter.util = utilities;
 
   // <app-route
   //   path="/path"
@@ -26,152 +17,162 @@
   //   onUrlChange="reload|updateModel|noop"
   //   bindRouter
   //   ></app-route>
-  document.registerElement('app-route', {
-    prototype: Object.create(HTMLElement.prototype)
-  });
+  class AppRoute extends HTMLElement {};
+  window.customElements.define('app-route', AppRoute);
 
-  // Initial set up when attached
-  AppRouter.attachedCallback = function() {
-    // init="auto|manual"
-    if(this.getAttribute('init') !== 'manual') {
-      this.init();
-    }
-  };
+  // <app-router
+  //   init="auto|manual"
+  //   mode="auto|hash|hashbang|pushstate"
+  //   trailingSlash="strict|ignore"
+  //   typecast="auto|string"
+  //   bindRouter
+  //   ></app-router>
+  class AppRouter extends HTMLElement {
+    constructor() {
+      // Always call super first in constructor
+      super();
 
-  // Initialize the router
-  AppRouter.init = function() {
-    var router = this;
-    if (router.isInitialized) {
-      return;
-    }
-    router.isInitialized = true;
-
-    // trailingSlash="strict|ignore"
-    if (!router.hasAttribute('trailingSlash')) {
-      router.setAttribute('trailingSlash', 'strict');
+      if (this.getAttribute('init') !== 'manual') {
+        this.init();
+      }
     }
 
-    // mode="auto|hash|hashbang|pushstate"
-    if (!router.hasAttribute('mode')) {
-      router.setAttribute('mode', 'auto');
+    // clean up global event listeners
+    disconnectedCallback() {
+      window.removeEventListener('popstate', this.stateChangeHandler, false);
+      if (isIE || isEdge) {
+        window.removeEventListener('hashchange', this.stateChangeHandler, false);
+      }
     }
 
-    // typecast="auto|string"
-    if (!router.hasAttribute('typecast')) {
-      router.setAttribute('typecast', 'auto');
+    // Initialize the router
+    init() {
+      var router = this;
+      if (router.isInitialized) {
+        return;
+      }
+      router.isInitialized = true;
+
+      // trailingSlash="strict|ignore"
+      if (!router.hasAttribute('trailingSlash')) {
+        router.setAttribute('trailingSlash', 'strict');
+      }
+
+      // mode="auto|hash|hashbang|pushstate"
+      if (!router.hasAttribute('mode')) {
+        router.setAttribute('mode', 'auto');
+      }
+
+      // typecast="auto|string"
+      if (!router.hasAttribute('typecast')) {
+        router.setAttribute('typecast', 'auto');
+      }
+
+      // scroll-to-hash="auto|disabled"
+      if (!router.hasAttribute('scroll-to-hash')) {
+        router.setAttribute('scroll-to-hash', 'auto');
+      }
+
+      // <app-router core-animated-pages transitions="hero-transition cross-fade">
+      if (router.hasAttribute('core-animated-pages')) {
+        // use shadow DOM to wrap the <app-route> elements in a <core-animated-pages> element
+        // <app-router>
+        //   # shadowRoot
+        //   <core-animated-pages>
+        //     # content in the light DOM
+        //     <app-route element="home-page">
+        //       <home-page>
+        //       </home-page>
+        //     </app-route>
+        //   </core-animated-pages>
+        // </app-router>
+        router.createShadowRoot();
+        router.coreAnimatedPages = document.createElement('core-animated-pages');
+        router.coreAnimatedPages.appendChild(document.createElement('content'));
+
+        // don't know why it needs to be static, but absolute doesn't display the page
+        router.coreAnimatedPages.style.position = 'static';
+
+        // toggle the selected page using selected="path" instead of selected="integer"
+        router.coreAnimatedPages.setAttribute('valueattr', 'path');
+
+        // pass the transitions attribute from <app-router core-animated-pages transitions="hero-transition cross-fade">
+        // to <core-animated-pages transitions="hero-transition cross-fade">
+        router.coreAnimatedPages.setAttribute('transitions', router.getAttribute('transitions'));
+
+        // set the shadow DOM's content
+        router.shadowRoot.appendChild(router.coreAnimatedPages);
+
+        // when a transition finishes, remove the previous route's content. there is a temporary overlap where both
+        // the new and old route's content is in the DOM to animate the transition.
+        router.coreAnimatedPages.addEventListener('core-animated-pages-transition-end', function() {
+          // with core-animated-pages, navigating to the same route twice quickly will set the new route to both the
+          // activeRoute and the previousRoute before the animation finishes. we don't want to delete the route content
+          // if it's actually the active route.
+          if (router.previousRoute && !router.previousRoute.hasAttribute('active')) {
+            deactivateRoute(router.previousRoute);
+          }
+        });
+      }
+
+      // listen for URL change events
+      router.stateChangeHandler = stateChange.bind(null, router);
+      window.addEventListener('popstate', router.stateChangeHandler, false);
+      if (isIE || isEdge) {
+        // IE & Edge bug. A hashchange is supposed to trigger a popstate event, making popstate the only event you
+        // need to listen to. That's not the case in IE & Edge so we make another event listener for it.
+        window.addEventListener('hashchange', router.stateChangeHandler, false);
+      }
+
+      // load the web component for the current route
+      stateChange(router);
     }
 
-    // scroll-to-hash="auto|disabled"
-    if (!router.hasAttribute('scroll-to-hash')) {
-      router.setAttribute('scroll-to-hash', 'auto');
-    }
-
-    // <app-router core-animated-pages transitions="hero-transition cross-fade">
-    if (router.hasAttribute('core-animated-pages')) {
-      // use shadow DOM to wrap the <app-route> elements in a <core-animated-pages> element
-      // <app-router>
-      //   # shadowRoot
-      //   <core-animated-pages>
-      //     # content in the light DOM
-      //     <app-route element="home-page">
-      //       <home-page>
-      //       </home-page>
-      //     </app-route>
-      //   </core-animated-pages>
-      // </app-router>
-      router.createShadowRoot();
-      router.coreAnimatedPages = document.createElement('core-animated-pages');
-      router.coreAnimatedPages.appendChild(document.createElement('content'));
-
-      // don't know why it needs to be static, but absolute doesn't display the page
-      router.coreAnimatedPages.style.position = 'static';
-
-      // toggle the selected page using selected="path" instead of selected="integer"
-      router.coreAnimatedPages.setAttribute('valueattr', 'path');
-
-      // pass the transitions attribute from <app-router core-animated-pages transitions="hero-transition cross-fade">
-      // to <core-animated-pages transitions="hero-transition cross-fade">
-      router.coreAnimatedPages.setAttribute('transitions', router.getAttribute('transitions'));
-
-      // set the shadow DOM's content
-      router.shadowRoot.appendChild(router.coreAnimatedPages);
-
-      // when a transition finishes, remove the previous route's content. there is a temporary overlap where both
-      // the new and old route's content is in the DOM to animate the transition.
-      router.coreAnimatedPages.addEventListener('core-animated-pages-transition-end', function() {
-        // with core-animated-pages, navigating to the same route twice quickly will set the new route to both the
-        // activeRoute and the previousRoute before the animation finishes. we don't want to delete the route content
-        // if it's actually the active route.
-        if (router.previousRoute && !router.previousRoute.hasAttribute('active')) {
-          deactivateRoute(router.previousRoute);
+    // go(path, options) Navigate to the path
+    //
+    // options = {
+    //   replace: true
+    // }
+    go(path, options) {
+      if (this.getAttribute('mode') !== 'pushstate') {
+        // mode == auto, hash or hashbang
+        if (this.getAttribute('mode') === 'hashbang') {
+          path = '#!' + path;
+        } else {
+          path = '#' + path;
         }
-      });
-    }
-
-    // listen for URL change events
-    router.stateChangeHandler = stateChange.bind(null, router);
-    window.addEventListener('popstate', router.stateChangeHandler, false);
-    if (isIE || isEdge) {
-      // IE & Edge bug. A hashchange is supposed to trigger a popstate event, making popstate the only event you
-      // need to listen to. That's not the case in IE & Edge so we make another event listener for it.
-      window.addEventListener('hashchange', router.stateChangeHandler, false);
-    }
-
-    // load the web component for the current route
-    stateChange(router);
-  };
-
-  // clean up global event listeners
-  AppRouter.detachedCallback = function() {
-    window.removeEventListener('popstate', this.stateChangeHandler, false);
-    if (isIE || isEdge) {
-      window.removeEventListener('hashchange', this.stateChangeHandler, false);
-    }
-  };
-
-  // go(path, options) Navigate to the path
-  //
-  // options = {
-  //   replace: true
-  // }
-  AppRouter.go = function(path, options) {
-    if (this.getAttribute('mode') !== 'pushstate') {
-      // mode == auto, hash or hashbang
-      if (this.getAttribute('mode') === 'hashbang') {
-        path = '#!' + path;
+      }
+      var currentState = window.history.state;
+      if (options && options.replace === true) {
+        window.history.replaceState(currentState, null, path);
       } else {
-        path = '#' + path;
+        window.history.pushState(currentState, null, path);
+      }
+
+      // dispatch a popstate event
+      try {
+        var popstateEvent = new PopStateEvent('popstate', {
+          bubbles: false,
+          cancelable: false,
+          state: currentState
+        });
+
+        if ('dispatchEvent_' in window) {
+          // FireFox with polyfill
+          window.dispatchEvent_(popstateEvent);
+        } else {
+          // normal
+          window.dispatchEvent(popstateEvent);
+        }
+      } catch(error) {
+        // Internet Exploder
+        var fallbackEvent = document.createEvent('CustomEvent');
+        fallbackEvent.initCustomEvent('popstate', false, false, { state: currentState });
+        window.dispatchEvent(fallbackEvent);
       }
     }
-    var currentState = window.history.state;
-    if (options && options.replace === true) {
-      window.history.replaceState(currentState, null, path);
-    } else {
-      window.history.pushState(currentState, null, path);
-    }
-
-    // dispatch a popstate event
-    try {
-      var popstateEvent = new PopStateEvent('popstate', {
-        bubbles: false,
-        cancelable: false,
-        state: currentState
-      });
-
-      if ('dispatchEvent_' in window) {
-        // FireFox with polyfill
-        window.dispatchEvent_(popstateEvent);
-      } else {
-        // normal
-        window.dispatchEvent(popstateEvent);
-      }
-    } catch(error) {
-      // Internet Exploder
-      var fallbackEvent = document.createEvent('CustomEvent');
-      fallbackEvent.initCustomEvent('popstate', false, false, { state: currentState });
-      window.dispatchEvent(fallbackEvent);
-    }
   };
+  window.customElements.define('app-router', AppRouter);
 
   // fire(type, detail, node) - Fire a new CustomEvent(type, detail) on the node
   //
@@ -722,9 +723,5 @@
     }
     return new RegExp(pattern, options).test(value);
   };
-
-  document.registerElement('app-router', {
-    prototype: AppRouter
-  });
 
 })(window, document);
