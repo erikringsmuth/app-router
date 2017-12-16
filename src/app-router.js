@@ -28,9 +28,8 @@
   //   bindRouter
   //   ></app-router>
   class AppRouter extends HTMLElement {
-    constructor() {
-      // Always call super first in constructor
-      super();
+    connectedCallback() {
+      super.connectedCallback();
 
       if (this.getAttribute('init') !== 'manual') {
         this.init();
@@ -43,6 +42,10 @@
       if (isIE || isEdge) {
         window.removeEventListener('hashchange', this.stateChangeHandler, false);
       }
+    }
+
+    get util() {
+      return utilities;
     }
 
     // Initialize the router
