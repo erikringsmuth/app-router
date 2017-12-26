@@ -17,11 +17,16 @@ gulp.task('lint', function() {
 });
 
 gulp.task('build', function() {
-  return gulp.src('src/app-router.js')
-    .pipe(babel({
-      comments: false,
-      minified: true,
-      presets: ['babel-preset-env']
+  return gulp.src('src/app-router.html')
+    .pipe(inline({
+      base: 'src',
+      js: function() {
+        return babel({
+                comments: false,
+                minified: true,
+                presets: ['babel-preset-env']
+              });
+      }
     }))
     .pipe(gulp.dest('.'));
 });
