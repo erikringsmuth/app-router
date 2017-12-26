@@ -24,6 +24,7 @@ gulp.task('build', function() {
         return babel({
                 comments: false,
                 minified: true,
+                plugins: ['transform-custom-element-classes'],
                 presets: ['babel-preset-env']
               });
       }
