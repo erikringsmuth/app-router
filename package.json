@@ -9,10 +9,14 @@
     "test": "node node_modules/gulp/bin/gulp.js ci"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-custom-element-classes": "^0.1.0",
+    "babel-preset-env": "^1.6.1",
     "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
     "gulp-inline": "^0.1.2",
     "gulp-jshint": "^2.0.4",
-    "gulp-karma": "karma-runner/gulp-karma",
+    "gulp-karma": "github:karma-runner/gulp-karma",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "jasmine": "^2.5.2",

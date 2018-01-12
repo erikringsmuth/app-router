@@ -1,12 +1,13 @@
 'use strict';
-var path = require('path');
-var gulp = require('gulp');
-var jshint = require('gulp-jshint');
-var uglify = require('gulp-uglify');
-var inline = require('gulp-inline');
-var karma = require('karma');
+const path = require('path');
+const gulp = require('gulp');
+const babel = require('gulp-babel');
+const jshint = require('gulp-jshint');
+const uglify = require('gulp-uglify');
+const inline = require('gulp-inline');
+const karma = require('karma');
 
-var files = ['src/*.js', 'tests/spec/*.js'];
+const files = ['src/*.js', 'tests/spec/*.js'];
 
 gulp.task('lint', function() {
   return gulp.src(files)
@@ -16,18 +17,17 @@ gulp.task('lint', function() {
 });
 
 gulp.task('build', function() {
-  return gulp.src('src/app-router.js')
-    .pipe(uglify({
-      preserveComments: 'some'
-    }))
-    .pipe(gulp.dest('.'));
-});
-
-gulp.task('minify', function() {
   return gulp.src('src/app-router.html')
     .pipe(inline({
       base: 'src',
-      js: uglify()
+      js: function() {
+        return babel({
+                comments: false,
+                minified: true,
+                plugins: ['transform-custom-element-classes'],
+                presets: ['babel-preset-env']
+              });
+      }
     }))
     .pipe(gulp.dest('.'));
 });
@@ -41,14 +41,14 @@ gulp.task('test', function(done) {
 
 // watch
 gulp.task('watch', function() {
-  gulp.watch(files, ['lint', 'build', 'minify', 'test'])
+  gulp.watch(files, ['lint', 'build', 'test'])
     .on('change', function(event) {
       console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
 });
 
 // default
-gulp.task('default', ['lint', 'build', 'minify', 'test']);
+gulp.task('default', ['lint', 'build', 'test']);
 
 // Travis CI
 gulp.task('ci', ['default']);

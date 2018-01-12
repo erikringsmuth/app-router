@@ -1,6 +1,6 @@
 {
   "name": "app-router",
-  "version": "2.7.2",
+  "version": "3.0.0",
   "authors": [
     "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
   ],
@@ -24,9 +24,8 @@
     "package.json"
   ],
   "devDependencies": {
-    "polymer": "~0.5.4",
-    "webcomponentsjs": "^0.7.22",
-    "core-elements": "Polymer/core-elements#~0.5.4",
+    "polymer": "Polymer/polymer#^2.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "pushstate-anchor": "^0.4.0"
   }
 }
