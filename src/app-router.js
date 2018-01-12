@@ -370,9 +370,7 @@
     router.activeRoute.setAttribute('active', 'active');
 
     // remove the old route's content before loading the new route.
-    if (eventDetail.route !== eventDetail.oldRoute) {
-      deactivateRoute(router.previousRoute);
-    }
+    deactivateRoute(router.previousRoute);
 
     // add the new content
     router.activeRoute.appendChild(element);
